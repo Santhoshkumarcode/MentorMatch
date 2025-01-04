@@ -2,7 +2,7 @@ import express from "express"
 import configDb from "./config/db.js"
 import dotenv from "dotenv"
 
-import userRoutes from "./app/routers/user-routes.js"
+import userRoutes from "./app/routes/user-routes.js"
 const app = express()
 
 dotenv.config()
