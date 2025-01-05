@@ -23,6 +23,14 @@ userCltr.register = async (req, res) => {
         }
         await user.save()
 
+        /* if (role === "mentor") {
+            const newMentor = await new Mentor({
+                mentorId: user._id,
+                fullName:user.username,
+            })
+            await newMentor.save()
+        } */
+        
         const tokenData = { userId: user._id, role: user.role }
         const token = jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '7d' })
         return res.json({ token: token })
@@ -35,7 +43,7 @@ userCltr.register = async (req, res) => {
 userCltr.login = async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        return res.status(400).json({errors:errors.array()})
+        return res.status(400).json({ errors: errors.array() })
     }
     const body = req.body
     try {

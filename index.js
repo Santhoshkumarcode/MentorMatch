@@ -3,6 +3,7 @@ import configDb from "./config/db.js"
 import dotenv from "dotenv"
 
 import userRoutes from "./app/routes/user-routes.js"
+import mentorRoutes from "./app/routes/mentor-routes.js"
 const app = express()
 
 dotenv.config()
@@ -12,6 +13,9 @@ configDb()
 app.use(express.json())
 
 //user route
-app.use('/api',userRoutes)
+app.use('/api', userRoutes)
 
-app.listen(process.env.PORT,()=> console.log(`server running in port: ${process.env.PORT}`))
+//mentor route
+app.use('/api', mentorRoutes)
+
+app.listen(process.env.PORT, () => console.log(`server running in port: ${process.env.PORT}`))

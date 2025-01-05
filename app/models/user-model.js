@@ -4,7 +4,10 @@ const userSchema = new Schema({
     username: String,
     email: String,
     password: String,
-    role: String
+    role: {
+        type: String,
+        enum:['admin','mentor','mentee']
+    }
 }, { timestamps: true })
 
 const User = model("User", userSchema)
