@@ -38,15 +38,7 @@ const mentorSchema = new Schema({
         type: Boolean,
         default: false
     },
-    reviews: [
-        {
-            reviewerName: String,
-            reviewText: String,
-            rating: {
-                type: Number, min: 1, max: 5
-            }
-        }
-    ],
+    reviews: reviews - [{type:mongoose.Types.ObjectId, ref:"review"}],
     pricing: {
         basic: {
             amount: Number,
