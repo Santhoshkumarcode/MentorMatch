@@ -1,6 +1,7 @@
 import express from "express"
 import configDb from "./config/db.js"
 import dotenv from "dotenv"
+import cors from "cors"
 
 import userRoutes from "./app/routes/user-routes.js"
 import mentorRoutes from "./app/routes/mentor-routes.js"
@@ -11,6 +12,7 @@ configDb()
 
 //middlewares
 app.use(express.json())
+app.use(cors())
 
 //user route
 app.use('/api', userRoutes)

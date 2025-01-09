@@ -38,7 +38,7 @@ const mentorSchema = new Schema({
         type: Boolean,
         default: false
     },
-    reviews: reviews - [{type:mongoose.Types.ObjectId, ref:"review"}],
+    // reviews: reviews - [{type:mongoose.Types.ObjectId, ref:"review"}],
     pricing: {
         basic: {
             amount: Number,
