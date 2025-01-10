@@ -6,6 +6,8 @@ import { authentication } from "../middlewares/authentication.js";
 const router = express.Router()
 
 router.post('/mentors', authentication, mentorCltr.createMentor)
-router.put('/mentors/:id',authentication,mentorCltr.updateMentor)
+router.put('/mentors/:id', authentication, mentorCltr.updateMentor)
+router.get('/mentors/all', mentorCltr.getAll)
+router.get('/mentors/', mentorCltr.getVerified)
 
 export default router

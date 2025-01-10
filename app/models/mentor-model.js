@@ -13,7 +13,8 @@ const mentorSchema = new Schema({
     about: String,
     availability: {
         type: String,
-        enum: ['available', 'notAvailable']
+        enum: ['available', 'notAvailable'],
+        default:"available"
     },
     bio: String,
     skills: [
@@ -22,7 +23,7 @@ const mentorSchema = new Schema({
             ref: 'Skills'
         }
     ],
-    experience: [
+    experiences: [
         {
             startingDate: Date,
             endingDate: Date,
