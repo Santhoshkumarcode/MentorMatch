@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer"
+import dotenv from 'dotenv';
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -17,8 +19,7 @@ export const mailToAdmin = async (subject, text) => {
     }
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log(info)
+        await transporter.sendMail(mailOptions)
     } catch (err) {
         console.log(err)
     }

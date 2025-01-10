@@ -22,14 +22,6 @@ userCltr.register = async (req, res) => {
             user.role = 'admin'
         }
         await user.save()
-
-        /* if (role === "mentor") {
-            const newMentor = await new Mentor({
-                mentorId: user._id,
-                fullName:user.username,
-            })
-            await newMentor.save()
-        } */
         
         const tokenData = { userId: user._id, role: user.role }
         const token = jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '7d' })

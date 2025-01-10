@@ -15,7 +15,7 @@ mentorCltr.createMentor = async (req, res) => {
         const mentor = new Mentor(mentorDetails)
         mentor.mentorId = req.currentUser.userId
         await mentor.save()
-        await mailToAdmin("New Mentor registered",`A new Mentor registered name:${mentor.name},email:${mentor.email}`)
+        await mailToAdmin("New Mentor registered",`Hello Admin,In our MentorMatch a new Mentor has registered`)
         return res.status(201).json(mentor)
     } catch (err) {
         console.log(err)
