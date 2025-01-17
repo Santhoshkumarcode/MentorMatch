@@ -13,7 +13,7 @@ mentorCltr.createMentor = async (req, res) => {
 
     try {
         const mentor = new Mentor(mentorDetails)
-        mentor.mentorId = req.currentUser.userId
+        mentor.userId = req.currentUser.userId
         await mentor.save()
         await mailToAdmin("New Mentor registered",`Hello Admin,In our MentorMatch a new Mentor has registered`)
         return res.status(201).json(mentor)
@@ -55,7 +55,7 @@ mentorCltr.updateMentor = async (req, res) => {
             ...body,
             ...(imageUrl && { profilePic: imageUrl }),
         };
-        const mentor = await Mentor.findByIdAndUpdate(id, updatedBody, { new: true, runValidators: true, });
+        const mentor = await Mentor.findOneAndUpdate({userId:id},updatedBody, { new: true, runValidators: true, });
 
         if (!mentor) {
             return res.status(404).json({ error: "Record not found" });
@@ -87,6 +87,21 @@ mentorCltr.getVerified = async (req, res) => {
         if (!mentor) {
             return res.status(404).json('Mentor not found')
         }
+        return res.json(mentor)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
+// get individual mentor profile
+mentorCltr.getProfile = async (req, res) => {
+    const id = req.params.id
+    try {
+        const mentor = await Mentor.findOne({ userId: id })
+        if (!mentor) {
+            return res.status(404).json('Mentor not found')
+        }   
         return res.json(mentor)
     } catch (err) {
         console.log(err)

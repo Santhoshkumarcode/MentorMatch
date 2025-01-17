@@ -2,6 +2,8 @@ import User from "../models/user-model.js";
 import bcryptjs from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { validationResult } from "express-validator"
+import Mentor from "../models/mentor-model.js";
+import Mentee from "../models/mentee-model.js";
 
 const userCltr = {}
 
@@ -20,6 +22,11 @@ userCltr.register = async (req, res) => {
         const countDocument = await User.countDocuments()
         if (countDocument === 0) {
             user.role = 'admin'
+        }
+        if (user.role == "mentor") {
+            await Mentor.create({userId:user._id})
+        } else {
+            await Mentee.create({userId:user._id})
         }
         await user.save()
         

@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from "mongoose"
 
 const mentorSchema = new Schema({
-    mentorId: {
+    userId: {
         type: mongoose.Types.ObjectId,
         ref: "User"
     },
@@ -14,7 +14,7 @@ const mentorSchema = new Schema({
     availability: {
         type: String,
         enum: ['available', 'notAvailable'],
-        default:"available"
+        default: "available"
     },
     bio: String,
     skills: [
