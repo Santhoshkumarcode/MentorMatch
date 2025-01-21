@@ -47,4 +47,17 @@ menteeCltr.updateMentee = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
+menteeCltr.getProfile = async (req, res) => {
+    try {
+        const mentee = await Mentee.findOne({ userId: req.currentUser.userId})
+        if (!mentee) {
+            return res.status(404).json('Mentor not found')
+        }   
+        return res.json(mentee)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
 export default menteeCltr

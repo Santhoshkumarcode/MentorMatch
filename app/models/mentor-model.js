@@ -39,7 +39,6 @@ const mentorSchema = new Schema({
         type: Boolean,
         default: false
     },
-    // reviews: reviews - [{type:mongoose.Types.ObjectId, ref:"review"}],
     pricing: {
         basic: {
             amount: Number,
@@ -56,7 +55,7 @@ const mentorSchema = new Schema({
             features: String,
         }
     },
-})
+},{timestamps:true})
 
 const Mentor = model("Mentor", mentorSchema)
 

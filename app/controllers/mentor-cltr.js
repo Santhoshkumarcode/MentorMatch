@@ -96,12 +96,26 @@ mentorCltr.getVerified = async (req, res) => {
 
 // get individual mentor profile
 mentorCltr.getProfile = async (req, res) => {
-    const id = req.params.id
     try {
-        const mentor = await Mentor.findOne({ userId: id })
+        const mentor = await Mentor.findOne({ userId: req.currentUser.userId })
         if (!mentor) {
             return res.status(404).json('Mentor not found')
         }   
+        return res.json(mentor)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
+// to delete profile
+mentorCltr.deleteProfile = async (req, res) => {
+    const id = req.params.id
+    try {
+        const mentor = await Mentor.findByIdAndDelete(id)
+        if (!mentor) {
+            return res.status(404).json('Record not found')
+        }
         return res.json(mentor)
     } catch (err) {
         console.log(err)
