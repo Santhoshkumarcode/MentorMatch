@@ -30,4 +30,61 @@ meeting.respondToRequest = async (req, res) => {
     }
 }
 
+meeting.statusUpdate = async (req, res) => {
+    const id = req.params.meetingId
+    const body = req.body
+    try {
+        const meeting = await Meeting.findByIdAndUpdate(id, body, { runValidators: true, new: true })
+        if (!meeting) {
+            return res.status(404).json('no meeting scheduled')
+        }
+        return res.status(200).json(meeting)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
+meeting.getMeetingDetails = async (req, res) => {
+    const id = req.params.meetingId
+    try {
+        const meeting = await Meeting.findById(id)
+        if (!meeting) {
+            return res.status(404).json('Meeting not found')
+        }
+        return res.status(200).json(meeting)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
+meeting.deleteMeeting = async (req, res) => {
+    const id = req.params.meetingId
+    try {
+        const meeting = await Meeting.findByIdAndDelete(id)
+        if (!meeting) {
+            return res.status(404).json('Meeting not found')
+        }
+        return res.status(200).json(meeting)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
+meeting.getBookingsOfMentee = async (req, res) => {
+    const id = req.params.menteeId
+    try {
+        const meeting = await Meeting.find({ menteeId: id })
+        if (meeting.length === 0 ) {
+            return res.status(404).json("No booking available")
+        }
+        return res.status(200).json(meeting)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
 export default meeting

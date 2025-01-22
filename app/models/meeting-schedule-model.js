@@ -10,9 +10,8 @@ const meetingScheduleSchema = new Schema({
         ref: 'User'
     },
 
-    date: Date,
+    date: Date, 
     time: String,
-    duration: String,
     plan: String,
     status: {
         type: String, enum: ['pending', 'scheduled', 'completed', 'canceled'], default: 'pending'
