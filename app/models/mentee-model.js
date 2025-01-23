@@ -22,7 +22,6 @@ const menteeSchema = new Schema({
         type: mongoose.Types.ObjectId,
         ref: "skills"
     }],
-    // reviews: reviews - [{ type: mongoose.Types.ObjectId, ref: "review" }],
 },{timestamps:true})
 
 const Mentee = model("Mentee", menteeSchema)

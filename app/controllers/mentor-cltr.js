@@ -15,7 +15,7 @@ mentorCltr.createMentor = async (req, res) => {
         const mentor = new Mentor(mentorDetails)
         mentor.userId = req.currentUser.userId
         await mentor.save()
-        await mailToAdmin("New Mentor registered",`Hello Admin,In our MentorMatch a new Mentor has registered`)
+        await mailToAdmin("New Mentor registered", `Hello Admin,In our MentorMatch a new Mentor has registered`)
         return res.status(201).json(mentor)
     } catch (err) {
         console.log(err)
@@ -55,7 +55,7 @@ mentorCltr.updateMentor = async (req, res) => {
             ...body,
             ...(imageUrl && { profilePic: imageUrl }),
         };
-        const mentor = await Mentor.findOneAndUpdate({userId:id},updatedBody, { new: true, runValidators: true, });
+        const mentor = await Mentor.findOneAndUpdate({ userId: id }, updatedBody, { new: true, runValidators: true, });
 
         if (!mentor) {
             return res.status(404).json({ error: "Record not found" });
@@ -72,13 +72,13 @@ mentorCltr.updateMentor = async (req, res) => {
 mentorCltr.getAll = async (req, res) => {
     try {
         const mentor = await Mentor.find()
-    return res.status(200).json(mentor)
+        return res.status(200).json(mentor)
     } catch (err) {
         console.log(err)
         return res.status(500).json(err)
     }
-    
-} 
+
+}
 
 // show only who's profile is verified by admin
 mentorCltr.getVerified = async (req, res) => {
@@ -97,10 +97,10 @@ mentorCltr.getVerified = async (req, res) => {
 // get individual mentor profile
 mentorCltr.getProfile = async (req, res) => {
     try {
-        const mentor = await Mentor.findOne({ userId: req.currentUser.userId })
+        const mentor = await Mentor.findOne({ userId: req.currentUser.userId }).populate("userId")
         if (!mentor) {
             return res.status(404).json('Mentor not found')
-        }   
+        }
         return res.json(mentor)
     } catch (err) {
         console.log(err)
@@ -122,5 +122,22 @@ mentorCltr.deleteProfile = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
+// is verified 
+mentorCltr.isVerified = async (req, res) => {
+    const id = req.params.id
+    const body = req.body
+    try {
+        const mentor = await Mentor.findByIdAndUpdate(id, body, { new: true, validation: true })
+        if (!mentor) {
+            return res.status(404).json('Mentor not available')
+        }
+        return res.status(200).json(mentor)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
 
 export default mentorCltr

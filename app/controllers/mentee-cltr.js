@@ -50,7 +50,7 @@ menteeCltr.updateMentee = async (req, res) => {
 
 menteeCltr.getProfile = async (req, res) => {
     try {
-        const mentee = await Mentee.findOne({ userId: req.currentUser.userId})
+        const mentee = await Mentee.findOne({ userId: req.currentUser.userId}).populate('userId')
         if (!mentee) {
             return res.status(404).json('Mentor not found')
         }   

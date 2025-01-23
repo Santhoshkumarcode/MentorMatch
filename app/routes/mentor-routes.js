@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.post('/mentors', authentication, authorizeUser(['mentor']), mentorCltr.createMentor)
 router.put('/mentors/:id', authentication, authorizeUser(['mentor']), mentorCltr.updateMentor)
+router.put('/mentors/verify/:id',authentication,authorizeUser(['admin']),mentorCltr.isVerified)
 router.get('/mentors/all', authentication, authorizeUser(['admin']), mentorCltr.getAll)
 router.get('/mentors', mentorCltr.getVerified)
 router.get('/mentors/profile', authentication, mentorCltr.getProfile)
