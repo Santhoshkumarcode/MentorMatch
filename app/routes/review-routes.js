@@ -7,8 +7,9 @@ import authorizeUser from "../middlewares/authorizeUser.js";
 const router = express.Router()
 
 router.post('/reviews', authentication, authorizeUser(['mentor', 'mentee']), reviewCltr.createReview)
-router.get('/reviews/',authentication,reviewCltr.getReviews)
-// router.get('/reviews/mentors', reviewCltr.getMentorReview)
-// router.get('/reviews/mentees', reviewCltr.getMenteeReview)
+router.get('/reviews/:id', authentication, reviewCltr.getReviews)
+
+router.get('/reviews/mentors', reviewCltr.getMentorReviews)
+router.get('/reviews/mentees', reviewCltr.getMenteeReviews)
 
 export default router

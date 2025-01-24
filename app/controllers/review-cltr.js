@@ -6,55 +6,63 @@ const reviewCltr = {}
 
 // reviewCltr.createReview = async (req, res) => {
 
-// //     const { reviewerId, revieweeId, rating, reviewText } = _.pick(req.body, ["revieweeId", "rating", "reviewText"]);
+//     const { reviewerId, revieweeId, rating, reviewText } = _.pick(req.body, ["revieweeId", "rating", "reviewText"]);
 
-// //     if (reviewerId === revieweeId) {
-// //         return res.status(400).json("You cannot review yourself.");
-// //     }
-// //     try {
-// //         const existingReview = await Review.findOne({ reviewerId, revieweeId });
-// //         if (existingReview) {
-// //             return res.status(400).json("You have already reviewed this user.");
-// //         }
-
-// //         const review = await Review.create({ reviewerId:req.currentUser.userId, revieweeId, rating, reviewText })
-// //         return res.status(201).json(review)
-// //     } catch (err) {
-// //         console.log(err)
-// //         return res.status(500).json(err)
-// //     }
-// // }
-
-// //
-
-
-// reviewCltr.getMentorReview = async (req, res) => {
-//     const { mentorId } = req.query
+//     if (reviewerId === revieweeId) {
+//         return res.status(400).json("You cannot review yourself.");
+//     }
 //     try {
-//         const reviews = await Review.find({ revieweeId: mentorId }).populate('reviewerId')
-//         if (!reviews || reviews.length === 0) {
-//             return res.status(404).json("No reviews found for this mentor");
+//         const existingReview = await Review.findOne({ reviewerId, revieweeId });
+//         if (existingReview) {
+//             return res.status(400).json("You have already reviewed this user.");
 //         }
-//         return res.status(200).json(reviews)
+
+//         const review = await Review.create({ reviewerId:req.currentUser.userId, revieweeId, rating, reviewText })
+//         return res.status(201).json(review)
 //     } catch (err) {
 //         console.log(err)
 //         return res.status(500).json(err)
 //     }
 // }
 
-// reviewCltr.getMenteeReview = async (req, res) => {
-//     const { menteeId } = req.query
-//     try {
-//         const reviews = await Review.find({ revieweeId: menteeId }).populate('reviewerId')
-//         if (!reviews || reviews.length === 0) {
-//             return res.status(404).json("No reviews found for this mentee");
-//         }
-//         return res.status(200).json(reviews)
-//     } catch (err) {
-//         console.log(err)
-//         return res.status(500).json(err)
-//     }
-// }
+//
+
+
+reviewCltr.getMentorReviews = async (req, res) => {
+    const { mentorId } = req.query
+    console.log(mentorId)
+    try {
+        const reviews = await Review
+            .find({ revieweeId: mentorId, reviewee: 'mentor' })
+            .populate('reviewerId')
+            .populate('meetingId')
+
+        if (!reviews || reviews.length === 0) {
+            return res.status(404).json("No reviews found for this mentor");
+        }
+        return res.status(200).json(reviews)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
+reviewCltr.getMenteeReviews = async (req, res) => {
+    const { menteeId } = req.query
+    try {
+        const reviews = await Review
+            .find({ revieweeId: menteeId, reviewee: 'mentee' })
+            .populate('reviewerId')
+            .populate('meetingId')
+        if (!reviews || reviews.length === 0) {
+            return res.status(404).json("No reviews found for this mentee");
+        }
+        return res.status(200).json(reviews)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
 
 reviewCltr.createReview = async (req, res) => {
     const { meetingId, rating, reviewText } = req.body
@@ -88,8 +96,10 @@ reviewCltr.createReview = async (req, res) => {
 }
 
 reviewCltr.getReviews = async (req, res) => {
+    const id = req.params.id
     try {
-        
+        const review = await Review.find({})
+        console.log(review)
     } catch (err) {
         console.log(err)
         return res.status(500).json(err)
