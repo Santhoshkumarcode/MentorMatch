@@ -1,36 +1,104 @@
-import { useState } from "react"
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/slices/userSlice";
+import { useNavigate } from "react-router-dom";
+import isEmail from "validator/lib/isEmail";
 
 export default function Login() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const { serverError } = useSelector((state) => state.users)
     const [form, setForm] = useState({
-        email: '',
-        password: ''
-    })
+        email: "",
+        password: "",
+    });
+    const [clientErrors, setClientErrors] = useState(null);
+    const errors = {};
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log(form)
-    }
+    const runClientValidation = () => {
+        if (form.email.trim().length === 0) {
+            errors.email = "Email should not be empty.";
+        } else if (!isEmail(form.email)) {
+            errors.email = "Email should be in proper format.";
+        }
+
+        if (form.password.trim().length === 0) {
+            errors.password = "Password should not be empty.";
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        runClientValidation();
+
+        if (Object.keys(errors).length !== 0) {
+            setClientErrors(errors);
+        } else {
+            try {
+                const resetForm = () => {
+                    setForm({
+                        email: "",
+                        password: "",
+                    });
+                };
+                await dispatch(loginUser({ form, resetForm })).unwrap()
+                navigate("/");
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    };
+
     return (
-        <div className="justify-items-center mt-8">
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <input className="border"
-                        type="text" placeholder="Email"
-                        onChange={(e) => { setForm({ ...form, email: e.target.value }) }} />
-                </div>
+        <div className="flex justify-center items-center h-screen bg-gray-100">
+            <img className="w-96 h-screen" src="src\assets\security.svg" />
+            <div className="w-full max-w-sm bg-white rounded-lg p-8">
+                <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">Login</h1>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <input
+                            className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                            type="email"
+                            placeholder="Email"
+                            onChange={(e) => {
+                                setForm({ ...form, email: e.target.value });
+                                setClientErrors((prev) => ({ ...prev, email: "" }));
+                            }}
+                        />
+                        {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.email}</p>}
+                        {serverError && serverError
+                            .filter(ele => ele.path == 'email')
+                            .map(e => <p className="text-sm text-red-500">{ele.msg}</p>)}
 
-                <div>
-                    <input className="border"
-                        type="password" placeholder="Password"
-                        onChange={(e) => { setForm({ ...form, password: e.target.value }) }} />
-                </div>
+                    </div>
 
-                <div>
-                    <input className="bg-blue-400"
-                        type="submit" value="Login" />
-                </div>
-            </form>
+                    <div>
+                        <input
+                            className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                            type="password"
+                            placeholder="Password"
+                            onChange={(e) => {
+                                setForm({ ...form, password: e.target.value });
+                                setClientErrors((prev) => ({ ...prev, password: "" }));
+                            }}
+                        />
+                        {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.password}</p>}
+                        {serverError && serverError
+                            .filter(ele => ele.path == 'password')
+                            .map(ele => <p className="text-sm text-red-500">{ele.msg}</p>)}
+                    </div>
+
+                    <div>
+                        <input
+                            type="submit"
+                            value="Login"
+                            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600" />
+
+                    </div>
+                </form>
+            </div>
         </div>
-    )
+    );
 }
