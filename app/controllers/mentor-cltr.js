@@ -22,7 +22,24 @@ mentorCltr.createMentor = async (req, res) => {
         return res.status(500).json(err)
     }
 }
-
+// mentor second additiona info form
+mentorCltr.additionalInfo = async (req, res) => {
+    const userId = req.params.id
+    console.log(userId)
+    const body = req.body
+    console.log(body)
+    try {
+        const mentor = await Mentor.findOneAndUpdate({ userId: userId }, body, { new: true, runValidators: true, });
+        if (!mentor) {
+            return res.status(500).json('Record not found')
+        }
+        //await mailToAdmin("New Mentor registered", `Hello Admin,In our MentorMatch a new Mentor has registered`)
+        return res.json(mentor)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
 // to update mentor in profile
 mentorCltr.updateMentor = async (req, res) => {
     const id = req.params.id;

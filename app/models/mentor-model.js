@@ -23,14 +23,14 @@ const mentorSchema = new Schema({
             ref: 'Skills'
         }
     ],
-    experiences: [
+    experiences: String, /* [ 
         {
             startingDate: Date,
             endingDate: Date,
             companyName: String,
             position: String,
         }
-    ],
+    ], */
     linkedIn: String,
     personalWebsite: String,
     location: String,
@@ -55,7 +55,7 @@ const mentorSchema = new Schema({
             features: String,
         }
     },
-},{timestamps:true})
+}, { timestamps: true })
 
 const Mentor = model("Mentor", mentorSchema)
 

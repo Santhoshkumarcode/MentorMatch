@@ -7,6 +7,8 @@ import Login from "./pages/Login"
 import AllMentor from "./pages/AllMentor"
 import Profile from "./pages/profile"
 import MentorDetail from "./pages/Mentor-detail"
+import AdminDashboard from "./pages/AdminDashboard"
+import MyStudents from "./pages/MyStudents"
 
 export default function App() {
   return (
@@ -21,6 +23,8 @@ export default function App() {
         <Route path="/allMentor" element={<AllMentor />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/mentor-detail" element={<MentorDetail />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/my-student" element={<MyStudents />} />
       </Routes>
     </div>
   )

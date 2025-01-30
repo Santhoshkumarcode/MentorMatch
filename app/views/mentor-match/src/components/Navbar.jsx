@@ -1,6 +1,17 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
 
 export default function Navbar() {
+
+    const [isDropdown, setIsDropdown] = useState(false)
+
+    const handleToogle = () => {
+        setIsDropdown(!isDropdown)
+    }
+
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+    }
     return (
         <div>
             <div className="flex justify-between items-center">
@@ -19,8 +30,18 @@ export default function Navbar() {
                         <li className=" text-lg font-semibold hover:text-blue-700"><Link to="/login">Login</Link></li>
                     </ul>
 
+                    <Link><img className="w-6 mr-6 justify-center mt-7" src="src\assets\user-avatar.png" onClick={handleToogle} /></Link>
+                    {isDropdown && (
+                        <div className="absolute right-0 mt-19 w-50 bg-white border rounded-lg">
+                            <ul className="text-gray-700">
+                                <Link to="/profile"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:rounded-sm" onClick={handleToogle}>Profile</li></Link>
+                                <Link to="/admin-dashboard"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>Admin-Dashboard</li></Link>
+                                <Link to="/my-student"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>My-Student</li></Link>
+                                <Link><li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:rounded-sm text-red-600 cursor-pointer" onClick={handleLogout}>Logout</li></Link>
+                            </ul>
+                        </div>
+                    )}
 
-                    <Link to='/profile'><img className="w-6 mr-6 justify-center mt-7" src="src\assets\user-avatar.png" /></Link>
                 </div>
             </div>
             <hr />

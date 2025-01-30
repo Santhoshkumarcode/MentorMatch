@@ -26,14 +26,13 @@ export const loginUser = createAsyncThunk('/users/loginUser', async ({ form, res
     }
 })
 
-export const mentorRegister = createAsyncThunk('/users/mentorRegister', async ({ form, resetForm }, { rejectWithValue }) => {
+export const userProfile = createAsyncThunk('/users/userProfile', async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.put(`/api/mentors/${id}`,form)
-        console.log(response.data)
+        const response = await axios.get('/api/users/profile', { headers: { Authorization: localStorage.getItem("token") } })
         return response.data
     } catch (err) {
         console.log(err)
-        return rejectWithValue(err.response.data.errors)
+        return rejectWithValue(err.response.data)
     }
 })
 
@@ -46,7 +45,6 @@ const userSlice = createSlice({
     extraReducers: (builder) => {
         // register
         builder.addCase(createUser.fulfilled, (state, action) => {
-            state.data.push(action.payload)
             state.serverError = null
         })
         builder.addCase(createUser.rejected, (state, action) => {
@@ -62,8 +60,14 @@ const userSlice = createSlice({
             state.serverError = action.payload
         })
 
-        // update mentor
+        // profile
+        builder.addCase(userProfile.fulfilled, (state, action) => {
+            state.data = action.payload
+            state.serverError = null
+        })
+        builder.addCase(userProfile.rejected, (state, action) => {
+            state.serverError = action.payload
+        })
     }
 })
-
 export default userSlice.reducer

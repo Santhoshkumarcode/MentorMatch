@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createUser } from "../redux/slices/userSlice";
+import { createUser, userProfile } from "../redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/lib/isEmail";
@@ -50,11 +50,11 @@ export default function Register() {
                     setForm(initialState);
                 };
                 await dispatch(createUser({ form, resetForm })).unwrap()
+                await dispatch(userProfile()).unwrap()
                 if (form.role == 'mentor') {
                     navigate('/mentor-detail')
                 } else {
                     navigate("/");
-
                 }
             } catch (err) {
                 console.log(err);
