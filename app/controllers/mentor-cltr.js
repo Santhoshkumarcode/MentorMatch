@@ -88,7 +88,9 @@ mentorCltr.updateMentor = async (req, res) => {
 //get all mentor details to verify by admin
 mentorCltr.getAll = async (req, res) => {
     try {
-        const mentor = await Mentor.find()
+        const mentor = await Mentor
+            .find()
+            .populate('userId')
         return res.status(200).json(mentor)
     } catch (err) {
         console.log(err)
@@ -100,7 +102,9 @@ mentorCltr.getAll = async (req, res) => {
 // show only who's profile is verified by admin
 mentorCltr.getVerified = async (req, res) => {
     try {
-        const mentor = await Mentor.find({ isVerified: true })
+        const mentor = await Mentor
+            .find({ isVerified: true })
+            .populate('userId')
         if (!mentor) {
             return res.status(404).json('Mentor not found')
         }
@@ -129,7 +133,7 @@ mentorCltr.getProfile = async (req, res) => {
 mentorCltr.deleteProfile = async (req, res) => {
     const id = req.params.id
     try {
-        const mentor = await Mentor.findByIdAndDelete(id)
+        const mentor = await Mentor.findOneAndDelete({ userId: id })
         if (!mentor) {
             return res.status(404).json('Record not found')
         }
@@ -145,7 +149,7 @@ mentorCltr.isVerified = async (req, res) => {
     const id = req.params.id
     const body = req.body
     try {
-        const mentor = await Mentor.findByIdAndUpdate(id, body, { new: true, validation: true })
+        const mentor = await Mentor.findOneAndUpdate({ userId: id }, body, { new: true, runValidators: true })
         if (!mentor) {
             return res.status(404).json('Mentor not available')
         }

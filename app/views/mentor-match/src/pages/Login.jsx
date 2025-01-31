@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/slices/userSlice";
+import { loginUser, userProfile } from "../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/lib/isEmail";
 
@@ -44,6 +44,7 @@ export default function Login() {
                     });
                 };
                 await dispatch(loginUser({ form, resetForm })).unwrap()
+                await dispatch(userProfile()).unwrap()
                 navigate("/");
             } catch (err) {
                 console.log(err);

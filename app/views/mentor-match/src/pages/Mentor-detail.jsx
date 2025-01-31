@@ -78,7 +78,7 @@ export default function MentorDetail() {
                         <div className="w-full">
                             <input
                                 type="text"
-                                placeholder="Enter Company Name"
+                                placeholder="Enter Company Name and Posotion"
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2"
                                 onChange={(e) => {
                                     setForm({ ...form, companyName: e.target.value });

@@ -1,9 +1,12 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
 export default function Navbar() {
 
+    const { data } = useSelector((state) => state.users)
     const [isDropdown, setIsDropdown] = useState(false)
+    const [token, setToken] = useState(null)
 
     const handleToogle = () => {
         setIsDropdown(!isDropdown)
@@ -11,28 +14,33 @@ export default function Navbar() {
 
     const handleLogout = () => {
         localStorage.removeItem('token')
+        setToken(null)
+        setIsDropdown(false)
     }
+
+    useEffect(() => {
+        setToken(localStorage.getItem('token'))
+    }, [data])
+
     return (
         <div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center bg-blue-950">
 
                 <div className="p-3 pl-6 inline-flex">
-                    <p className=" pl-1 text-3xl font-thin"><span className="font-semibold">Mentor</span> Match</p>
+                    <p className=" pl-1 text-3xl font-thin text-white"><span className="font-semibold text-white">Mentor</span> Match</p>
                 </div>
 
-                {/* <div>
-                    <input className="border w-96 h-8" ctype="search" placeholder="Search"/>
-                </div> */}
                 <div className="flex">
-                    <ul className="flex space-x-10 p-6 justify-center">
-                        <li className=" text-lg font-semibold hover:text-blue-700"><Link to="/allMentor">All Mentors</Link></li>
-                        <li className=" text-lg font-semibold hover:text-blue-700"><Link to="/register">Register</Link></li>
-                        <li className=" text-lg font-semibold hover:text-blue-700"><Link to="/login">Login</Link></li>
+                    <ul className="flex space-x-8 p-4 justify-center">
+                        <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/allMentor">All Mentors</Link></li>
+                        <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/register">Register</Link></li>
+                        <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/login">Login</Link></li>
                     </ul>
-
-                    <Link><img className="w-6 mr-6 justify-center mt-7" src="src\assets\user-avatar.png" onClick={handleToogle} /></Link>
+                    {token && (
+                        <img className="w-8 h-8 mr-6 ml-2 justify-center mt-4.5" src="src\assets\user.png" onClick={handleToogle} />
+                    )}
                     {isDropdown && (
-                        <div className="absolute right-0 mt-19 w-50 bg-white border rounded-lg">
+                        <div className="absolute right-0 mt-17 w-50 bg-white border rounded-lg">
                             <ul className="text-gray-700">
                                 <Link to="/profile"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:rounded-sm" onClick={handleToogle}>Profile</li></Link>
                                 <Link to="/admin-dashboard"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>Admin-Dashboard</li></Link>
