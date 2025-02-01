@@ -43,6 +43,16 @@ export const deleteMentor = createAsyncThunk('/mentors/deleteMentor', async ({ u
     }
 })
 
+export const mentorProfile = createAsyncThunk('/mentors/mentorProfile', async ({ id }, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`/api/mentors/profile/${id}`, { headers: { Authorization: localStorage.getItem('token') } })
+        return response.data
+    } catch (err) {
+        console.log(err)
+        return rejectWithValue(err.response.data.errors)
+    }
+})
+
 export const verifiedMentors = createAsyncThunk('/mentors/verifiedMentors', async (_, { rejectWithValue }) => {
     try {
         const response = await axios.get('/api/mentors/')
@@ -57,6 +67,7 @@ const mentorSlice = createSlice({
     initialState: {
         data: [],
         verifiedData: [],
+        singleData: null,
         serverError: null,
         editId: null
     },
@@ -96,6 +107,11 @@ const mentorSlice = createSlice({
         })
         builder.addCase(verifiedMentors.rejected, (state, action) => {
             state.serverError = action.payload
+        })
+
+        // individual mentor profile
+        builder.addCase(mentorProfile.fulfilled, (state, action) => {
+            state.singleData = action.payload
         })
     }
 })

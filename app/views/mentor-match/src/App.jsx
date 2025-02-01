@@ -9,6 +9,8 @@ import Profile from "./pages/profile"
 import MentorDetail from "./pages/Mentor-detail"
 import AdminDashboard from "./pages/AdminDashboard"
 import MyStudents from "./pages/MyStudents"
+import MentorProfile from "./pages/MentorProfile"
+import ApplyForm from "./pages/ApplyForm"
 
 export default function App() {
   return (
@@ -25,6 +27,8 @@ export default function App() {
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/my-student" element={<MyStudents />} />
+        <Route path="/mentor-profile/:id" element={<MentorProfile />} />
+        <Route path="/apply-form/:mentorId/:plan" element={<ApplyForm />} />
       </Routes>
     </div>
   )

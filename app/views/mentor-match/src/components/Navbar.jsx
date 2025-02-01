@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { Link } from "react-router-dom"
-
+import { Link, useNavigate } from "react-router-dom"
+import userImg from "../assets/user.png"
 export default function Navbar() {
 
+    const navigate = useNavigate()
     const { data } = useSelector((state) => state.users)
     const [isDropdown, setIsDropdown] = useState(false)
     const [token, setToken] = useState(null)
@@ -16,6 +17,8 @@ export default function Navbar() {
         localStorage.removeItem('token')
         setToken(null)
         setIsDropdown(false)
+        navigate('/')
+        
     }
 
     useEffect(() => {
@@ -37,7 +40,7 @@ export default function Navbar() {
                         <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/login">Login</Link></li>
                     </ul>
                     {token && (
-                        <img className="w-8 h-8 mr-6 ml-2 justify-center mt-4.5" src="src\assets\user.png" onClick={handleToogle} />
+                        <img className="w-8 h-8 mr-6 ml-2 justify-center mt-4.5" src={userImg} onClick={handleToogle} />
                     )}
                     {isDropdown && (
                         <div className="absolute right-0 mt-17 w-50 bg-white border rounded-lg">

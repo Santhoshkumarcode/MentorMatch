@@ -12,7 +12,7 @@ router.put('/mentors/additionalInfo/:id',authentication,authorizeUser(['mentor']
 router.put('/mentors/verify/:id',authentication,authorizeUser(['admin']),mentorCltr.isVerified)
 router.get('/mentors/all', authentication, authorizeUser(['admin']), mentorCltr.getAll)
 router.get('/mentors', mentorCltr.getVerified)
-router.get('/mentors/profile', authentication, mentorCltr.getProfile)
+router.get('/mentors/profile/:id', authentication, mentorCltr.getProfile)
 router.delete('/mentors/:id', authentication, authorizeUser(['admin','mentor']), mentorCltr.deleteProfile)
 
 export default router

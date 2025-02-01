@@ -117,8 +117,9 @@ mentorCltr.getVerified = async (req, res) => {
 
 // get individual mentor profile
 mentorCltr.getProfile = async (req, res) => {
+    const id = req.params.id
     try {
-        const mentor = await Mentor.findOne({ userId: req.currentUser.userId }).populate("userId")
+        const mentor = await Mentor.findById(id).populate("userId")
         if (!mentor) {
             return res.status(404).json('Mentor not found')
         }
