@@ -26,7 +26,8 @@ export default function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/my-student" element={<MyStudents />} />
+
+        <Route path="/my-student/" element={<MyStudents />} />
         <Route path="/mentor-profile/:id" element={<MentorProfile />} />
         <Route path="/apply-form/:mentorId/:plan" element={<ApplyForm />} />
       </Routes>

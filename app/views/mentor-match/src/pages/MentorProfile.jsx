@@ -22,10 +22,8 @@ export default function MentorProfile() {
         return <h1>loading....</h1>
     }
 
-    const handleApply = (plan) => {
-        console.log(plan)
-        console.log(singleData._id)
-        navigate(`/apply-form/${singleData._id}/${plan}`)
+    const handleApply = async (plan) => {
+        await navigate(`/apply-form/${singleData.userId._id}/${plan}`)
     }
 
     return (
@@ -74,7 +72,7 @@ export default function MentorProfile() {
                     </div>
                 </div>
 
-                
+
 
             </div>
         </div>

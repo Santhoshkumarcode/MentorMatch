@@ -1,10 +1,12 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { verifiedMentors } from "../redux/slices/mentorSlice"
+import { useNavigate } from "react-router-dom"
 
 export default function AllMentor() {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const { verifiedData } = useSelector((state) => state.mentors)
 
@@ -12,8 +14,9 @@ export default function AllMentor() {
         dispatch(verifiedMentors())
     }, [verifiedData])
 
-    const handleClick = (id) => {
-        window.open(`/mentor-profile/${id}`, "_blank")
+    const handleClick = async (id) => {
+        // window.open(`/mentor-profile/${id}`, "_blank")
+        navigate(`/mentor-profile/${id}`)
     }
 
     return (

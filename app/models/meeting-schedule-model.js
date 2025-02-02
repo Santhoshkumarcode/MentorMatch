@@ -19,6 +19,7 @@ const meetingScheduleSchema = new Schema({
     video: String,
     meetingLink: String,
     summary: String,
+    mentorshipGoal: String,
     paymentStatus: {
         type: String,
         enum: ['pending', 'paid'],

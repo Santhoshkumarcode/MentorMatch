@@ -4,9 +4,10 @@ import _ from "lodash"
 const meeting = {}
 
 meeting.requestMeeting = async (req, res) => {
-    const requestDetails = _.pick(req.body, ["mentorId", "menteeId", "plan", "video"])
+    const body = req.body
     try {
-        const meeting = new Meeting(requestDetails)
+        const meeting = new Meeting(body)
+        meeting.menteeId = req.currentUser.userId
         await meeting.save()
         return res.status(201).json(meeting)
     } catch (err) {
@@ -17,9 +18,13 @@ meeting.requestMeeting = async (req, res) => {
 
 meeting.respondToRequest = async (req, res) => {
     // const { mentorId } = req.query
+    // console.log(mentorId)
     const mentorId = req.params.mentorId
     try {
-        const meeting = await Meeting.find({ mentorId: mentorId })
+        const meeting = await Meeting
+            .find({ mentorId: mentorId })
+            .populate('mentorId')
+            .populate('menteeId')
         if (!meeting) {
             return res.status(404).json("Meeting not found for this mentor")
         }
@@ -77,7 +82,7 @@ meeting.getBookingsOfMentee = async (req, res) => {
     const id = req.params.menteeId
     try {
         const meeting = await Meeting.find({ menteeId: id })
-        if (meeting.length === 0 ) {
+        if (meeting.length === 0) {
             return res.status(404).json("No booking available")
         }
         return res.status(200).json(meeting)

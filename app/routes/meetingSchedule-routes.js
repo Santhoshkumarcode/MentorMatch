@@ -6,8 +6,8 @@ import authorizeUser from "../middlewares/authorizeUser.js";
 
 const router = express.Router()
 
-router.post('/meetings', authentication, meeting.requestMeeting)
-router.get('/meetings/request/:mentorId', authentication, meeting.respondToRequest)
+router.post('/meetings', authentication, authorizeUser(['mentee']), meeting.requestMeeting)
+router.get('/meetings/request/:mentorId', authentication, authorizeUser(['mentor']), meeting.respondToRequest)
 router.put('/meetings/:meetingId', authentication, meeting.statusUpdate)
 router.get('/meetings/:meetingId', authentication, meeting.getMeetingDetails)
 router.get('/meetings/mentee/:menteeId', authentication, authorizeUser(['mentee']), meeting.getBookingsOfMentee)
