@@ -16,7 +16,7 @@ export default function MyStudents() {
 
     const handleAccept = (meetingId) => {
         console.log(meetingId)
-        dispatch(statusUpdate({meetingId}))
+        dispatch(statusUpdate({ meetingId }))
     }
 
     const handleReject = (id) => {
@@ -39,10 +39,10 @@ export default function MyStudents() {
                                 <p className="text-base text-gray-600 mb-4">Mentorship Goal: {ele.mentorshipGoal}</p>
 
                                 <div className="flex gap-4">
-                                    <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600" onClick={()=> {handleAccept(ele._id)}}>
+                                    <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600" onClick={() => { handleAccept(ele._id) }}>
                                         Accept
                                     </button>
-                                    <button className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600" onClick={()=> {handleReject(ele._id)}}> 
+                                    <button className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600" onClick={() => { handleReject(ele._id) }}>
                                         Reject
                                     </button>
                                 </div>

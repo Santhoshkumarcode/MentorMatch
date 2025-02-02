@@ -23,9 +23,9 @@ export const getAllMyStudent = createAsyncThunk('/meetingSchedules/getAllMyStude
     }
 })
 
-export const statusUpdate = createAsyncThunk('/meetingSchedules/statusUpdate', async ({meetingId}, { rejectWithValue }) => {
+export const statusUpdate = createAsyncThunk('/meetingSchedules/statusUpdate', async ({ meetingId }, { rejectWithValue }) => {
     try {
-        const response = await axios.put(`/api/meetings/:meetingId`, { status: "scheduled" }, { headers: { Authorization: localStorage.getItem('token') } })
+        axios.put(`/api/meetings/:meetingId`, { status: "scheduled" }, { headers: { Authorization: localStorage.getItem('token') } })
         console.log(response.data)
         return response.data
     } catch (err) {
