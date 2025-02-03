@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.post('/meetings', authentication, authorizeUser(['mentee']), meeting.requestMeeting)
 router.get('/meetings/request/:mentorId', authentication, authorizeUser(['mentor']), meeting.respondToRequest)
+router.get('/meetings/scheduled/:mentorId',authentication,authorizeUser(['mentor']),meeting.getacceptedStudents)
 router.put('/meetings/:meetingId', authentication, meeting.statusUpdate)
 router.get('/meetings/:meetingId', authentication, meeting.getMeetingDetails)
 router.get('/meetings/mentee/:menteeId', authentication, authorizeUser(['mentee']), meeting.getBookingsOfMentee)

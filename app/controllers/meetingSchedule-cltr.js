@@ -21,14 +21,32 @@ meeting.respondToRequest = async (req, res) => {
     // console.log(mentorId)
     const mentorId = req.params.mentorId
     try {
-        const meeting = await Meeting
-            .find({ mentorId: mentorId })
+        const meetings = await Meeting
+            .find({ mentorId: mentorId, status: "pending" })
             .populate('mentorId')
             .populate('menteeId')
-        if (!meeting) {
+        if (meetings.length === 0) {
             return res.status(404).json("Meeting not found for this mentor")
         }
-        return res.status(200).json(meeting)
+        return res.status(200).json(meetings)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+meeting.getacceptedStudents = async (req, res) => {
+    // const { mentorId } = req.query
+    // console.log(mentorId)
+    const mentorId = req.params.mentorId
+    try {
+        const meetings = await Meeting
+            .find({ mentorId: mentorId, status: "scheduled" })
+            .populate('mentorId')
+            .populate('menteeId')
+        if (meetings.length === 0) {
+            return res.status(404).json("No scheduled for you")
+        }
+        return res.status(200).json(meetings)
     } catch (err) {
         console.log(err)
         return res.status(500).json(err)

@@ -41,7 +41,7 @@ export default function AllMentor() {
                                     <p className="text-gray-700 mt-2">{ele.companyName}</p>
                                     <p className="text-gray-800 mt-4">{ele.bio}</p>
                                     <p className="text-gray-600 mt-2">{ele.about}</p>
-                                    <button className="mt-8 bg-blue-500 text-white px-8 py-2 rounded-lg  hover:bg-blue-700" onClick={() => { handleClick(ele._id) }}>view Profile</button>
+                                    <button className="mt-8 bg-blue-500 text-white px-8 py-2 rounded-lg  hover:bg-blue-700" onClick={() => { handleClick(ele.userId._id) }}>view Profile</button>
                                 </div>
                             )
                         })}

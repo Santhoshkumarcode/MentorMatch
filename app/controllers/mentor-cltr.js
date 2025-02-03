@@ -119,7 +119,7 @@ mentorCltr.getVerified = async (req, res) => {
 mentorCltr.getProfile = async (req, res) => {
     const id = req.params.id
     try {
-        const mentor = await Mentor.findById(id).populate("userId")
+        const mentor = await Mentor.findOne({userId:id}).populate("userId")
         if (!mentor) {
             return res.status(404).json('Mentor not found')
         }
@@ -129,6 +129,7 @@ mentorCltr.getProfile = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
 
 // to delete profile
 mentorCltr.deleteProfile = async (req, res) => {

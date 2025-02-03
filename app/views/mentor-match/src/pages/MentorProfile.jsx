@@ -29,7 +29,8 @@ export default function MentorProfile() {
     return (
         <div>
             <div className="bg-cyan-900 w-full h-60">
-                {/* <img className="absolute top-50 left-10 w-50 h-50 rounded-full" src={ singleData.profilePic} /> */}
+                {/* <img className="w-10 h-10 absolute left-80 top-75" src="/src/assets/linkedin.png" onClick={singleData.linkedIn}/> */}
+                <img className="border-4 border-white absolute top-50 left-10 w-50 h-50 rounded-full" src={ singleData.profilePic} />
                 <div className="grid grid-cols-2">
                     <div>
                         <p className="text-3xl font-semibold ps-10 pt-80">{singleData?.userId?.username}</p>
