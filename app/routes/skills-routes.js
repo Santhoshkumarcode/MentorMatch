@@ -5,6 +5,6 @@ import { authentication } from "../middlewares/authentication.js"
 const router = express.Router()
 
 router.post('/skills', authentication, skillsCltr.create)
-router.get('/skills',authentication,skillsCltr.getAll)
+router.get('/skills', authentication, skillsCltr.getAll)
 
 export default router

@@ -1,4 +1,4 @@
-import mongoose,{ Schema, model } from "mongoose"
+import mongoose, { Schema, model } from "mongoose"
 
 const menteeSchema = new Schema({
     userId: {
@@ -8,21 +8,23 @@ const menteeSchema = new Schema({
     fullName: String,
     phoneNumber: String,
     profilePic: String,
+    bio: String,
+    location: String,
     education: [
         {
             startYear: Number,
             endYear: Number,
             institute: String,
             degree: String,
-            cgp: String,
             fieldOfStudy: String
         }
     ],
+    linkedIn:String,
     skills: [{
         type: mongoose.Types.ObjectId,
         ref: "skills"
     }],
-},{timestamps:true})
+}, { timestamps: true })
 
 const Mentee = model("Mentee", menteeSchema)
 

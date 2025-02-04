@@ -12,20 +12,16 @@ export default function Profile() {
     const { singleData } = useSelector((state) => state.mentors)
     const { data: menteeData } = useSelector((state) => state.mentees)
     const id = data?._id
-    console.log(menteeData)
 
     useEffect(() => {
-        if (data.role == 'mentor') {
+        if (data?.role == 'mentor') {
             dispatch(mentorProfile({ id }))
+        } else if (data?.role == 'mentee') {
+            dispatch(menteeProfile({ id }));
         }
 
-    }, [dispatch, id])
+    }, [dispatch, id,data?.role])
 
-    useEffect(() => {
-        if (data.role == 'mentee') {
-            dispatch(menteeProfile({ id }))
-        }
-    })
     if (!data) {
         return <p>loading</p>
     }
