@@ -56,6 +56,11 @@ meeting.getacceptedStudents = async (req, res) => {
 meeting.statusUpdate = async (req, res) => {
     const id = req.params.meetingId
     const body = req.body
+
+    if (body.dates && Array.isArray(body.dates)) {
+        body.dates = body.dates.map(date => new Date(date));
+    }
+
     try {
         const meeting = await Meeting.findByIdAndUpdate(id, body, { runValidators: true, new: true })
         if (!meeting) {
@@ -67,6 +72,29 @@ meeting.statusUpdate = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
+meeting.updateMeeting = async (req, res) => {
+    const { meetingId, form } = req.body;
+
+    try {
+        // Convert date strings to Date objects if they are strings
+        if (form.dates && Array.isArray(form.dates)) {
+            form.dates = form.dates.map(date => new Date(date));
+        }
+
+        const meeting = await Meeting.findByIdAndUpdate(meetingId, form, { runValidators: true, new: true });
+
+        if (!meeting) {
+            return res.status(404).json({ message: "Meeting not found" });
+        }
+
+        return res.status(200).json(meeting);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Server Error", error: err });
+    }
+}
+
 
 meeting.getMeetingDetails = async (req, res) => {
     const id = req.params.meetingId
@@ -109,5 +137,23 @@ meeting.getBookingsOfMentee = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
+meeting.getMeetingDates = async (req, res) => {
+    const mentorId = req.params.mentorId
+    try {
+        const meetings = await Meeting.find({ mentorId: mentorId }).populate('menteeId').populate('mentorId')
+        const events = meetings.map(meeting => {
+            return meeting.dates.map(date => ({
+                title: meeting.menteeId,
+                start: new Date(date)
+            }));
+        }).flat();
+
+        res.status(200).json(events);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch meetings" });
+    }
+}
+
 
 export default meeting

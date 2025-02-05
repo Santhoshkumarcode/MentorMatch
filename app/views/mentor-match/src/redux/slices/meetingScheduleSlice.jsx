@@ -35,10 +35,8 @@ export const statusUpdate = createAsyncThunk('/meetingSchedules/statusUpdate', a
 })
 
 export const getAcceptedStudent = createAsyncThunk('/meetingSchedules/getAcceptedStudent', async ({ mentorId }, { rejectWithValue }) => {
-    console.log(mentorId)
     try {
         const response = await axios.get(`/api/meetings/scheduled/${mentorId}`, { headers: { Authorization: localStorage.getItem('token') } })
-        console.log(response.data)
         return response.data
     } catch (err) {
         console.log(err)
@@ -58,11 +56,33 @@ export const rejectStatus = createAsyncThunk('/meetingSchedules/rejectStatus', a
     }
 })
 
+export const updateMeeting = createAsyncThunk('/meetingSchedules/updateMeeting', async ({ meetingId, form }, { rejectWithValue }) => {
+    console.log(meetingId, form)
+    try {
+        const response = await axios.put(`/api/meetings/${meetingId}`, form, { headers: { Authorization: localStorage.getItem('token') } })
+        console.log(response.data)
+        return response.data
+    } catch (err) {
+        console.log(err)
+        return rejectWithValue(err.response.data.errors)
+    }
+})
+
+export const getMeetings = createAsyncThunk('/meetingSchedules/getMeetings', async ({ mentorId }, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`/api/meetings/mentor/${mentorId}`, { headers: { Authorization: localStorage.getItem('token') } })
+        return response.data
+    } catch (err) {
+        console.log(err)
+        return rejectWithValue(err.response.data.errors)
+    }
+})
 const meetingScheduleSlice = createSlice({
     name: 'meetingSchedules',
     initialState: {
         data: [],
-        acceptedData:[],
+        acceptedData: [],
+        meetingDates: [],
         serverError: null
     },
 
@@ -100,6 +120,21 @@ const meetingScheduleSlice = createSlice({
             state.acceptedData = action.payload
             state.serverError = null
         })
+        builder.addCase(updateMeeting.fulfilled, (state, action) => {
+            const index = state.data.findIndex(ele => ele._id === action.payload._id)
+            if (index !== 1) {
+                state.data[index] = action.payload
+            }
+            state.serverError = null
+        })
+
+        //meetings for this mentor
+
+        builder.addCase(getMeetings.fulfilled, (state, action) => {
+            state.meetingDates = action.payload
+        });
+
+
     }
 })
 

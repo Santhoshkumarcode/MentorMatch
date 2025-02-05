@@ -10,7 +10,10 @@ const meetingScheduleSchema = new Schema({
         ref: 'User'
     },
 
-    date: Date,
+    dates: {
+        type: [Date],
+    },
+    registeredDate: Date,
     time: String,
     plan: String,
     status: {
