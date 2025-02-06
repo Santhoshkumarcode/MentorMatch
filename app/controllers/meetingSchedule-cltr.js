@@ -17,8 +17,6 @@ meeting.requestMeeting = async (req, res) => {
 }
 
 meeting.respondToRequest = async (req, res) => {
-    // const { mentorId } = req.query
-    // console.log(mentorId)
     const mentorId = req.params.mentorId
     try {
         const meetings = await Meeting
@@ -34,9 +32,8 @@ meeting.respondToRequest = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
 meeting.getacceptedStudents = async (req, res) => {
-    // const { mentorId } = req.query
-    // console.log(mentorId)
     const mentorId = req.params.mentorId
     try {
         const meetings = await Meeting
@@ -77,7 +74,6 @@ meeting.updateMeeting = async (req, res) => {
     const { meetingId, form } = req.body;
 
     try {
-        // Convert date strings to Date objects if they are strings
         if (form.dates && Array.isArray(form.dates)) {
             form.dates = form.dates.map(date => new Date(date));
         }
@@ -151,7 +147,8 @@ meeting.getMeetingDates = async (req, res) => {
 
         res.status(200).json(events);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch meetings" });
+        console.lo(error)
+        res.status(500).json(error);
     }
 }
 

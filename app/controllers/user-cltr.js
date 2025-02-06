@@ -50,7 +50,7 @@ userCltr.login = async (req, res) => {
         if (!user) {
             return res.status(401).json('email/password wrong')
         }
-        const isVerified = bcryptjs.compare(body.password, user.password)
+        const isVerified = await bcryptjs.compare(body.password, user.password)
         if (!isVerified) {
             return res.status(401).json('email/password wrong')
         }

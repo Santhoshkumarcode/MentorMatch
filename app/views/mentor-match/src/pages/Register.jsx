@@ -53,8 +53,8 @@ export default function Register() {
                 await dispatch(userProfile()).unwrap()
                 if (form.role == 'mentor') {
                     navigate('/mentor-detail')
-                } else {
-                    navigate("/");
+                } else if(form.role == 'mentee') {
+                    navigate('/mentee-detail');
                 }
             } catch (err) {
                 console.log(err);

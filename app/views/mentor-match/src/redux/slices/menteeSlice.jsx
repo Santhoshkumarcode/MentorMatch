@@ -23,6 +23,8 @@ export const menteeUpdate = createAsyncThunk('mentees/menteeUpdate', async ({ id
         return rejectWithValue(err.response.data.errors)
     }
 })
+
+
 const menteeSlice = createSlice({
     name: "mentees",
     initialState: {

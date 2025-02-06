@@ -10,7 +10,7 @@ const menteeSchema = new Schema({
     profilePic: String,
     bio: String,
     location: String,
-    education: [
+    education: /* [
         {
             startYear: Number,
             endYear: Number,
@@ -18,7 +18,7 @@ const menteeSchema = new Schema({
             degree: String,
             fieldOfStudy: String
         }
-    ],
+    ] */ String,
     linkedIn:String,
     skills: [{
         type: mongoose.Types.ObjectId,

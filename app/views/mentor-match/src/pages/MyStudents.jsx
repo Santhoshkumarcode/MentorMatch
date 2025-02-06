@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getAcceptedStudent, getAllMyStudent, getMeetings, rejectStatus, statusUpdate, updateMeeting } from "../redux/slices/meetingScheduleSlice"
 import DatePicker from "react-multi-date-picker";
+
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
@@ -9,8 +10,8 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 const renderEventContent = (eventInfo) => {
     return (
         <div>
-            <b>{eventInfo.event.title}</b> {/* Display meeting title */}
-            <p>{new Date(eventInfo.event.start).toLocaleString()}</p> {/* Format and display start date */}
+            <b className="font-medium">meeting with - {eventInfo.event.title}</b>
+            <p>{new Date(eventInfo.event.start).toLocaleString()}</p>
         </div>
     );
 };
@@ -20,9 +21,13 @@ const renderEventContent = (eventInfo) => {
 export default function MyStudents() {
 
     const dispatch = useDispatch()
+
     const mentorId = useSelector((state) => state.users?.data?._id)
+
     const { data, acceptedData, meetingDates } = useSelector((state) => state.meetingSchedules);
+
     const [currentPage, setCurrentPage] = useState('application')
+
     const [scheduleForm, setScheduleForm] = useState(false)
     const [dates, setDates] = useState([])
     const [meetingId, setMeetingId] = useState(null)
@@ -35,7 +40,6 @@ export default function MyStudents() {
         }
     }, [mentorId, dispatch])
 
-
     // to get accepted students
     useEffect(() => {
         if (mentorId) {
@@ -43,18 +47,21 @@ export default function MyStudents() {
         }
     }, [mentorId, dispatch, data])
 
+    // to get meetigs for the particular mentor
+    useEffect(() => {
+        if (mentorId) {
+            dispatch(getMeetings({ mentorId }))
+        }
+    }, [mentorId, dispatch])
+
+
+
     const handleAccept = (meetingId) => {
         const confirm = window.confirm('Are you sure want to accept?')
         if (confirm) {
             dispatch(statusUpdate({ meetingId }))
         }
     }
-
-    useEffect(() => {
-        if (mentorId) {
-            dispatch(getMeetings({ mentorId }))
-        }
-    }, [mentorId, dispatch])
 
     const handleReject = (meetingId) => {
         const confirm = window.confirm('Are you sure want to reject this student?')
@@ -65,7 +72,6 @@ export default function MyStudents() {
 
 
     const handleScheduleSubmit = () => {
-        console.log(dates)
         if (!meetingId || dates.length === 0) {
             alert("Please select dates before submitting.");
             return;
@@ -74,6 +80,7 @@ export default function MyStudents() {
         const form = { dates: formattedDates };
 
         dispatch(updateMeeting({ meetingId, form }))
+        dispatch(getMeetings({ mentorId }))
         setScheduleForm(false)
         setDates([])
     }
@@ -81,8 +88,6 @@ export default function MyStudents() {
         title: ele.title.username,
         date: ele.start,
     }))
-
-    console.log(events)
 
     return (
         <div>
@@ -162,16 +167,16 @@ export default function MyStudents() {
                                         <DatePicker
                                             placeholder="Select Dates"
                                             multiple
-                                            value={dates}
+                                                value={dates}
+                                            highlighted={dates.map(date => new Date(date))}
                                             onChange={setDates}
+                                            open={true}
                                         /><br />
                                         <button className=" p-2 mt-2 ms-13 rounded bg-blue-600 text-white hover:bg-blue-700" onClick={handleScheduleSubmit}>Schedule</button>
                                     </div>
                                 </div>
                             </div>
                         )}
-
-
                     </div>
 
 

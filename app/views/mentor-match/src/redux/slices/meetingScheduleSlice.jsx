@@ -115,6 +115,7 @@ const meetingScheduleSlice = createSlice({
             state.serverError = null
         })
 
+
         // students after accepted by mentor
         builder.addCase(getAcceptedStudent.fulfilled, (state, action) => {
             state.acceptedData = action.payload
@@ -122,7 +123,7 @@ const meetingScheduleSlice = createSlice({
         })
         builder.addCase(updateMeeting.fulfilled, (state, action) => {
             const index = state.data.findIndex(ele => ele._id === action.payload._id)
-            if (index !== 1) {
+            if (index !== -1) {
                 state.data[index] = action.payload
             }
             state.serverError = null
@@ -133,8 +134,6 @@ const meetingScheduleSlice = createSlice({
         builder.addCase(getMeetings.fulfilled, (state, action) => {
             state.meetingDates = action.payload
         });
-
-
     }
 })
 

@@ -22,7 +22,7 @@ const initialState = {
 
 export default function MenteeProfilePage({ data }) {
 
-    const [showForm, setShowForm] = useState(true)
+    const [showForm, setShowForm] = useState(false)
     const { data: skills } = useSelector((state) => state.skills)
     const [selectedSkills, setSelectedSkills] = useState([])
     const [form, setForm] = useState(initialState)

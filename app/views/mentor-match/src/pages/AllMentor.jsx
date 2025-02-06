@@ -15,7 +15,6 @@ export default function AllMentor() {
     }, [verifiedData])
 
     const handleClick = async (id) => {
-        // window.open(`/mentor-profile/${id}`, "_blank")
         navigate(`/mentor-profile/${id}`)
     }
 
@@ -36,12 +35,15 @@ export default function AllMentor() {
                         verifiedData.map(ele => {
                             return (
                                 <div key={ele._id} className="border-1 border-gray-200 rounded-xl bg-gray-100 ps-48 py-10 pr-20 text-left ml-80 mr-10 mb-10">
+                                    <img className="w-40 h-50 absolute mt-3 left-92 border border-gray-700 rounded-xl" src={ele.profilePic} />
                                     <p className="text-3xl font-semibold text-gray-700">{ele.userId.username}</p>
-                                    {/* <img className="w-40 h-50 absolute left-92" src={ele.profilePic} /> */}
                                     <p className="text-gray-700 mt-2">{ele.companyName}</p>
                                     <p className="text-gray-800 mt-4">{ele.bio}</p>
                                     <p className="text-gray-600 mt-2">{ele.about}</p>
-                                    <button className="mt-8 bg-blue-500 text-white px-8 py-2 rounded-lg  hover:bg-blue-700" onClick={() => { handleClick(ele.userId._id) }}>view Profile</button>
+                                    <div className="flex space-x-10">
+                                        <p className="text-xl mt-8"> Starts from : <span className="text-3xl font-semibold text-gray-700">₹ {ele.pricing.basic.amount}/month</span></p>
+                                        <button className="mt-8 bg-blue-500 text-white px-8 py-2 rounded-lg  hover:bg-blue-700" onClick={() => { handleClick(ele.userId._id) }}>view Profile</button>
+                                    </div>
                                 </div>
                             )
                         })}
