@@ -13,7 +13,7 @@ export const menteeProfile = createAsyncThunk('/mentees/menteeProfile', async ({
     }
 })
 
-export const menteeUpdate = createAsyncThunk('mentees/menteeUpdate', async ({ id, form }, { rejectWithValue }) => {
+export const menteeUpdate = createAsyncThunk('/mentees/menteeUpdate', async ({ id, form }, { rejectWithValue }) => {
     try {
         const response = await axios.put(`/api/mentees/${id}`, form, { headers: { Authorization: localStorage.getItem('token') }     })
         console.log(response.data)

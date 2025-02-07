@@ -17,6 +17,8 @@ meeting.requestMeeting = async (req, res) => {
 }
 
 meeting.respondToRequest = async (req, res) => {
+    // const { mentorId } = req.query
+    // console.log(mentorId)
     const mentorId = req.params.mentorId
     try {
         const meetings = await Meeting
@@ -32,8 +34,8 @@ meeting.respondToRequest = async (req, res) => {
         return res.status(500).json(err)
     }
 }
-
 meeting.getacceptedStudents = async (req, res) => {
+
     const mentorId = req.params.mentorId
     try {
         const meetings = await Meeting
@@ -74,6 +76,7 @@ meeting.updateMeeting = async (req, res) => {
     const { meetingId, form } = req.body;
 
     try {
+        // Convert date strings to Date objects if they are strings
         if (form.dates && Array.isArray(form.dates)) {
             form.dates = form.dates.map(date => new Date(date));
         }
@@ -123,7 +126,7 @@ meeting.deleteMeeting = async (req, res) => {
 meeting.getBookingsOfMentee = async (req, res) => {
     const id = req.params.menteeId
     try {
-        const meeting = await Meeting.find({ menteeId: id })
+        const meeting = await Meeting.find({ menteeId: id ,status: "scheduled" }).populate('mentorId').populate('menteeId')
         if (meeting.length === 0) {
             return res.status(404).json("No booking available")
         }

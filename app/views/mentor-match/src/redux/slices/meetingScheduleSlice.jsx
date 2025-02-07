@@ -37,6 +37,7 @@ export const statusUpdate = createAsyncThunk('/meetingSchedules/statusUpdate', a
 export const getAcceptedStudent = createAsyncThunk('/meetingSchedules/getAcceptedStudent', async ({ mentorId }, { rejectWithValue }) => {
     try {
         const response = await axios.get(`/api/meetings/scheduled/${mentorId}`, { headers: { Authorization: localStorage.getItem('token') } })
+        console.log(response.data)
         return response.data
     } catch (err) {
         console.log(err)
@@ -77,17 +78,33 @@ export const getMeetings = createAsyncThunk('/meetingSchedules/getMeetings', asy
         return rejectWithValue(err.response.data.errors)
     }
 })
+
+export const getMenteeBookings = createAsyncThunk('/meetingSchedules/getMenteeBookings', async ({ menteeId }, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`/api/meetings/mentee/${menteeId}`, { headers: { Authorization: localStorage.getItem('token') } })
+        return response.data
+    } catch (err) {
+        console.log(err)
+        return rejectWithValue(err.response.data.errors)
+    }
+})
 const meetingScheduleSlice = createSlice({
     name: 'meetingSchedules',
     initialState: {
         data: [],
         acceptedData: [],
         meetingDates: [],
+        menteeBookings:[],
         serverError: null
     },
 
     extraReducers: (builder) => {
 
+
+        //request booking rejected
+        builder.addCase(requestBooking.rejected, (state, action) => {
+            state.serverError = action.payload
+        })
         // to get all student
         builder.addCase(getAllMyStudent.fulfilled, (state, action) => {
             state.data = action.payload
@@ -134,6 +151,10 @@ const meetingScheduleSlice = createSlice({
         builder.addCase(getMeetings.fulfilled, (state, action) => {
             state.meetingDates = action.payload
         });
+
+        builder.addCase(getMenteeBookings.fulfilled, (state, action) => {
+            state.menteeBookings = action.payload
+        })
     }
 })
 

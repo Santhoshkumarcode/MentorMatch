@@ -30,8 +30,7 @@ export default function MyStudents() {
 
     const [scheduleForm, setScheduleForm] = useState(false)
     const [dates, setDates] = useState([])
-    const [meetingId, setMeetingId] = useState(null)
-
+    const [meetingId, setMeetingId] = useState()
 
     // to get all student 
     useEffect(() => {
@@ -85,8 +84,8 @@ export default function MyStudents() {
         setDates([])
     }
     const events = meetingDates.map(ele => ({
-        title: ele.title.username,
-        date: ele.start,
+        title: ele?.title?.username,
+        date: ele?.start,
     }))
 
     return (
@@ -119,10 +118,10 @@ export default function MyStudents() {
                         {data &&
                             data.filter(ele => ele.status == 'pending').map((ele) => (
                                 <div className="border border-gray-300 rounded-lg shadow-md p-6 w-full max-w-md bg-white" key={ele._id}>
-                                    <p className="text-lg font-semibold text-gray-800">{ele.menteeId.username}</p>
-                                    <p className="text-lg font-semibold text-gray-800">{ele.menteeId.email}</p>
-                                    <p className="text-base text-gray-600">Plan: {ele.plan}</p>
-                                    <p className="text-base text-gray-600 mb-4">Mentorship Goal: {ele.mentorshipGoal}</p>
+                                    <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.username}</p>
+                                    <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.email}</p>
+                                    <p className="text-base text-gray-600">Plan: {ele?.plan}</p>
+                                    <p className="text-base text-gray-600 mb-4">Mentorship Goal: {ele?.mentorshipGoal}</p>
 
                                     <div className="flex gap-4">
                                         <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600" onClick={() => handleAccept(ele._id)}>
@@ -140,11 +139,11 @@ export default function MyStudents() {
                     <div className="flex space-x-10  justify-center">
                         {acceptedData && acceptedData.map((ele, i) => (
                             <div key={i} className="border border-gray-300 rounded-lg shadow-md p-6 w-full max-w-md bg-white">
-                                <p className="text-lg font-semibold text-gray-800">{ele.menteeId.username}</p>
-                                <p className="text-lg font-semibold text-gray-800">{ele.menteeId.email}</p>
-                                <p className="text-sm text-gray-600">{ele.plan}</p>
-                                <p className="text-sm text-gray-600">{ele.mentorshipGoal}</p>
-                                <p className="text-sm text-gray-600">Payment: {ele.paymentStatus}</p>
+                                <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.username}</p>
+                                <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.email}</p>
+                                <p className="text-sm text-gray-600">{ele?.plan}</p>
+                                <p className="text-sm text-gray-600">{ele?.mentorshipGoal}</p>
+                                <p className="text-sm text-gray-600">Payment: {ele?.paymentStatus}</p>
                                 <div className="flex justify-end space-x-3 mt-4">
                                     <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" onClick={() => { setScheduleForm(true); setMeetingId(ele._id) }}>Schedule</button>
                                     <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Message</button>
@@ -167,8 +166,7 @@ export default function MyStudents() {
                                         <DatePicker
                                             placeholder="Select Dates"
                                             multiple
-                                                value={dates}
-                                            highlighted={dates.map(date => new Date(date))}
+                                            value={dates}
                                             onChange={setDates}
                                             open={true}
                                         /><br />

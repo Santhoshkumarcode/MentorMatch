@@ -28,7 +28,6 @@ export default function MenteeProfilePage({ data }) {
     const [form, setForm] = useState(initialState)
 
     const id = data?.userId?._id
-    console.log(id)
 
     const dispatch = useDispatch()
 
@@ -44,7 +43,6 @@ export default function MenteeProfilePage({ data }) {
 
     const handleCreateSkill = (inputValue) => {
         
-
         const newSkill = { value: inputValue, label: inputValue }
         setSelectedSkills([...selectedSkills, newSkill]);
         setForm({ ...form, skills: [...form.skills, inputValue] });
@@ -87,10 +85,12 @@ export default function MenteeProfilePage({ data }) {
                 <img className="w-10 h-10 absolute right-6 top-71 cursor-pointer" src="/src/assets/a.png" onClick={() => { setShowForm(true) }} />
                 <div className="">
                     <div>
-                        {/* <img className="absolute top-50 left-10 w-50 h-50 rounded-full" src={data.profilPic} /> */}
+                        <img className="absolute top-50 left-10 w-50 h-50 rounded-full" src={data.profilPic} />
                         <p className="text-3xl font-semibold ps-10 pt-80">{data?.userId?.username}</p>
-                        <p className="text-xl ps-10">{data?.bio}</p>
                         <p className="text-xl ps-10">{data?.linkedIn}</p>
+                        <p className="text-xl ps-10">{data?.phoneNumber}</p>
+                        <p className="text-xl ps-10">{data?.skills.skill}</p>
+                        <p className="text-xl ps-10">{data?.education}</p>
                         <p className="text-xl ps-10">{data?.location}</p>
                     </div>
                 </div>

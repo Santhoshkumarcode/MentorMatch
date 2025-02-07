@@ -11,6 +11,7 @@ import AdminDashboard from "./pages/AdminDashboard"
 import MyStudents from "./pages/MyStudents"
 import MentorProfile from "./pages/MentorProfile"
 import ApplyForm from "./pages/ApplyForm"
+import MyBookings from "./pages/MyBookings"
 import MenteeDetail from "./pages/mentee-detail"
 
 export default function App() {
@@ -28,6 +29,8 @@ export default function App() {
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/mentee-detail" element={<MenteeDetail />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
+        
 
         <Route path="/my-student/" element={<MyStudents />} />
         <Route path="/mentor-profile/:id" element={<MentorProfile />} />

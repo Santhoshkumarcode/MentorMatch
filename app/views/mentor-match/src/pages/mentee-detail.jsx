@@ -25,6 +25,7 @@ export default function MenteeDetail() {
     const [clientErrors, setClientErrors] = useState(null)
     const errors = {}
 
+    console.log(data)
 
     useEffect(() => {
         dispatch(getAllSkills())

@@ -7,8 +7,10 @@ export default function ApplyForm() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
     const { mentorId, plan } = useParams()
     const { singleData } = useSelector((state) => state.mentors)
+    
 
     const [form, setForm] = useState({
         mentorshipGoal: '',
@@ -39,7 +41,7 @@ export default function ApplyForm() {
             setClientErrors(errors)
         } else {
             try {
-                console.log(form)
+
                 dispatch(requestBooking({ form, resetForm })).unwrap()
                 alert('Your application successfully submitted...')
                 navigate('/')

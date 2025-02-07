@@ -46,7 +46,6 @@ export const deleteMentor = createAsyncThunk('/mentors/deleteMentor', async ({ u
 export const mentorProfile = createAsyncThunk('/mentors/mentorProfile', async ({ id }, { rejectWithValue }) => {
     try {
         const response = await axios.get(`/api/mentors/profile/${id}`, { headers: { Authorization: localStorage.getItem('token') } })
-        console.log(response.data)
         return response.data
     } catch (err) {
         console.log(err)

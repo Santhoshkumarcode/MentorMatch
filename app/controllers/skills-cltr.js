@@ -17,7 +17,6 @@ skillsCltr.getAll = async (req, res) => {
     try {
         const skill = await Skills.find()
         return res.status(200).json(skill)
-
     } catch (err) {
         console.log(err)
         return res.status(500).json(err)
