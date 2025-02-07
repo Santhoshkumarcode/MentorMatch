@@ -22,7 +22,7 @@ const menteeSchema = new Schema({
     linkedIn:String,
     skills: [{
         type: mongoose.Types.ObjectId,
-        ref: "skills"
+        ref: "Skills"
     }],
 }, { timestamps: true })
 

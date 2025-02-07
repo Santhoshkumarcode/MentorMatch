@@ -13,8 +13,10 @@ import MentorProfile from "./pages/MentorProfile"
 import ApplyForm from "./pages/ApplyForm"
 import MyBookings from "./pages/MyBookings"
 import MenteeDetail from "./pages/mentee-detail"
+import { useSelector } from "react-redux"
 
 export default function App() {
+
   return (
     <div>
       <Navbar />
@@ -30,7 +32,7 @@ export default function App() {
         <Route path="/mentee-detail" element={<MenteeDetail />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/my-bookings" element={<MyBookings />} />
-        
+
 
         <Route path="/my-student/" element={<MyStudents />} />
         <Route path="/mentor-profile/:id" element={<MentorProfile />} />

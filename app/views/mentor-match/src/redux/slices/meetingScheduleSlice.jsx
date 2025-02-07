@@ -37,7 +37,6 @@ export const statusUpdate = createAsyncThunk('/meetingSchedules/statusUpdate', a
 export const getAcceptedStudent = createAsyncThunk('/meetingSchedules/getAcceptedStudent', async ({ mentorId }, { rejectWithValue }) => {
     try {
         const response = await axios.get(`/api/meetings/scheduled/${mentorId}`, { headers: { Authorization: localStorage.getItem('token') } })
-        console.log(response.data)
         return response.data
     } catch (err) {
         console.log(err)

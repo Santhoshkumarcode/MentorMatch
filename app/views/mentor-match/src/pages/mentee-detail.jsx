@@ -25,8 +25,6 @@ export default function MenteeDetail() {
     const [clientErrors, setClientErrors] = useState(null)
     const errors = {}
 
-    console.log(data)
-
     useEffect(() => {
         dispatch(getAllSkills())
     }, [dispatch])
@@ -49,11 +47,18 @@ export default function MenteeDetail() {
         setForm({ ...form, skills: selectedOption.map(ele => ele.value) });
     }
 
-    const handleCreateSkill = (inputValue) => {
-        const newSkill = { value: inputValue, label: inputValue }
-        setSelectedSkills([...selectedSkills, newSkill]);
-        setForm({ ...form, skills: [...form.skills, inputValue] });
-        dispatch(addNewSkill({ skill: inputValue }));
+    const handleCreateSkill = async(inputValue) => {
+        try {
+            const response = await dispatch(addNewSkill({ skill: inputValue })).unwrap();
+    
+            const newSkill = { value: response._id, label: response.skill };
+    
+            setSelectedSkills([...selectedSkills, newSkill]);
+            setForm({ ...form, skills: [...form.skills, response._id] });
+    
+        } catch (err) {
+            console.error("Error creating skill:", err);
+        }
     };
 
     const handleSubmit = async (e) => {

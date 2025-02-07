@@ -16,27 +16,27 @@ menteeCltr.updateMentee = async (req, res) => {
                 else resolve();
             });
         });
-    
+
     try {
-         await multerUpload();
-        
-                let imageUrl = null;
-        
-                if (req.file) {
-                    const result = await cloudinary.uploader.upload(req.file.path, {
-                        folder: "mentee_profiles/",
-                        use_filename: true,
-                        unique_filename: false,
-                    });
-        
-                    imageUrl = result.secure_url;
-                    fs.unlinkSync(req.file.path);
-                }
-                const updatedBody = {
-                    ...body,
-                    ...(imageUrl && { profilePic: imageUrl }),
+        await multerUpload();
+
+        let imageUrl = null;
+
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "mentee_profiles/",
+                use_filename: true,
+                unique_filename: false,
+            });
+
+            imageUrl = result.secure_url;
+            fs.unlinkSync(req.file.path);
+        }
+        const updatedBody = {
+            ...body,
+            ...(imageUrl && { profilePic: imageUrl }),
         };
-        
+
         const mentee = await Mentee.findOneAndUpdate({ userId: id }, updatedBody, { new: true, runValidators: true })
         if (!mentee) {
             return res.status(404).json({ error: "Record not found" });
@@ -51,10 +51,10 @@ menteeCltr.updateMentee = async (req, res) => {
 menteeCltr.getProfile = async (req, res) => {
     const id = req.params.id
     try {
-        const mentee = await Mentee.findOne({userId:id}).populate('userId')
+        const mentee = await Mentee.findOne({ userId: id }).populate('userId')
         if (!mentee) {
             return res.status(404).json('Mentor not found')
-        }   
+        }
         return res.json(mentee)
     } catch (err) {
         console.log(err)
