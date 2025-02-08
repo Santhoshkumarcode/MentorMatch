@@ -21,6 +21,7 @@ const meetingScheduleSchema = new Schema({
     },
     video: String,
     meetingLink: String,
+    transcript: String,
     summary: String,
     mentorshipGoal: String,
     paymentStatus: {

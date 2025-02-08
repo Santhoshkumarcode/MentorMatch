@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import JitsiMeet from "../components/VideoCall"
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 export default function MeetingPage() {
     const { mentorId, menteeId } = useParams();
@@ -11,7 +12,6 @@ export default function MeetingPage() {
     }
 
     const roomName = `MentorMentee_${mentorId}_${menteeId}`
-    console.log("Joining Room:", roomName);
 
 
     return (

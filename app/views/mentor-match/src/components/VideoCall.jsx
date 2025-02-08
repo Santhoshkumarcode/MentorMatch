@@ -16,7 +16,13 @@ const JitsiMeet = ({ roomName, configOverwrite, userInfo }) => {
             roomName: roomName,
             parentNode: jitsiContainer.current,
             userInfo: userInfo,
-            configOverwrite: configOverwrite,
+            configOverwrite: {
+                ...configOverwrite,
+                SHOW_PROMOTIONAL_CLOSE_PAGE: false, // Disable Jitsi promotion page
+            },
+            interfaceConfigOverwrite: {
+                SHOW_PROMOTIONAL_CLOSE_PAGE: false, // Also disable from interface config
+            },
         };
 
         const api = new window.JitsiMeetExternalAPI(domain, options);
@@ -25,8 +31,8 @@ const JitsiMeet = ({ roomName, configOverwrite, userInfo }) => {
             navigate("/");
         });
 
-        return () => api.dispose(); 
-    }, [roomName, configOverwrite, userInfo,navigate]);
+        return () => api.dispose();
+    }, [roomName, configOverwrite, userInfo, navigate]);
 
     return <div ref={jitsiContainer} style={{ width: "100%", height: "500px" }} />;
 };

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getAcceptedStudent, getAllMyStudent, getMeetings, rejectStatus, statusUpdate, updateMeeting } from "../redux/slices/meetingScheduleSlice"
 import DatePicker from "react-multi-date-picker";
-import JitsiMeet from "../components/VideoCall";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+
 import { useNavigate } from "react-router-dom";
 
 
@@ -34,8 +34,6 @@ export default function MyStudents() {
     const [scheduleForm, setScheduleForm] = useState(false)
     const [dates, setDates] = useState([])
     const [meetingId, setMeetingId] = useState()
-
-    const [startMeeting, setStartMeeting] = useState(false)
 
     // to get all student 
     useEffect(() => {
@@ -98,7 +96,7 @@ export default function MyStudents() {
         }
         navigate(`/meeting-page/${mentorId}/${menteeId}`);
     };
-    
+
     return (
         <div>
             <div className="flex justify-evenly mt-4 mb-10">
