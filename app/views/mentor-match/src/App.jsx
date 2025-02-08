@@ -14,13 +14,14 @@ import ApplyForm from "./pages/ApplyForm"
 import MyBookings from "./pages/MyBookings"
 import MenteeDetail from "./pages/mentee-detail"
 import { useSelector } from "react-redux"
+import MeetingPage from "./pages/MeetingPage"
+import Footer from "./components/footer"
 
 export default function App() {
 
   return (
     <div>
       <Navbar />
-
 
       <Routes>
         <Route path="/" element={<HeroSection />} />
@@ -32,12 +33,15 @@ export default function App() {
         <Route path="/mentee-detail" element={<MenteeDetail />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/my-bookings" element={<MyBookings />} />
-
-
+        <Route path="/meeting-page/:mentorId/:menteeId" element={<MeetingPage />} />
         <Route path="/my-student/" element={<MyStudents />} />
         <Route path="/mentor-profile/:id" element={<MentorProfile />} />
         <Route path="/apply-form/:mentorId/:plan" element={<ApplyForm />} />
       </Routes>
+
+      
+      {/* <Footer /> */}
+
     </div>
   )
 }

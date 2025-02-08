@@ -2,9 +2,11 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getAcceptedStudent, getAllMyStudent, getMeetings, rejectStatus, statusUpdate, updateMeeting } from "../redux/slices/meetingScheduleSlice"
 import DatePicker from "react-multi-date-picker";
+import JitsiMeet from "../components/VideoCall";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import { useNavigate } from "react-router-dom";
 
 
 const renderEventContent = (eventInfo) => {
@@ -21,6 +23,7 @@ const renderEventContent = (eventInfo) => {
 export default function MyStudents() {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const mentorId = useSelector((state) => state.users?.data?._id)
 
@@ -31,6 +34,8 @@ export default function MyStudents() {
     const [scheduleForm, setScheduleForm] = useState(false)
     const [dates, setDates] = useState([])
     const [meetingId, setMeetingId] = useState()
+
+    const [startMeeting, setStartMeeting] = useState(false)
 
     // to get all student 
     useEffect(() => {
@@ -86,6 +91,14 @@ export default function MyStudents() {
         date: ele?.start,
     }))
 
+    const handleJoin = (mentorId, menteeId) => {
+        if (!mentorId || !menteeId) {
+            alert("Meeting details not found!");
+            return;
+        }
+        navigate(`/meeting-page/${mentorId}/${menteeId}`);
+    };
+    
     return (
         <div>
             <div className="flex justify-evenly mt-4 mb-10">
@@ -146,7 +159,8 @@ export default function MyStudents() {
                                 <div className="flex justify-end space-x-3 mt-4">
                                     <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" onClick={() => { setScheduleForm(true); setMeetingId(ele._id) }}>Schedule</button>
                                     <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Message</button>
-                                    <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Meet</button>
+                                    <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}>Meet</button>
+
                                 </div>
                             </div>
                         ))}

@@ -44,7 +44,8 @@ export default function Navbar() {
 
                 <div className="flex">
                     <ul className="flex space-x-8 p-4 justify-center">
-                        {data.role == 'mentee' && (
+                    <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/">Home</Link></li>
+                        {data.role == 'mentee' && token && (
                             <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/allMentor">All Mentors</Link></li>
                         )}
 

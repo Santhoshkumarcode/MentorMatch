@@ -5,8 +5,7 @@ export default function HeroSection() {
                 <div className="mt-28 ps-10">
                     <p className="text-lg pb-5">Learn a new skill, launch a project, land your dream career.</p>
                     <h1 className=" font-sans font-semibold text-5xl text-gray-800 pb-10">1-on-1 mentorship<br /> with industry experts!</h1>
-                    <input className=" border-2 border-gray-300 rounded-md w-full h-14 p-2 text-xl" type="search" placeholder="Search by skill" />
-                    <button className="relative bottom-12 left-96 border py-1.5 px-5 rounded-md bg-slate-300">search</button>
+                    <input className=" border border-gray-500 rounded-md w-full h-14 p-2 text-xl" type="search" placeholder="Search by skill" />
                     {/* <img src="\src\assets\help3.svg" className="w-5/12 ml-20" /> */}
 
                 </div>
