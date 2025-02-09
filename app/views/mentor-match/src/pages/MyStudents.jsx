@@ -6,7 +6,7 @@ import DatePicker from "react-multi-date-picker";
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 const renderEventContent = (eventInfo) => {
@@ -25,7 +25,7 @@ export default function MyStudents() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const mentorId = useSelector((state) => state.users?.data?._id)
+    const { mentorId } = useParams()
 
     const { data, acceptedData, meetingDates } = useSelector((state) => state.meetingSchedules);
 
@@ -34,6 +34,7 @@ export default function MyStudents() {
     const [scheduleForm, setScheduleForm] = useState(false)
     const [dates, setDates] = useState([])
     const [meetingId, setMeetingId] = useState()
+
 
     // to get all student 
     useEffect(() => {
@@ -99,75 +100,104 @@ export default function MyStudents() {
 
     return (
         <div>
-            <div className="flex justify-evenly mt-4 mb-10">
-                <p className="text-2xl text-center my-4" onClick={() => { setCurrentPage('application') }}>Applications</p>
-                <p className="text-2xl text-center my-4" onClick={() => { setCurrentPage('students') }}>Students</p>
-                <p className="text-2xl text-center my-4" onClick={() => { setCurrentPage('mySchedules') }}>My Schedules</p>
-            </div>
 
-
-            {/* <div className="flex justify-evenly my-4">
+            <div className="flex justify-center space-x-8 border-b border-gray-300 mb-10">
                 {["application", "students", "mySchedules"].map((page) => (
                     <p
                         key={page}
-                        className={`text-2xl text-center my-4 px-4 py-2 cursor-pointer rounded-md
-                ${currentPage === page ? "bg-blue-500 text-white shadow-lg" : "text-gray-700 hover:bg-gray-200"}
-            `}
+                        className={`text-lg font-medium px-4 py-4 cursor-pointer
+                ${currentPage === page
+                                ? "text-blue-600 font-semibold border-b-2 border-blue-600"
+                                : "text-gray-600 hover:text-blue-500 hover:border-b-2 hover:border-gray-400"}`}
                         onClick={() => setCurrentPage(page)}
                     >
                         {page === "application" ? "Applications" : page === "students" ? "Students" : "My Schedules"}
                     </p>
                 ))}
-            </div> */}
+            </div>
+
 
 
             <div>
                 {currentPage === "application" ? (
-                    <div className="flex space-x-10 justify-center">
+                    <div className="flex justify-center gap-6 p-6">
                         {data &&
-                            data.filter(ele => ele.status == 'pending').map((ele) => (
-                                <div className="border border-gray-300 rounded-lg shadow-md p-6 w-full max-w-md bg-white" key={ele._id}>
-                                    <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.username}</p>
-                                    <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.email}</p>
-                                    <p className="text-base text-gray-600">Plan: {ele?.plan}</p>
-                                    <p className="text-base text-gray-600 mb-4">Mentorship Goal: {ele?.mentorshipGoal}</p>
+                            data.filter(ele => ele.status === 'pending').map((ele) => (
+                                <div className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-sm bg-white flex flex-col text-left" key={ele._id}>
 
-                                    <div className="flex gap-4">
-                                        <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600" onClick={() => handleAccept(ele._id)}>
+                                    <p className="text-2xl font-bold text-gray-900">{ele?.menteeId?.username}</p>
+                                    <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
+
+                                    <div className="mt-4 space-y-2 text-gray-700 text-sm">
+                                        <p><span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}</p>
+                                        <p>
+                                            <span className="font-semibold">LinkedIn:</span>
+                                            <a href={ele?.menteeDetails?.linkedIn} target="_blank" className="text-blue-600 hover:underline ml-1">Profile</a>
+                                        </p>
+                                        <p><span className="font-semibold">Plan:</span> {ele?.plan}</p>
+                                        <p><span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}</p>
+                                    </div>
+
+                                    <div className="mt-5 flex justify-between">
+                                        <button className="bg-green-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-green-600 transition">
                                             Accept
                                         </button>
-                                        <button className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600" onClick={() => handleReject(ele._id)}>
+                                        <button className="bg-red-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-red-600 transition">
                                             Reject
                                         </button>
                                     </div>
                                 </div>
                             ))}
                     </div>
+
                 ) : currentPage === "students" ? (
 
-                    <div className="flex space-x-10  justify-center">
-                        {acceptedData && acceptedData.map((ele, i) => (
-                            <div key={i} className="border border-gray-300 rounded-lg shadow-md p-6 w-full max-w-md bg-white">
-                                <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.username}</p>
-                                <p className="text-lg font-semibold text-gray-800">{ele?.menteeId?.email}</p>
-                                <p className="text-sm text-gray-600">{ele?.plan}</p>
-                                <p className="text-sm text-gray-600">{ele?.mentorshipGoal}</p>
-                                <p className="text-sm text-gray-600">Payment: {ele?.paymentStatus}</p>
-                                <p></p>
-                                <div className="flex justify-end space-x-3 mt-4">
-                                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" onClick={() => { setScheduleForm(true); setMeetingId(ele._id) }}>Schedule</button>
-                                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Message</button>
-                                    <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}>Meet</button>
+                    <div className="flex flex-wrap justify-center gap-6 p-6">
+                        {acceptedData &&
+                            acceptedData.map((ele, i) => (
+                                <div key={i} className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-md bg-white flex flex-col text-left">
 
+                                    <p className="text-2xl font-bold text-gray-900">{ele?.menteeId?.username}</p>
+                                    <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
+
+                                    <div className="mt-4 space-y-2 text-gray-700 text-sm">
+                                        <p><span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}</p>
+                                        <p>
+                                            <span className="font-semibold">LinkedIn:</span>
+                                            <a href={ele?.menteeDetails?.linkedIn} target="_blank" className="text-blue-600 hover:underline ml-1">Profile</a>
+                                        </p>
+                                        <p><span className="font-semibold">Plan:</span> {ele?.plan}</p>
+                                        <p><span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}</p>
+                                        <p><span className="font-semibold">Payment Status:</span> {ele?.paymentStatus}</p>
+
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                            {ele?.menteeDetails?.skills?.map((skill, index) => (
+                                                <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">
+                                                    {skill}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-5 flex justify-center space-x-4">
+                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition" onClick={() => { setScheduleForm(true); setMeetingId(ele._id) }}>
+                                            Schedule
+                                        </button>
+                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition">
+                                            Message
+                                        </button>
+                                        <button className="bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition" onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}>
+                                            Meet
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
 
                         {scheduleForm && (
-                            <div className="fixed inset-0 flex justify-center items-center">
+                            <div className="fixed inset-0 flex justify-center items-center z-50">
                                 <div className="absolute inset-0 bg-black opacity-50"></div>
 
-                                <div className="bg-white p-6 rounded-lg relative z-10">
+                                <div className="bg-white p-6 rounded-lg relative z-10 shadow-xl">
                                     <button
                                         onClick={() => setScheduleForm(false)}
                                         className="absolute top-2 right-3 text-gray-600 hover:text-gray-800">
@@ -181,12 +211,15 @@ export default function MyStudents() {
                                             onChange={setDates}
                                             open={true}
                                         /><br />
-                                        <button className=" p-2 mt-2 ms-13 rounded bg-blue-600 text-white hover:bg-blue-700" onClick={handleScheduleSubmit}>Schedule</button>
+                                        <button className="p-2 mt-2 w-full rounded bg-blue-600 text-white hover:bg-blue-700" onClick={handleScheduleSubmit}>
+                                            Schedule
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         )}
                     </div>
+
 
 
                 ) : currentPage === "mySchedules" ? (

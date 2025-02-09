@@ -5,27 +5,28 @@ import MentorProfilePage from "./MentorProfilePage"
 import MenteeProfilePage from "./MenteeProfilePage"
 import { mentorProfile } from "../redux/slices/mentorSlice"
 import { menteeProfile } from "../redux/slices/menteeSlice"
+import { useParams } from "react-router-dom"
 
 export default function Profile() {
 
+    const { id, role } = useParams()
     const dispatch = useDispatch()
     const { data } = useSelector((state) => state.users)
     const { singleData } = useSelector((state) => state.mentors)
     const { data: menteeData } = useSelector((state) => state.mentees)
 
-    const id = data?._id
-    const role = data?.role
+    
 
     useEffect(() => {
-        if (!id || !role) return 
-        
+        console.log(role, id)
         if (role === 'mentor') {
             dispatch(mentorProfile({ id }))
-        } else if (role === 'mentee') {
+        }
+        if (role === 'mentee') {
             dispatch(menteeProfile({ id }));
         }
 
-    }, [dispatch, id,data?.role])
+    }, [dispatch, id, role])
 
     if (!data) {
         return <p>loading</p>

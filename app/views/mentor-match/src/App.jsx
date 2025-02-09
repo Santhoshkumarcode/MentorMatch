@@ -27,19 +27,22 @@ export default function App() {
         <Route path="/" element={<HeroSection />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
         <Route path="/allMentor" element={<AllMentor />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/mentee-detail" element={<MenteeDetail />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
+
+        <Route path="/profile/:id/:role" element={<Profile />} />
+
+        <Route path="/my-bookings/:menteeId" element={<MyBookings />} />
         <Route path="/meeting-page/:mentorId/:menteeId" element={<MeetingPage />} />
-        <Route path="/my-student/" element={<MyStudents />} />
+        <Route path="/my-student/:mentorId" element={<MyStudents />} />
         <Route path="/mentor-profile/:id" element={<MentorProfile />} />
         <Route path="/apply-form/:mentorId/:plan" element={<ApplyForm />} />
       </Routes>
 
-      
+
       {/* <Footer /> */}
 
     </div>

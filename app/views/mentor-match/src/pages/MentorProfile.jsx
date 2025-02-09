@@ -29,7 +29,7 @@ export default function MentorProfile() {
     return (
         <div>
             <div className="bg-cyan-900 w-full h-60">
-                <img className="w-10 h-10 absolute left-80 top-75" src="/src/assets/linkedin.png" onClick={singleData.linkedIn}/>
+                {/* <img className="w-10 h-10 absolute left-80 top-75" src="/src/assets/linkedin.png" onClick={singleData.linkedIn}/> */}
                 <img className="border-4 border-white absolute top-50 left-10 w-50 h-50 rounded-full" src={ singleData.profilePic} />
                 <div className="grid grid-cols-2">
                     <div>
@@ -47,8 +47,6 @@ export default function MentorProfile() {
                             <p className="hover:text-blue-600 hover:text-2xl cursor-pointer" onClick={() => setPlan('basic')}>Basic</p>
                             <p className="hover:text-blue-600 hover:text-2xl cursor-pointer" onClick={() => setPlan('pro')}>Pro</p>
 
-                            {/* <p className="hover:bg-cyan-900 px-4 rounded-lg hover:text-white py-1 cursor-pointer" onClick={() => setPlan('basic')}>Basic</p>
-                            <p className="hover:bg-cyan-900 px-4 rounded-lg hover:text-white py-1 cursor-pointer" onClick={() => setPlan('pro')}>Pro</p> */}
 
                         </div>
                         <hr />

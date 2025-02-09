@@ -1,4 +1,7 @@
 import Meeting from "../models/meeting-schedule-model.js";
+import Mentor from "../models/mentor-model.js"
+import Mentee from "../models/mentee-model.js"
+
 import _ from "lodash"
 
 const meeting = {}
@@ -28,7 +31,18 @@ meeting.respondToRequest = async (req, res) => {
         if (meetings.length === 0) {
             return res.status(404).json("Meeting not found for this mentor")
         }
-        return res.status(200).json(meetings)
+
+        const populatedMeetings = await Promise.all(
+            meetings.map(async (meeting) => {
+                const mentee = await Mentee.findOne({ userId: meeting.menteeId._id });
+                return {
+                    ...meeting.toObject(),
+                    menteeDetails: mentee || null
+                };
+            })
+        );
+
+        return res.status(200).json(populatedMeetings)
     } catch (err) {
         console.log(err)
         return res.status(500).json(err)
@@ -42,10 +56,24 @@ meeting.getacceptedStudents = async (req, res) => {
             .find({ mentorId: mentorId, status: "scheduled" })
             .populate('mentorId')
             .populate('menteeId')
+
+
         if (meetings.length === 0) {
             return res.status(404).json("No scheduled for you")
         }
-        return res.status(200).json(meetings)
+
+        const populatedMeetings = await Promise.all(
+            meetings.map(async (meeting) => {
+                const mentee = await Mentee.findOne({ userId: meeting.menteeId._id });
+                return {
+                    ...meeting.toObject(),
+                    menteeDetails: mentee || null
+                };
+            })
+        );
+
+
+        return res.status(200).json(populatedMeetings)
     } catch (err) {
         console.log(err)
         return res.status(500).json(err)
@@ -126,7 +154,7 @@ meeting.deleteMeeting = async (req, res) => {
 meeting.getBookingsOfMentee = async (req, res) => {
     const id = req.params.menteeId
     try {
-        const meeting = await Meeting.find({ menteeId: id ,status: "scheduled" }).populate('mentorId').populate('menteeId')
+        const meeting = await Meeting.find({ menteeId: id, status: "scheduled" }).populate('mentorId').populate('menteeId')
         if (meeting.length === 0) {
             return res.status(404).json("No booking available")
         }
@@ -150,7 +178,7 @@ meeting.getMeetingDates = async (req, res) => {
 
         res.status(200).json(events);
     } catch (error) {
-        console.lo(error)
+        console.log(error)
         res.status(500).json(error);
     }
 }

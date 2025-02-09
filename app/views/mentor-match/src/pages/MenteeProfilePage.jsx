@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import CreatableSelect from "react-select/creatable";
 import { getAllSkills, addNewSkill } from "../redux/slices/skillsSlice"
 import { menteeUpdate } from "../redux/slices/menteeSlice"
+import { useParams } from "react-router-dom";
 
 const initialState = {
     profilePic: '',
@@ -27,10 +28,13 @@ export default function MenteeProfilePage({ data }) {
     const [selectedSkills, setSelectedSkills] = useState([])
     const [form, setForm] = useState(initialState)
 
-    const id = data?.userId?._id
+    const {id} = useParams()
 
     const dispatch = useDispatch()
 
+    if (!data) {
+        return <p>loading</p>
+    }
 
     useEffect(() => {
         dispatch(getAllSkills())
@@ -42,7 +46,7 @@ export default function MenteeProfilePage({ data }) {
     }
 
     const handleCreateSkill = (inputValue) => {
-        
+
         const newSkill = { value: inputValue, label: inputValue }
         setSelectedSkills([...selectedSkills, newSkill]);
         setForm({ ...form, skills: [...form.skills, inputValue] });
@@ -89,14 +93,13 @@ export default function MenteeProfilePage({ data }) {
                         <p className="text-3xl font-semibold ps-10 pt-80">{data?.userId?.username}</p>
                         <p className="text-xl ps-10">{data?.linkedIn}</p>
                         <p className="text-xl ps-10">{data?.phoneNumber}</p>
-                        <p className="text-xl ps-10">{data?.skills.skill}</p>
+                        <p className="text-xl ps-10">{data?.skills?.skill}</p>
                         <p className="text-xl ps-10">{data?.education}</p>
                         <p className="text-xl ps-10">{data?.location}</p>
                     </div>
                 </div>
             </div>
-
-
+        
             {showForm && (
                 <div className="fixed inset-0 flex justify-center items-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg relative">
@@ -154,7 +157,7 @@ export default function MenteeProfilePage({ data }) {
                                 options={skills.map(ele => ({ value: ele._id, label: ele.skill }))}
                                 value={selectedSkills}
                                 onChange={handleChange}
-                                onCreateOption={handleCreateSkill} 
+                                onCreateOption={handleCreateSkill}
                                 isClearable={true}
                                 placeholder="Select or add skills"
                             />

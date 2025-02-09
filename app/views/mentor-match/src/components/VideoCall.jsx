@@ -18,16 +18,17 @@ const JitsiMeet = ({ roomName, configOverwrite, userInfo }) => {
             userInfo: userInfo,
             configOverwrite: {
                 ...configOverwrite,
-                SHOW_PROMOTIONAL_CLOSE_PAGE: false, // Disable Jitsi promotion page
+                SHOW_PROMOTIONAL_CLOSE_PAGE: false,
             },
             interfaceConfigOverwrite: {
-                SHOW_PROMOTIONAL_CLOSE_PAGE: false, // Also disable from interface config
+                SHOW_PROMOTIONAL_CLOSE_PAGE: false, 
             },
         };
 
         const api = new window.JitsiMeetExternalAPI(domain, options);
 
         api.addEventListener("readyToClose", () => {
+            api.dispose()
             navigate("/");
         });
 
