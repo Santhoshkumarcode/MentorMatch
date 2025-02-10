@@ -45,6 +45,7 @@ export default function ApplyForm() {
                 dispatch(requestBooking({ form, resetForm })).unwrap()
                 alert('Your application successfully submitted...')
                 navigate('/')
+                
             } catch (err) {
                 console.log(err)
             }

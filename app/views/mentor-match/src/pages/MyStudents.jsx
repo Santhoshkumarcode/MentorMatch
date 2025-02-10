@@ -5,9 +5,7 @@ import DatePicker from "react-multi-date-picker";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
-
 import { useNavigate, useParams } from "react-router-dom";
-
 
 const renderEventContent = (eventInfo) => {
     return (
@@ -18,23 +16,18 @@ const renderEventContent = (eventInfo) => {
     );
 };
 
-
-
 export default function MyStudents() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const { mentorId } = useParams()
-
     const { data, acceptedData, meetingDates } = useSelector((state) => state.meetingSchedules);
-
     const [currentPage, setCurrentPage] = useState('application')
-
     const [scheduleForm, setScheduleForm] = useState(false)
     const [dates, setDates] = useState([])
+    const [chatBox, setChatBox] = useState(false)
     const [meetingId, setMeetingId] = useState()
-
 
     // to get all student 
     useEffect(() => {
@@ -71,7 +64,6 @@ export default function MyStudents() {
         }
     }
 
-
     const handleScheduleSubmit = () => {
         if (!meetingId || dates.length === 0) {
             alert("Please select dates before submitting.");
@@ -98,6 +90,10 @@ export default function MyStudents() {
         navigate(`/meeting-page/${mentorId}/${menteeId}`);
     };
 
+    const handleChat = (mentorId, menteeId) => {
+        setChatBox(true)
+    }
+
     return (
         <div>
 
@@ -115,8 +111,6 @@ export default function MyStudents() {
                     </p>
                 ))}
             </div>
-
-
 
             <div>
                 {currentPage === "application" ? (
@@ -151,16 +145,15 @@ export default function MyStudents() {
                     </div>
 
                 ) : currentPage === "students" ? (
-
                     <div className="flex flex-wrap justify-center gap-6 p-6">
                         {acceptedData &&
                             acceptedData.map((ele, i) => (
                                 <div key={i} className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-md bg-white flex flex-col text-left">
-
+                                    <img src={ele.profilePic} />
                                     <p className="text-2xl font-bold text-gray-900">{ele?.menteeId?.username}</p>
                                     <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
 
-                                    <div className="mt-4 space-y-2 text-gray-700 text-sm">
+                                    <div className="mt-4 space-y-2 text-gray-700 text-md">
                                         <p><span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}</p>
                                         <p>
                                             <span className="font-semibold">LinkedIn:</span>
@@ -172,8 +165,8 @@ export default function MyStudents() {
 
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             {ele?.menteeDetails?.skills?.map((skill, index) => (
-                                                <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">
-                                                    {skill}
+                                                <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-md">
+                                                    {skill.skill}
                                                 </span>
                                             ))}
                                         </div>
@@ -183,8 +176,8 @@ export default function MyStudents() {
                                         <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition" onClick={() => { setScheduleForm(true); setMeetingId(ele._id) }}>
                                             Schedule
                                         </button>
-                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition">
-                                            Message
+                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition" onClick={() => handleChat(ele?.mentorId?._id, ele?.menteeId?._id)}>
+                                            Chat
                                         </button>
                                         <button className="bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition" onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}>
                                             Meet
@@ -192,7 +185,6 @@ export default function MyStudents() {
                                     </div>
                                 </div>
                             ))}
-
                         {scheduleForm && (
                             <div className="fixed inset-0 flex justify-center items-center z-50">
                                 <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -218,10 +210,47 @@ export default function MyStudents() {
                                 </div>
                             </div>
                         )}
+                        {chatBox && (
+                            <div>
+                                <div className="fixed inset-0 flex justify-center items-center z-50">
+                                    <div className="absolute inset-0 bg-black opacity-50"></div>
+
+                                    <div className="bg-white p-6 rounded-lg relative z-10 shadow-xl w-96 h-80">
+                                        <button
+                                            onClick={() => setChatBox(false)}
+                                            className="absolute top-2 right-3 text-gray-600 hover:text-gray-800">
+                                            ✖
+                                        </button>
+                                        <div className="flex flex-col h-full">
+                                            <div className="flex-1 overflow-y-auto mb-4 space-y-3">
+                                                <div className="flex justify-start">
+                                                    <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs">
+                                                        <p>Hello, how can I help you today?</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex justify-end">
+                                                    <div className="bg-green-500 text-white p-2 rounded-lg max-w-xs">
+                                                        <p>I need assistance with my project.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center space-x-2">
+                                                <input
+                                                    type="text"
+                                                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
+                                                    placeholder="Type a message"
+                                                />
+                                                <button className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                                                    send
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
-
-
-
                 ) : currentPage === "mySchedules" ? (
                     <div className=" w-full p-4 border border-gray-300 rounded-lg">
                         <FullCalendar
@@ -235,7 +264,6 @@ export default function MyStudents() {
                     </div>
                 ) : null}
             </div>
-
         </div>
     )
 }

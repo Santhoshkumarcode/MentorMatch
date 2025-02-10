@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { getMenteeBookings } from "../redux/slices/meetingScheduleSlice"
 import { useNavigate, useParams } from "react-router-dom"
 
-export default function () {
+export default function MyBookings() {
 
     const { menteeBookings } = useSelector((state) => state?.meetingSchedules)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-
+    const [chatBox, setChatBox] = useState(false)
     const [currentPage, setCurrentPage] = useState('myBookings')
     const { menteeId } = useParams()
 
@@ -24,6 +24,10 @@ export default function () {
             return;
         }
         navigate(`/meeting-page/${mentorId}/${menteeId}`)
+    }
+
+    const handleChat = (mentorId, menteeId) => {
+        setChatBox(true)
     }
 
     return (
@@ -74,8 +78,9 @@ export default function () {
 
                                             {ele.paymentStatus === 'paid' && (
                                                 <div className="flex space-x-3">
-                                                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition">
-                                                        Message
+                                                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
+                                                        onClick={() => handleChat(ele?.mentorId?._id, ele?.menteeId?._id)}>
+                                                        Chat
                                                     </button>
                                                     <button className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
                                                         onClick={() => handleJoin(ele?.mentorId?._id, menteeId)}>
@@ -88,6 +93,8 @@ export default function () {
                                 ))}
                         </div>
 
+
+
                     ) : (
                         <div>
                             meeting summary
@@ -95,6 +102,46 @@ export default function () {
                     )}
 
                 </div>
+                {chatBox && (
+                    <div>
+                        <div className="fixed inset-0 flex justify-center items-center z-50">
+                            <div className="absolute inset-0 bg-black opacity-50"></div>
+
+                            <div className="bg-white p-6 rounded-lg relative z-10 shadow-xl w-96 h-80">
+                                <button
+                                    onClick={() => setChatBox(false)}
+                                    className="absolute top-2 right-3 text-gray-600 hover:text-gray-800">
+                                    ✖
+                                </button>
+                                <div className="flex flex-col h-full">
+                                    <div className="flex-1 overflow-y-auto mb-4 space-y-3">
+                                        <div className="flex justify-start">
+                                            <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs">
+                                                <p>Hello, how can I help you today?</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <div className="bg-green-500 text-white p-2 rounded-lg max-w-xs">
+                                                <p>I need assistance with my project.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="text"
+                                            className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
+                                            placeholder="Type a message"
+                                        />
+                                        <button className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                                            send
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

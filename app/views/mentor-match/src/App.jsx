@@ -16,11 +16,12 @@ import MenteeDetail from "./pages/mentee-detail"
 import { useSelector } from "react-redux"
 import MeetingPage from "./pages/MeetingPage"
 import Footer from "./components/footer"
+import Chat from "./pages/Chat"
 
 export default function App() {
 
   return (
-    <div>
+    <div className="bg-gray-50">
       <Navbar />
 
       <Routes>
@@ -33,8 +34,8 @@ export default function App() {
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/mentee-detail" element={<MenteeDetail />} />
 
+        <Route path="/chat/:mentorId/:menteeId" element={<Chat />} />
         <Route path="/profile/:id/:role" element={<Profile />} />
-
         <Route path="/my-bookings/:menteeId" element={<MyBookings />} />
         <Route path="/meeting-page/:mentorId/:menteeId" element={<MeetingPage />} />
         <Route path="/my-student/:mentorId" element={<MyStudents />} />

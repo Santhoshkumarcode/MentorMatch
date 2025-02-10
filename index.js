@@ -1,6 +1,8 @@
 import express from "express"
 import configDb from "./config/db.js"
 import dotenv from "dotenv"
+import { Server } from "socket.io"
+import http from "http"
 import cors from "cors"
 
 import userRoutes from "./app/routes/user-routes.js"
@@ -10,10 +12,34 @@ import menteeRoutes from "./app/routes/mentee-routes.js"
 import reviewRoutes from "./app/routes/review-routes.js"
 import meetingRoutes from "./app/routes/meetingSchedule-routes.js"
 
-const app = express()
-
 dotenv.config()
 configDb()
+
+const app = express()
+dotenv.config()
+configDb()
+
+
+/* const server = http.createServer(app)
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"]
+    }
+})
+io.on("connection", (socket) => {
+    console.log("User connected:", socket.id);
+
+    socket.on("sendMessage", (data) => {
+        io.emit("receiveMessage", data);
+    });
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected");
+    });
+});
+ */
+
 
 //middlewares
 app.use(express.json())
