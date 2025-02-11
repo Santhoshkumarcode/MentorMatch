@@ -13,6 +13,7 @@ const meetingScheduleSchema = new Schema({
     dates: {
         type: [Date],
     },
+    audio: Audio,
     registeredDate: Date,
     time: String,
     plan: String,

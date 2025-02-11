@@ -13,6 +13,7 @@ export default function MentorProfile() {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        console.log('profile pic', singleData?.profilePic)
         if (!singleData || singleData._id !== id) {
             dispatch(mentorProfile({ id }))
         }
@@ -30,7 +31,11 @@ export default function MentorProfile() {
         <div>
             <div className="bg-cyan-900 w-full h-60">
                 {/* <img className="w-10 h-10 absolute left-80 top-75" src="/src/assets/linkedin.png" onClick={singleData.linkedIn}/> */}
-                <img className="border-4 border-white absolute top-40 left-10 w-50 h-50 rounded-full" src={singleData.profilePic} />
+                {singleData?.profilePic ? (
+                    <img className="border-4 border-white absolute top-40 left-10 w-50 h-50 rounded-full" src={singleData?.profilePic} />
+
+                ) : <img className="border-4 border-white absolute top-40 left-10 w-50 h-50 rounded-full" src='assets/p.webp' />
+                }
                 <div className="grid grid-cols-2">
                     <div>
                         <p className="text-3xl font-semibold ps-10 pt-80">{singleData?.userId?.username}</p>
@@ -38,7 +43,7 @@ export default function MentorProfile() {
                         <p className="text-lg ps-10 mt-2">{singleData?.jobTitle}</p>
                         <p className="text-lg text-green-600 font-medium ps-10 mt-2 mb-4">{singleData?.bio}</p>
                         <p className="text-lg ps-10 mb-8">{singleData?.location}</p>
-                        
+
                         <div className="flex flex-wrap gap-2 mt-2">
                             {singleData?.skills?.map((skill, index) => (
                                 <span key={index} className=" bg-gray-200 mb-6 ml-10 text-gray-700 px-3 py-1 rounded-full text-lg">
@@ -81,7 +86,7 @@ export default function MentorProfile() {
                                     <li>⏳ Session Duration: {singleData?.pricing?.basic?.sessionDuration}</li>
                                     <li>💬 Unlimited Q&A via chat</li>
                                 </ul>
-                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={()=> {handleApply(plan)}}>
+                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan) }}>
                                     Apply Now
                                 </button>
                             </div>
@@ -97,7 +102,7 @@ export default function MentorProfile() {
                                     <li>⏳ Session Duration: {singleData?.pricing?.pro?.sessionDuration}</li>
                                     <li>💬 Unlimited Q&A via chat</li>
                                 </ul>
-                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={()=> {handleApply(plan)}}>
+                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan) }}>
                                     Apply Now
                                 </button>
                             </div>

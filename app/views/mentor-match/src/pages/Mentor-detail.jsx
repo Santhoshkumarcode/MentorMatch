@@ -9,7 +9,6 @@ const initialState = {
     linkedIn: '',
     personalWebsite: '',
     phoneNumber: '',
-    experience: ''
 }
 
 export default function MentorDetail() {
@@ -37,9 +36,6 @@ export default function MentorDetail() {
         }
         if (form.phoneNumber.trim().length === 0) {
             errors.phoneNumber = "Phone number required"
-        }
-        if (form.experience.trim().length === 0) {
-            errors.experience = "experience should not be empty."
         }
     }
 
@@ -82,7 +78,7 @@ export default function MentorDetail() {
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2"
                                 onChange={(e) => {
                                     setForm({ ...form, companyName: e.target.value });
-                                    setClientErrors((pre)=> ({...pre,companyName:''}))
+                                    setClientErrors((pre) => ({ ...pre, companyName: '' }))
                                 }}
                             />
                             {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.companyName}</p>}
@@ -119,7 +115,8 @@ export default function MentorDetail() {
                                 type="text"
                                 placeholder="Enter Personal Website URL"
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                                onChange={(e) => { ; 
+                                onChange={(e) => {
+                                    ;
                                     setForm({ ...form, personalWebsite: e.target.value });
                                     setClientErrors((pre) => ({ ...pre, personalWebsite: '' }))
                                 }}
@@ -141,18 +138,7 @@ export default function MentorDetail() {
                             />
                             {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.phoneNumber}</p>}
                         </div>
-                        <div className="w-full">
-                            <input
-                                type="text"
-                                placeholder="Experiences"
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                                onChange={(e) => {
-                                    setForm({ ...form, experience: e.target.value });
-                                    setClientErrors((pre) => ({ ...pre, experience: '' }))
-                                }}
-                            />
-                            {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.experience}</p>}
-                        </div>
+
                     </div>
 
                     <div className="text-center">

@@ -35,11 +35,15 @@ export default function AllMentor() {
                 </div>
 
                 <div className="w-3/4 space-y-6 p-6">
-                    {verifiedData && 
-                        
+                    {verifiedData &&
+
                         verifiedData.filter(ele => ele.pricing).map(ele => (
                             <div key={ele._id} className="flex border border-gray-200 rounded-lg bg-white p-6 space-x-6 shadow-lg">
-                                <img className="w-32 h-32 border-2 border-gray-300 rounded-full" src={ele.profilePic} alt="Profile" />
+                                {ele?.profilePic ? (
+                                    <img className="w-32 h-32 border-2 border-gray-300 rounded-full" src={ele.profilePic} />
+
+                                ) : <img className="w-32 h-32  border-2 border-gray-300 rounded-full" src='src/assets/p.webp' />
+                                }
 
                                 <div className="flex-2">
                                     <p className="text-2xl font-bold text-gray-800">{ele.userId.username}</p>

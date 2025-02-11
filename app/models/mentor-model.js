@@ -23,14 +23,14 @@ const mentorSchema = new Schema({
             ref: 'Skills'
         }
     ],
-    experiences: String, /* [ 
+    experiences:  [ 
         {
             startingDate: Date,
             endingDate: Date,
             companyName: String,
             position: String,
         }
-    ], */
+    ],
     linkedIn: String,
     personalWebsite: String,
     location: String,

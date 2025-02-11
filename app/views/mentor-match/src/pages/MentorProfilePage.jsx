@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addNewSkill, getAllSkills } from "../redux/slices/skillsSlice";
 import { updateMentor } from "../redux/slices/mentorSlice";
 import { useParams } from "react-router-dom";
+import { format } from "date-fns"
 
 /* const initialState = {
     profilePic: '',
@@ -39,20 +40,21 @@ import { useParams } from "react-router-dom";
 export default function MentorProfilePage({ data }) {
 
     const [showForm, setShowForm] = useState(false)
-    const [form, setForm] = useState(null)
+    const [form, setForm] = useState({})
     const [selectedSkills, setSelectedSkills] = useState([])
     const { data: skills } = useSelector((state) => state.skills)
 
     const dispatch = useDispatch()
     const { id } = useParams()
 
-    if (!data) {
-        return <p>loading</p>
-    }
 
     useEffect(() => {
         dispatch(getAllSkills())
     }, [dispatch])
+
+    if (!data) {
+        return <p>loading</p>
+    }
 
     const handleChange = (selectedOption) => {
         setSelectedSkills(selectedOption)
@@ -78,6 +80,9 @@ export default function MentorProfilePage({ data }) {
         dispatch(updateMentor({ userId: id, form }))
         setShowForm(false)
     }
+    const formatDate = (date) => {
+        return format(date, "yyyy-MM-dd")
+    }
 
     return (
         <div>
@@ -99,14 +104,6 @@ export default function MentorProfilePage({ data }) {
                             ))}
                         </div>
 
-                        {/* <div className="flex flex-wrap gap-2 mt-2">
-                            {data?.spokenLanguages?.map((skill, index) => (
-                                <span key={index} className=" bg-gray-200 mb-6 ml-10 text-gray-700 px-3 py-1 rounded-full text-md">
-                                    {skill}
-                                </span>
-                            ))}
-                        </div> */}
-
                         <hr />
                         <p className="text-3xl font-semibold ps-10 my-8">About</p>
                         <p className="text-lg ps-10">{data?.about}</p>
@@ -116,7 +113,7 @@ export default function MentorProfilePage({ data }) {
 
             {showForm && (
                 <div className="fixed inset-0 flex justify-center items-center p-4">
-                    <div className="bg-white p-6 rounded-lg shadow-2xl relative w-full max-w-2xl max-h-[90vh] overflow-y-auto scale-105 transition-transform duration-200">
+                    <div className="bg-white p-6 rounded-lg shadow-2xl relative w-full max-w-3xl max-h-[90vh] overflow-y-auto scale-105 transition-transform duration-200">
                         <button
                             onClick={() => setShowForm(false)}
                             className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 text-2xl"
@@ -156,7 +153,7 @@ export default function MentorProfilePage({ data }) {
 
                             <CreatableSelect
                                 isMulti
-                                options={skills.map(ele => ({ value: ele._id, label: ele.skill }))}
+                                options={skills?.map(ele => ({ value: ele._id, label: ele.skill }))}
                                 value={selectedSkills}
                                 onChange={handleChange}
                                 onCreateOption={handleCreateSkill}
@@ -166,7 +163,7 @@ export default function MentorProfilePage({ data }) {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Phone Number" value={form?.phoneNumber} onChange={(e) => { setForm({ ...form, phoneNumber: e.target.value }) }} />
-                                <select className="w-full border border-gray-300 p-2 rounded" value={form?.value} onChange={(e) => { setForm({ ...form, availability: e.target.value }) }}>
+                                <select className="w-full border border-gray-300 p-2 rounded" value={form?.availability} onChange={(e) => { setForm({ ...form, availability: e.target.value }) }}>
                                     <option disabled>Availability</option>
                                     <option value="available">Available</option>
                                     <option value="notAvailable">Not Available</option>
@@ -178,11 +175,93 @@ export default function MentorProfilePage({ data }) {
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Personal Website" value={form?.personalWebsite} onChange={(e) => { setForm({ ...form, personalWebsite: e.target.value }) }} />
                             </div>
 
+
+                            {/* experience form */}
+                            <div className="flex flex-col space-y-2">
+                                {form?.experiences?.map((ele, index) => (
+                                    <div key={index} className="flex space-x-4 items-center">
+                                        <input
+                                            className="border border-gray-400 rounded w-30"
+                                            placeholder="Starting Date"
+                                            type="date"
+                                            value={ele?.startingDate ? formatDate(ele.startingDate) : ""}
+                                            onChange={(e) => {
+                                                const updatedExperiences = form.experiences.map((exp, i) =>
+                                                    i === index ? { ...exp, startingDate: e.target.value } : exp
+                                                );
+                                                setForm({ ...form, experiences: updatedExperiences });
+                                            }}
+                                        />
+
+                                        <input
+                                            className="border border-gray-400 rounded w-30"
+                                            placeholder="Ending Date"
+                                            type="date"
+                                            value={ele?.endingDate ? formatDate(ele.endingDate) : ""}
+                                            onChange={(e) => {
+                                                const updatedExperiences = form.experiences.map((exp, i) =>
+                                                    i === index ? { ...exp, endingDate: e.target.value } : exp
+                                                );
+                                                setForm({ ...form, experiences: updatedExperiences });
+                                            }}
+                                        />
+
+                                        <input
+                                            className="border border-gray-400 rounded w-40"
+                                            placeholder="Company Name"
+                                            type="text"
+                                            value={ele?.companyName || ""}
+                                            onChange={(e) => {
+                                                const updatedExperiences = form.experiences.map((exp, i) =>
+                                                    i === index ? { ...exp, companyName: e.target.value } : exp
+                                                );
+                                                setForm({ ...form, experiences: updatedExperiences });
+                                            }}
+                                        />
+
+                                        <input
+                                            className="border border-gray-400 rounded w-40"
+                                            placeholder="Job Title"
+                                            type="text"
+                                            value={ele?.position || ""}
+                                            onChange={(e) => {
+                                                const updatedExperiences = form.experiences.map((exp, i) =>
+                                                    i === index ? { ...exp, position: e.target.value } : exp
+                                                );
+                                                setForm({ ...form, experiences: updatedExperiences });
+                                            }}
+                                        />
+
+                                        <button
+                                            className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-700"
+                                            onClick={() => {
+                                                const updatedExperiences = form.experiences.filter((_, i) => i !== index);
+                                                setForm({ ...form, experiences: updatedExperiences });
+                                            }}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                ))}
+
+                                <button
+                                    className="mt-2 px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-700"
+                                    onClick={() => {
+                                        const newExperience = { startingDate: "", endingDate: "", companyName: "", position: "" };
+                                        setForm({ ...form, experiences: [...(form.experiences || []), newExperience] });
+                                    }}
+                                >
+                                    Add Experience
+                                </button>
+                            </div>
+
+
+                            {/* pricing form  */}
                             <div>
                                 <p className="text-center text-lg font-semibold ">Pricing</p>
 
                                 <p>Basic</p>
-                                <div className="flex space-x-1">
+                                <div className="flex space-x-5">
 
                                     <input className="border border-gray-400 rounded w-30" placeholder="Amount" value={form?.pricing?.basic?.amount}
                                         onChange={(e) => {
@@ -191,126 +270,126 @@ export default function MentorProfilePage({ data }) {
                                                 pricing: {
                                                     ...form.pricing,
                                                     basic: {
-                                                        ...form.pricing.basic, 
-                                                        amount: e.target.value, 
+                                                        ...(form.pricing?.basic || {}),
+                                                        amount: e.target.value,
                                                     },
                                                 },
                                             });
                                         }}
                                     />
                                     <input className="border border-gray-400 rounded w-30" placeholder="Session Duration" value={form?.pricing?.basic?.sessionDuration} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    basic: {
-                                                        ...form.pricing.basic, 
-                                                        sessionDuration: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                basic: {
+                                                    ...(form.pricing.basic || {}),
+                                                    sessionDuration: e.target.value,
                                                 },
-                                            });
-                                        }}/>
+                                            },
+                                        });
+                                    }} />
                                     <input className="border border-gray-400 rounded w-30" placeholder="Call" value={form?.pricing?.basic?.call} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    basic: {
-                                                        ...form.pricing.basic, 
-                                                        call: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                basic: {
+                                                    ...(form.pricing.basic || {}),
+                                                    call: e.target.value,
                                                 },
-                                            });
-                                        }}/>
-                                    <input className="border border-gray-400 rounded w-30" placeholder="Video Call" value={form?.pricing?.basic?.videoCall}onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    basic: {
-                                                        ...form.pricing.basic, 
-                                                        videoCall: e.target.value, 
-                                                    },
+                                            },
+                                        });
+                                    }} />
+                                    <input className="border border-gray-400 rounded w-30" placeholder="Video Call" value={form?.pricing?.basic?.videoCall} onChange={(e) => {
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                basic: {
+                                                    ...(form.pricing.basic || {}),
+                                                    videoCall: e.target.value,
                                                 },
-                                            });
-                                        }} />
+                                            },
+                                        });
+                                    }} />
                                     <input className="border border-gray-400 rounded w-30" placeholder="Features" value={form?.pricing?.basic?.features} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    basic: {
-                                                        ...form.pricing.basic, 
-                                                        features: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                basic: {
+                                                    ...(form.pricing.basic || {}),
+                                                    features: e.target.value,
                                                 },
-                                            });
-                                        }}/>
+                                            },
+                                        });
+                                    }} />
                                 </div>
 
                                 <p>pro</p>
-                                <div className="flex space-x-1">
+                                <div className="flex space-x-5">
 
                                     <input className="border border-gray-400 rounded w-30" placeholder="Amount" value={form?.pricing?.pro?.amount} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    pro: {
-                                                        ...form.pricing.basic, 
-                                                        amount: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                pro: {
+                                                    ...(form.pricing.pro || {}),
+                                                    amount: e.target.value,
                                                 },
-                                            });
-                                        }}/>
+                                            },
+                                        });
+                                    }} />
                                     <input className="border border-gray-400 rounded w-30" placeholder="Session Duration" value={form?.pricing?.pro?.sessionDuration} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    pro: {
-                                                        ...form.pricing.basic, 
-                                                        sessionDuration: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                pro: {
+                                                    ...(form.pricing.pro || {}),
+                                                    sessionDuration: e.target.value,
                                                 },
-                                            });
-                                        }}/>
+                                            },
+                                        });
+                                    }} />
                                     <input className="border border-gray-400 rounded w-30" placeholder="call" value={form?.pricing?.pro?.call} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    pro: {
-                                                        ...form.pricing.basic, 
-                                                        call: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                pro: {
+                                                    ...(form.pricing.pro || {}),
+                                                    call: e.target.value,
                                                 },
-                                            });
-                                        }}/>
+                                            },
+                                        });
+                                    }} />
                                     <input className="border border-gray-400 rounded w-30" placeholder="Video Call" value={form?.pricing?.pro?.videoCall} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    pro: {
-                                                        ...form.pricing.basic, 
-                                                        videoCall: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                pro: {
+                                                    ...(form.pricing.pro || {}),
+                                                    videoCall: e.target.value,
                                                 },
-                                            });
-                                        }}/>
+                                            },
+                                        });
+                                    }} />
                                     <input className="border border-gray-400 rounded w-30" placeholder="Features" value={form?.pricing?.pro?.features} onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                pricing: {
-                                                    ...form.pricing,
-                                                    pro: {
-                                                        ...form.pricing.basic, 
-                                                        features: e.target.value, 
-                                                    },
+                                        setForm({
+                                            ...form,
+                                            pricing: {
+                                                ...form.pricing,
+                                                pro: {
+                                                    ...(form.pricing.pro || {}),
+                                                    features: e.target.value,
                                                 },
-                                            });
-                                        }}/>
+                                            },
+                                        });
+                                    }} />
                                 </div>
                             </div>
 
@@ -323,7 +402,6 @@ export default function MentorProfilePage({ data }) {
                     </div>
                 </div>
             )}
-
         </div>
     )
 }
