@@ -13,10 +13,11 @@ const meetingScheduleSchema = new Schema({
     dates: {
         type: [Date],
     },
-    audio: Audio,
     registeredDate: Date,
     time: String,
     plan: String,
+    audioFile: String,
+    transcript: String,
     status: {
         type: String, enum: ['pending', 'scheduled', 'completed', 'canceled'], default: 'pending'
     },

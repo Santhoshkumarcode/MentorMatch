@@ -1,6 +1,8 @@
 import Meeting from "../models/meeting-schedule-model.js";
 import Mentor from "../models/mentor-model.js"
 import Mentee from "../models/mentee-model.js"
+import multer from "multer";
+
 
 import _ from "lodash"
 
@@ -100,6 +102,34 @@ meeting.statusUpdate = async (req, res) => {
     }
 }
 
+meeting.meetingTranscript = async (req, res) => {
+    const meetingId = req.params.meetingId
+    const body = req.body;
+    const audioFile = req.file;
+    
+    console.log(audioFile)
+
+    if (!audioFile) {
+        return res.status(400).json({ message: "No audio file provided" });
+    }
+
+    try {
+        const meeting = await Meeting.findById(meetingId);
+        if (!meeting) {
+            return res.status(404).json('No meeting scheduled');
+        }
+        if (audioFile) {
+            meeting.audioFile = audioFile.path;
+        }
+        await meeting.save();
+
+        return res.status(200).json(meeting);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Error updating meeting", error: err });
+    }
+}
+
 meeting.updateMeeting = async (req, res) => {
     const { meetingId, form } = req.body;
 
@@ -121,7 +151,6 @@ meeting.updateMeeting = async (req, res) => {
         return res.status(500).json({ message: "Server Error", error: err });
     }
 }
-
 
 meeting.getMeetingDetails = async (req, res) => {
     const id = req.params.meetingId
