@@ -11,6 +11,7 @@ import skillRoutes from "./app/routes/skills-routes.js"
 import menteeRoutes from "./app/routes/mentee-routes.js"
 import reviewRoutes from "./app/routes/review-routes.js"
 import meetingRoutes from "./app/routes/meetingSchedule-routes.js"
+import summaryRoutes from "./app/routes/summary-route.js"
 
 dotenv.config()
 configDb()
@@ -62,5 +63,8 @@ app.use('/api', reviewRoutes)
 
 // meeting schedule route
 app.use('/api', meetingRoutes)
+
+// summary route
+app.use('/api',summaryRoutes)
 
 app.listen(process.env.PORT, () => console.log(`server running in port: ${process.env.PORT}`))
