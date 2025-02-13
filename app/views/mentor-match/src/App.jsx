@@ -21,7 +21,7 @@ import Chat from "./pages/Chat"
 export default function App() {
 
   return (
-    <div className="bg-gray-50">
+    <div>
       <Navbar />
 
       <Routes>

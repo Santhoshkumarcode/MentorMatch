@@ -1,4 +1,5 @@
 import Mentor from "../models/mentor-model.js";
+import Skills from "../models/skills-model.js"
 import _ from "lodash"
 import cloudinary from '../utils/cloudinary.js';
 import upload from '../middlewares/multer.js';
@@ -102,19 +103,51 @@ mentorCltr.getAll = async (req, res) => {
 // show only who's profile is verified by admin
 mentorCltr.getVerified = async (req, res) => {
     try {
-        const mentor = await Mentor
-            .find({ isVerified: true })
+        const search = req.query.search || '';
+        const skillFilter = req.query.skill || '';
+        const sortBy = req.query.sortBy || 'pricing.basic.amount';
+        const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+        let page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 2;
+
+        let searchQuery = {
+            isVerified: true,
+            $or: [
+                { jobTitle: { $regex: search, $options: 'i' } },
+                { 'skills.skill': { $regex: search, $options: 'i' } }
+            ],
+        };
+
+        if (skillFilter) {
+            const skills = await Skills.find({ skill: { $regex: skillFilter, $options: 'i' } });
+            const skillIds = skills.map(skill => skill._id); 
+
+            searchQuery['skills'] = { $in: skillIds };
+        }
+
+
+        const mentors = await Mentor.find(searchQuery)
             .populate('userId')
             .populate('skills')
-        if (!mentor) {
-            return res.status(404).json('Mentor not found')
-        }
-        return res.json(mentor)
+            .sort({ [sortBy]: sortOrder })
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        const total = await Mentor.countDocuments(searchQuery);
+
+        return res.json({
+            data: mentors,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit)
+        });
+
     } catch (err) {
-        console.log(err)
-        return res.status(500).json(err)
+        console.error(err);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
+
 
 // get individual mentor profile
 mentorCltr.getProfile = async (req, res) => {

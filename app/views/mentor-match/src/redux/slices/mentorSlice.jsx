@@ -52,15 +52,17 @@ export const mentorProfile = createAsyncThunk('/mentors/mentorProfile', async ({
     }
 })
 
-export const verifiedMentors = createAsyncThunk('/mentors/verifiedMentors', async (_, { rejectWithValue }) => {
+export const verifiedMentors = createAsyncThunk('/mentors/verifiedMentors', async ({ search, page, limit, skill, sortOrder }, { rejectWithValue }) => {
+    const params = { search, page, limit, skill, sortOrder }
     try {
-        const response = await axios.get('/api/mentors/')
+        const response = await axios.get(`/api/mentors/`, { params })
         return response.data
     } catch (err) {
         console.log(err)
         return rejectWithValue(err.response.data.errors)
     }
 })
+
 const mentorSlice = createSlice({
     name: 'mentors',
     initialState: {
@@ -70,7 +72,7 @@ const mentorSlice = createSlice({
         serverError: null,
         editId: null
     },
-    
+
     extraReducers: (builder) => {
 
         //mentor second form details
