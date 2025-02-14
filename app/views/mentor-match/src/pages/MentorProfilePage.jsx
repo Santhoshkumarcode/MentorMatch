@@ -83,6 +83,9 @@ export default function MentorProfilePage({ data }) {
     const formatDate = (date) => {
         return format(date, "yyyy-MM-dd")
     }
+    const handleRemove = (id) => {
+        console.log(id)
+    }
 
     return (
         <div>
@@ -235,8 +238,10 @@ export default function MentorProfilePage({ data }) {
                                         <button
                                             className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-700"
                                             onClick={() => {
+                                                handleRemove(ele._id)
                                                 const updatedExperiences = form.experiences.filter((_, i) => i !== index);
-                                                setForm({ ...form, experiences: updatedExperiences });
+                                                setForm({ ...form, experiences: updatedExperiences })
+                                                
                                             }}
                                         >
                                             Remove
@@ -248,7 +253,10 @@ export default function MentorProfilePage({ data }) {
                                     className="mt-2 px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-700"
                                     onClick={() => {
                                         const newExperience = { startingDate: "", endingDate: "", companyName: "", position: "" };
-                                        setForm({ ...form, experiences: [...(form.experiences || []), newExperience] });
+                                        setForm((prevState) => ({
+                                            ...prevState,
+                                            experiences: [...(prevState.experiences || []), newExperience],
+                                        }));
                                     }}
                                 >
                                     Add Experience

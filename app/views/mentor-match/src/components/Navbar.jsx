@@ -9,8 +9,7 @@ export default function Navbar() {
 
     const { data } = useSelector((state) => state.users)
     const [isDropdown, setIsDropdown] = useState(false)
-    const [token, setToken] = useState(null)
-    const [value, setValue] = useState('')
+    const [token, setToken] = useState(localStorage.getItem('token'))
 
     const handleToogle = () => {
         setIsDropdown(!isDropdown)
@@ -30,8 +29,8 @@ export default function Navbar() {
 
 
     const handleSelect = (e) => {
-        setValue(e.target.getAttribute("value"))
-        navigate(`/allMentors/${value}`)
+        const selectedValue = e.target.getAttribute("value");
+        navigate(`/allMentor/?skill=${selectedValue}`);
     }
 
     return (
@@ -44,6 +43,7 @@ export default function Navbar() {
 
                 <div className="flex">
                     <ul className="flex space-x-8 p-4 justify-center">
+
 
                         <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/">Home</Link></li>
 
@@ -60,13 +60,14 @@ export default function Navbar() {
 
                     {isDropdown && (
                         <div className="absolute right-0 mt-17 w-50 bg-white border rounded-lg">
-                            <ul className="text-gray-700">
+                            <ul className="text-gray-700 text-lg">
 
                                 {data.role == 'mentor' ? (
-                                    <div>
+                                    <div> 
                                         <Link to={`/profile/${data._id}/${data.role}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:rounded-sm" onClick={handleToogle}>Profile</li></Link>
                                         <Link to={`/my-student/${data._id}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>My-Student</li></Link>
                                         <Link><li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:rounded-sm text-red-600 cursor-pointer" onClick={handleLogout}>Logout</li></Link>
+
                                     </div>
                                 ) : data.role == 'mentee' ? (
                                     <div>
@@ -82,10 +83,6 @@ export default function Navbar() {
                                         <Link><li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:rounded-sm text-red-600 cursor-pointer" onClick={handleLogout}>Logout</li></Link>
                                     </div>
                                 )}
-
-
-
-
                             </ul>
                         </div>
                     )}
@@ -97,12 +94,11 @@ export default function Navbar() {
                 data.role == 'mentee' && (
                     <div className="shadow-md">
                         <ul className="p-4 px-2  py-4 flex justify-evenly items-center cursor-pointer">
-                            <li className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="fullstack">Full-stack mentor</li>
-                            <li className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="design">Design Mentors</li>
-                            <li className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="startup">Startup Mentors</li>
-                            <li className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="marketing">Marketing Coaches</li>
-                            <li className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="datascience">Data Science Mentor</li>
-                            <li className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="engineering">Engineering Mentors</li>
+                            <button className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="fullstack">Full-stack mentor</button>
+                            <button className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="design">Design Mentors</button>
+                            <button className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="startup">Startup Mentors</button>
+                            <button className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="marketing">Marketing Coaches</button>
+                            <button className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="datascience">Data Science Mentor</button>
                         </ul>
                     </div>
                 )

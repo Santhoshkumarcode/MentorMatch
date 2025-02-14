@@ -36,7 +36,7 @@ meeting.respondToRequest = async (req, res) => {
 
         const populatedMeetings = await Promise.all(
             meetings.map(async (meeting) => {
-                const mentee = await Mentee.findOne({ userId: meeting.menteeId._id });
+                const mentee = await Mentee.findOne({ userId: meeting.menteeId._id }).populate('skills')
                 return {
                     ...meeting.toObject(),
                     menteeDetails: mentee || null

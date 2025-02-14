@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { verifiedMentors } from "../redux/slices/mentorSlice"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 export default function AllMentor() {
 
@@ -11,8 +11,18 @@ export default function AllMentor() {
     const [page, setPage] = useState(1)
     const [sortOrder, setSortOrder] = useState('')
     const [skill, setSkill] = useState('')
+    const [searchParams, setSearchParams] = useSearchParams()
+    const skillParam = searchParams.get("skill")
+    const jobTitle = searchParams.get('search')
     const limit = 2
 
+    useEffect(() => {
+        if (skillParam) {
+            setSkill(skillParam)
+        } else if (jobTitle) {
+            setSearch(jobTitle)
+        }
+    }, [skillParam, jobTitle])
 
     const { verifiedData } = useSelector((state) => state.mentors)
 
@@ -20,7 +30,6 @@ export default function AllMentor() {
         dispatch(verifiedMentors({ search, page, limit, skill, sortOrder }))
     }, [search, page, skill, limit, sortOrder])
 
-    console.log(verifiedData)
 
     const handleClick = async (id) => {
         navigate(`/mentor-profile/${id}`)

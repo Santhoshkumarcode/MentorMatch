@@ -89,7 +89,7 @@ export default function MenteeProfilePage({ data }) {
                 <img className="w-10 h-10 absolute right-6 top-71 cursor-pointer" src="/src/assets/a.png" onClick={() => { setShowForm(true) }} />
                 <div className="">
                     <div>
-                        <img className="absolute top-50 left-10 w-50 h-50 rounded-full" src={data?.profilPic} />
+                        <img className="border-4 border-white absolute top-60 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
                         <p className="text-3xl font-semibold ps-10 pt-80">{data?.userId?.username}</p>
                         <p className="text-xl ps-10 text-blue-500"><a src={data?.linkedIn}>LinkedIn</a></p>
                         <p className="text-xl ps-10">{data?.phoneNumber}</p>

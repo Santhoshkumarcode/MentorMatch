@@ -130,13 +130,20 @@ export default function MyStudents() {
                                         </p>
                                         <p><span className="font-semibold">Plan:</span> {ele?.plan}</p>
                                         <p><span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}</p>
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                            {ele?.menteeDetails?.skills?.map((skill, index) => (
+                                                <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-md">
+                                                    {skill.skill}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
 
                                     <div className="mt-5 flex justify-between">
-                                        <button className="bg-green-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-green-600 transition" onClick={()=> {handleAccept(ele._id)}}>
+                                        <button className="bg-green-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-green-600 transition" onClick={() => { handleAccept(ele._id) }}>
                                             Accept
                                         </button>
-                                        <button className="bg-red-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-red-600 transition" onClick={()=> {handleReject(ele._id)}}>
+                                        <button className="bg-red-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-red-600 transition" onClick={() => { handleReject(ele._id) }}>
                                             Reject
                                         </button>
                                     </div>

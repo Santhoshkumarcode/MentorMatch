@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { getMenteeBookings } from "../redux/slices/meetingScheduleSlice"
 import { useNavigate, useParams } from "react-router-dom"
+import { getMenteeBookings } from "../redux/slices/meetingScheduleSlice"
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+
+const renderEventContent = (eventInfo) => {
+    return (
+        <div>
+            <b className="font-medium">meeting with - {eventInfo.event.title}</b>
+            <p>{new Date(eventInfo.event.start).toLocaleString()}</p>
+        </div>
+    );
+};
 
 export default function MyBookings() {
 
     const { menteeBookings } = useSelector((state) => state?.meetingSchedules)
+    console.log(menteeBookings)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -15,7 +27,7 @@ export default function MyBookings() {
 
     useEffect(() => {
         dispatch(getMenteeBookings({ menteeId }))
-    }, [menteeId, dispatch, menteeBookings])
+    }, [menteeId, dispatch])
 
 
     const handleJoin = (mentorId, menteeId) => {
@@ -35,7 +47,7 @@ export default function MyBookings() {
             <div>
                 <div className="text-center">
                     <div className="flex justify-center space-x-8 border-b border-gray-300 mb-10">
-                        {["myBookings", "meetingSummary"].map((page) => (
+                        {["myBookings", "meetingSummary", "meetingDates"].map((page) => (
                             <p
                                 key={page}
                                 className={`text-lg font-medium px-4 py-4 cursor-pointer
@@ -44,7 +56,7 @@ export default function MyBookings() {
                                         : "text-gray-600 hover:text-blue-500 hover:border-b-2 hover:border-gray-400"}`}
                                 onClick={() => setCurrentPage(page)}
                             >
-                                {page === "myBookings" ? "My Bookings" : "Meeting Summary"}
+                                {page === "myBookings" ? "My Bookings" : page == "meetingSummary" ? "Meeting Summary" : "Meeting Dates"}
                             </p>
                         ))}
                     </div>
@@ -94,11 +106,21 @@ export default function MyBookings() {
                         </div>
 
 
-
-                    ) : (
+                    ) : currentPage == 'meetingSummary' ? (
                         <div>
                             meeting summary
                         </div>
+                    ) : (
+                        <div className=" w-full p-4 border border-gray-300 rounded-lg">
+                        <FullCalendar
+                            plugins={[dayGridPlugin]}
+                            initialView='dayGridMonth'
+                            weekends={true}
+                            // events={events}
+                            eventContent={renderEventContent}
+                            height="500px"
+                        />
+                    </div>
                     )}
 
                 </div>
