@@ -212,5 +212,23 @@ meeting.getMeetingDates = async (req, res) => {
     }
 }
 
+meeting.getMenteeMeetingDates = async (req, res) => {
+    const menteeId = req.params.menteeId
+    try {
+        const meetings = await Meeting.find({ menteeId: menteeId }).populate('menteeId').populate('mentorId')
+        const events = meetings.map(meeting => {
+            return meeting.dates.map(date => ({
+                title: meeting.mentorId,
+                start: new Date(date)
+            }));
+        }).flat();
+
+        res.status(200).json(events);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error);
+    }
+}
+
 
 export default meeting

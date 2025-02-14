@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { getMenteeBookings } from "../redux/slices/meetingScheduleSlice"
+import { getMeetingsOfMentee } from "../redux/slices/meetingScheduleSlice"
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
@@ -19,16 +20,32 @@ export default function MyBookings() {
     const { menteeBookings } = useSelector((state) => state?.meetingSchedules)
     console.log(menteeBookings)
 
+
+    const { menteeMeetingDates } = useSelector((state) => state.meetingSchedules)
+    console.log(menteeMeetingDates)
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [chatBox, setChatBox] = useState(false)
     const [currentPage, setCurrentPage] = useState('myBookings')
     const { menteeId } = useParams()
 
+
+
+    const events = menteeMeetingDates.map(ele => ({
+        title: ele?.title?.username,
+        date: ele?.start,
+    }))
+
     useEffect(() => {
         dispatch(getMenteeBookings({ menteeId }))
     }, [menteeId, dispatch])
 
+    useEffect(() => {
+        if (menteeId) {
+            dispatch(getMeetingsOfMentee({ menteeId }))
+        }
+    }, [dispatch, menteeId])
 
     const handleJoin = (mentorId, menteeId) => {
         if (!mentorId || !menteeId) {
@@ -41,11 +58,14 @@ export default function MyBookings() {
     const handleChat = (mentorId, menteeId) => {
         setChatBox(true)
     }
+    if (!menteeId) {
+        return <p>loading</p>
+    }
 
     return (
         <div>
             <div>
-                <div className="text-center">
+                <div className="text-center shadow">
                     <div className="flex justify-center space-x-8 border-b border-gray-300 mb-10">
                         {["myBookings", "meetingSummary", "meetingDates"].map((page) => (
                             <p
@@ -69,7 +89,7 @@ export default function MyBookings() {
                                         <p className="text-2xl font-bold text-gray-900">{ele?.mentorId?.username}</p>
                                         <p className="text-sm text-gray-600">{ele?.mentorId?.email}</p>
 
-                                        <div className="mt-4 space-y-2 text-gray-700 text-sm">
+                                        <div className="mt-4 space-y-2 text-gray-700 text-md">
                                             <p><span className="font-semibold">Plan:</span> {ele?.plan}</p>
                                             <p><span className="font-semibold">Status:</span> {ele?.status}</p>
                                             <p><span className="font-semibold">Payment:</span>
@@ -112,15 +132,15 @@ export default function MyBookings() {
                         </div>
                     ) : (
                         <div className=" w-full p-4 border border-gray-300 rounded-lg">
-                        <FullCalendar
-                            plugins={[dayGridPlugin]}
-                            initialView='dayGridMonth'
-                            weekends={true}
-                            // events={events}
-                            eventContent={renderEventContent}
-                            height="500px"
-                        />
-                    </div>
+                            <FullCalendar
+                                plugins={[dayGridPlugin]}
+                                initialView='dayGridMonth'
+                                weekends={true}
+                                events={events}
+                                eventContent={renderEventContent}
+                                height="500px"
+                            />
+                        </div>
                     )}
 
                 </div>

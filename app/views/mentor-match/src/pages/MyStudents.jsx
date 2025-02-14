@@ -97,7 +97,7 @@ export default function MyStudents() {
     return (
         <div>
 
-            <div className="flex justify-center space-x-8 border-b border-gray-300 mb-10">
+            <div className="flex justify-center space-x-8 border-b border-gray-300 mb-10 shadow-md">
                 {["application", "students", "mySchedules"].map((page) => (
                     <p
                         key={page}
@@ -122,7 +122,7 @@ export default function MyStudents() {
                                     <p className="text-2xl font-bold text-gray-900">{ele?.menteeId?.username}</p>
                                     <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
 
-                                    <div className="mt-4 space-y-2 text-gray-700 text-sm">
+                                    <div className="mt-4 space-y-2 text-gray-700 text-md">
                                         <p><span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}</p>
                                         <p>
                                             <span className="font-semibold">LinkedIn:</span>
@@ -137,6 +137,14 @@ export default function MyStudents() {
                                                 </span>
                                             ))}
                                         </div>
+
+                                        {/* {ele?.education?.map(edu => (
+                                            <div key={edu._id}> 
+                                                <p><strong>Start Year:</strong> {edu?.startYear}</p>
+                                                <p><strong>End Year:</strong> {edu?.endYear}</p>
+                                            </div>
+                                        ))} */}
+
                                     </div>
 
                                     <div className="mt-5 flex justify-between">
@@ -168,7 +176,11 @@ export default function MyStudents() {
                                         </p>
                                         <p><span className="font-semibold">Plan:</span> {ele?.plan}</p>
                                         <p><span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}</p>
-                                        <p><span className="font-semibold">Payment Status:</span> {ele?.paymentStatus}</p>
+                                        <p><span className="font-semibold ">Payment Status:</span>
+                                            <span className={`ml-1 px-2 py-1 text-xs rounded-full 
+                            ${ele.paymentStatus === 'pending' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                                            {ele.paymentStatus}
+                                        </span></p>
 
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             {ele?.menteeDetails?.skills?.map((skill, index) => (

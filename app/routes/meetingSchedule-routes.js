@@ -10,6 +10,7 @@ router.post('/meetings', authentication, authorizeUser(['mentee']), meeting.requ
 router.get('/meetings/request/:mentorId', authentication, authorizeUser(['mentor']), meeting.respondToRequest)
 router.get('/meetings/scheduled/:mentorId', authentication, authorizeUser(['mentor']), meeting.getacceptedStudents)
 router.get('/meetings/mentor/:mentorId', authentication, meeting.getMeetingDates)
+router.get('/meetings/mentee/dates/:menteeId', authentication, meeting.getMenteeMeetingDates)
 router.put('/meetings/:meetingId', authentication, meeting.statusUpdate)
 router.put('/meetings/transcript/:meetingId', authentication, meeting.meetingTranscript)
 router.get('/meetings/:meetingId', authentication, meeting.getMeetingDetails)

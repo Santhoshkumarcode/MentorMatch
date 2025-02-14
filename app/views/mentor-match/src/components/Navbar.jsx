@@ -9,7 +9,7 @@ export default function Navbar() {
 
     const { data } = useSelector((state) => state.users)
     const [isDropdown, setIsDropdown] = useState(false)
-    const [token, setToken] = useState(localStorage.getItem('token'))
+    const [token, setToken] = useState(null)
 
     const handleToogle = () => {
         setIsDropdown(!isDropdown)
@@ -19,13 +19,13 @@ export default function Navbar() {
         localStorage.removeItem('token')
         setToken(null)
         setIsDropdown(false)
-        navigate('/')
-
+        navigate('/', { replace: true })
     }
 
     useEffect(() => {
-        setToken(localStorage.getItem('token'))
-    }, [data])
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
+    }, [])
 
 
     const handleSelect = (e) => {
@@ -54,6 +54,7 @@ export default function Navbar() {
                         <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/register">Register</Link></li>
                         <li className=" text-lg font-semibold text-white hover:bg-blue-800 hover:rounded-md hover:px-2 hover: py-1"><Link to="/login">Login</Link></li>
                     </ul>
+
                     {token && (
                         <img className="w-8 h-8 mr-6 ml-2 justify-center mt-5" src={userImg} onClick={handleToogle} />
                     )}
@@ -63,7 +64,7 @@ export default function Navbar() {
                             <ul className="text-gray-700 text-lg">
 
                                 {data.role == 'mentor' ? (
-                                    <div> 
+                                    <div>
                                         <Link to={`/profile/${data._id}/${data.role}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:rounded-sm" onClick={handleToogle}>Profile</li></Link>
                                         <Link to={`/my-student/${data._id}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>My-Student</li></Link>
                                         <Link><li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:rounded-sm text-red-600 cursor-pointer" onClick={handleLogout}>Logout</li></Link>

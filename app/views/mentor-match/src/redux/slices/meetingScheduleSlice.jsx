@@ -79,15 +79,15 @@ export const getMeetings = createAsyncThunk('/meetingSchedules/getMeetings', asy
     }
 })
 
-/* export const getMeetingsOfMentee = createAsyncThunk('/meetingSchedules/getMeetingsOfMentee', async ({ menteeId }, { rejectWithValue }) => {
+export const getMeetingsOfMentee = createAsyncThunk('/meetingSchedules/getMeetingsOfMentee', async ({ menteeId }, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`/api/meetings/mentee/${menteeId}`, { headers: { Authorization: localStorage.getItem('token') } })
+        const response = await axios.get(`/api/meetings/mentee/dates/${menteeId}`, { headers: { Authorization: localStorage.getItem('token') } })
         return response.data
     } catch (err) {
         console.log(err)
         return rejectWithValue(err.response.data.errors)
     }
-}) */
+})
 
 export const getMenteeBookings = createAsyncThunk('/meetingSchedules/getMenteeBookings', async ({ menteeId }, { rejectWithValue }) => {
     try {
@@ -168,9 +168,9 @@ const meetingScheduleSlice = createSlice({
             state.menteeBookings = action.payload
         })
 
-        /* builder.addCase(getMeetingsOfMentee.fulfilled, (state, action) => {
+        builder.addCase(getMeetingsOfMentee.fulfilled, (state, action) => {
             state.menteeMeetingDates = action.payload
-        }) */
+        })
     }
 })
 
