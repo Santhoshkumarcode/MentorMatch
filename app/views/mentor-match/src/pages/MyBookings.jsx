@@ -5,6 +5,7 @@ import { getMenteeBookings } from "../redux/slices/meetingScheduleSlice"
 import { getMeetingsOfMentee } from "../redux/slices/meetingScheduleSlice"
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import Chat from "./Chat"
 
 const renderEventContent = (eventInfo) => {
     return (
@@ -24,6 +25,8 @@ export default function MyBookings() {
     const navigate = useNavigate()
     const [chatBox, setChatBox] = useState(false)
     const [currentPage, setCurrentPage] = useState('myBookings')
+    const[roomId,setRoomId] = useState('')
+
     const { menteeId } = useParams()
 
 
@@ -51,8 +54,8 @@ export default function MyBookings() {
         navigate(`/meeting-page/${mentorId}/${menteeId}`)
     }
 
-    const handleChat = (mentorId, menteeId) => {
-        setChatBox(true)
+    const handleChat = () => {
+        setChatBox((pre) => !pre)
     }
     if (!menteeId) {
         return <p>loading</p>
@@ -106,7 +109,10 @@ export default function MyBookings() {
                                             {ele.paymentStatus === 'paid' && (
                                                 <div className="flex space-x-3">
                                                     <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
-                                                        onClick={() => handleChat(ele?.mentorId?._id, ele?.menteeId?._id)}>
+                                                        onClick={() => {
+                                                            handleChat(ele?.mentorId?._id, ele?.menteeId?._id)
+                                                            setRoomId(ele._id)
+                                                        }}>
                                                         Chat
                                                     </button>
                                                     <button className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
@@ -119,8 +125,6 @@ export default function MyBookings() {
                                     </div>
                                 ))}
                         </div>
-
-
                     ) : currentPage == 'meetingSummary' ? (
                         <div>
                             meeting summary
@@ -140,6 +144,9 @@ export default function MyBookings() {
 
                 </div>
                 {chatBox && (
+                    <Chat isOpen={handleChat} userId={menteeId} meetingId={roomId}/>
+                )}
+                {/*                 {chatBox && (
                     <div>
                         <div className="fixed inset-0 flex justify-center items-center z-50">
                             <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -178,7 +185,7 @@ export default function MyBookings() {
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
             </div>
         </div>
     )

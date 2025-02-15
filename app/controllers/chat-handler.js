@@ -4,7 +4,13 @@ import { ObjectId } from "mongodb";
 const chatHandler = (io, socket) => {
     socket.on("joinGeneralChat", async ({ meetingId, userId }) => {
         try {
+            // Convert IDs if needed
             const userObjectId = new ObjectId(userId);
+            const meetingObjectId = meetingId ? new ObjectId(meetingId) : null;
+
+            // You might consider storing meetingObjectId in socket for later use if needed:
+            socket.meetingObjectId = meetingObjectId;
+
             socket.join("general-chat");
             console.log(`User ${userId} joined general chat.`);
         } catch (error) {
@@ -14,28 +20,31 @@ const chatHandler = (io, socket) => {
     });
 
     socket.on("sendGeneralMessage", async ({ message }) => {
-        const { text, userId } = message;
+        // Destructure message fields
+        const { text, userId, meetingId } = message;
 
         if (!text.trim()) {
             console.log("Empty message. Skipping save.");
             return;
         }
 
-        // Broadcast message to all users in general chat
+        // Convert meetingId to an ObjectId here
+        const meetingObjectId = meetingId ? new ObjectId(meetingId) : null;
+
+        // Broadcast the message to everyone in the general chat
         io.to("general-chat").emit("receiveGeneralMessage", {
             text,
             userId,
-            username,
+            meetingId: meetingObjectId, // Use the converted ObjectId
             timestamp: new Date(),
         });
 
         try {
-            const userObjectId = new ObjectId(userId);
-
+            // Save the chat message in the database
             const chatMessage = new Chat({
                 message: text,
                 sender: userId,
-                meetingId,
+                meetingId: meetingObjectId,
             });
 
             await chatMessage.save();
