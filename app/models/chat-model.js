@@ -5,9 +5,9 @@ const chatSchema = new Schema({
         type: mongoose.Types.ObjectId,
         ref: 'User'
     },
-    receiver: {
+    meetingId: {
         type: mongoose.Types.ObjectId,
-        ref: 'User'
+        ref: 'Meeting'
     },
     message: String,
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import userImg from "../assets/menu.png"
+import { userProfile } from "../redux/slices/userSlice"
 export default function Navbar() {
 
     const dispatch = useDispatch()
@@ -25,7 +26,10 @@ export default function Navbar() {
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         setToken(storedToken);
-    }, [])
+        if (storedToken) {
+            dispatch(userProfile())
+        }
+    }, [dispatch])
 
 
     const handleSelect = (e) => {
@@ -63,14 +67,14 @@ export default function Navbar() {
                         <div className="absolute right-0 mt-17 w-50 bg-white border rounded-lg">
                             <ul className="text-gray-700 text-lg">
 
-                                {data.role == 'mentor' ? (
+                                {data?.role == 'mentor' ? (
                                     <div>
                                         <Link to={`/profile/${data._id}/${data.role}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:rounded-sm" onClick={handleToogle}>Profile</li></Link>
                                         <Link to={`/my-student/${data._id}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>My-Student</li></Link>
                                         <Link><li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:rounded-sm text-red-600 cursor-pointer" onClick={handleLogout}>Logout</li></Link>
 
                                     </div>
-                                ) : data.role == 'mentee' ? (
+                                ) : data?.role == 'mentee' ? (
                                     <div>
                                         <Link to={`/profile/${data._id}/${data.role}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:rounded-sm" onClick={handleToogle}>Profile</li></Link>
                                         <Link to={`/my-bookings/${data._id}`}><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>My-bookings</li></Link>
@@ -78,7 +82,7 @@ export default function Navbar() {
 
 
                                     </div>
-                                ) : data.role == 'admin' && (
+                                ) : data?.role == 'admin' && (
                                     <div>
                                         <Link to="/admin-dashboard"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>Admin-Dashboard</li></Link>
                                         <Link><li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:rounded-sm text-red-600 cursor-pointer" onClick={handleLogout}>Logout</li></Link>
@@ -92,7 +96,7 @@ export default function Navbar() {
             </div>
             <hr />
             {
-                data.role == 'mentee' && (
+                data?.role == 'mentee' && (
                     <div className="shadow-md">
                         <ul className="p-4 px-2  py-4 flex justify-evenly items-center cursor-pointer">
                             <button className="hover:bg-gray-200 hover:px-2 py-1 rounded-lg" onClick={handleSelect} value="fullstack">Full-stack mentor</button>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { getMenteeBookings } from "../redux/slices/meetingScheduleSlice"
 import { getMeetingsOfMentee } from "../redux/slices/meetingScheduleSlice"
 import FullCalendar from '@fullcalendar/react'
@@ -18,11 +18,7 @@ const renderEventContent = (eventInfo) => {
 export default function MyBookings() {
 
     const { menteeBookings } = useSelector((state) => state?.meetingSchedules)
-    console.log(menteeBookings)
-
-
     const { menteeMeetingDates } = useSelector((state) => state.meetingSchedules)
-    console.log(menteeMeetingDates)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -85,8 +81,7 @@ export default function MyBookings() {
                             {menteeBookings &&
                                 menteeBookings.map((ele) => (
                                     <div key={ele._id} className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-md bg-white text-left">
-
-                                        <p className="text-2xl font-bold text-gray-900">{ele?.mentorId?.username}</p>
+                                        <Link to={`/mentor-profile/${ele?.mentorId._id}`}><p className="text-2xl font-bold text-gray-900">{ele?.mentorId?.username}</p></Link>
                                         <p className="text-sm text-gray-600">{ele?.mentorId?.email}</p>
 
                                         <div className="mt-4 space-y-2 text-gray-700 text-md">

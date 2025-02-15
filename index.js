@@ -12,6 +12,7 @@ import menteeRoutes from "./app/routes/mentee-routes.js"
 import reviewRoutes from "./app/routes/review-routes.js"
 import meetingRoutes from "./app/routes/meetingSchedule-routes.js"
 import summaryRoutes from "./app/routes/summary-route.js"
+import chatHandler from "./app/controllers/chat-handler.js"
 
 dotenv.config()
 configDb()
@@ -21,7 +22,7 @@ dotenv.config()
 configDb()
 
 
-/* const server = http.createServer(app)
+const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:5173",
@@ -31,15 +32,9 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    socket.on("sendMessage", (data) => {
-        io.emit("receiveMessage", data);
-    });
-
-    socket.on("disconnect", () => {
-        console.log("User disconnected");
-    });
+    chatHandler(io,socket)
 });
- */
+
 
 
 //middlewares
@@ -67,4 +62,4 @@ app.use('/api', meetingRoutes)
 // summary route
 app.use('/api',summaryRoutes)
 
-app.listen(process.env.PORT, () => console.log(`server running in port: ${process.env.PORT}`))
+server.listen(process.env.PORT, () => console.log(`server running in port: ${process.env.PORT}`))

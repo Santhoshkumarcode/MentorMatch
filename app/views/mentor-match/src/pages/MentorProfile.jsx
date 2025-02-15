@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { mentorProfile } from "../redux/slices/mentorSlice"
+import { format } from "date-fns"
+
 
 export default function MentorProfile() {
 
@@ -13,11 +15,10 @@ export default function MentorProfile() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        console.log('profile pic', singleData?.profilePic)
         if (!singleData || singleData._id !== id) {
             dispatch(mentorProfile({ id }))
         }
-    }, [dispatch, singleData, id])
+    }, [dispatch, id])
 
     if (!singleData) {
         return <h1>loading....</h1>
@@ -27,11 +28,17 @@ export default function MentorProfile() {
         await navigate(`/apply-form/${singleData.userId._id}/${plan}`)
     }
 
+    const formatDate = (date) => {
+        const formattedDate = format(date, 'yyyy-MM-dd')
+        return formattedDate
+    }
+
+
     return (
         <div className="min-h-screen flex flex-col">
-            <div className="bg-cyan-900 w-full h-60">
+            <div className="bg-cyan-900 w-full h-60 relative">
                 {/* <img className="w-10 h-10 absolute left-80 top-75" src="/src/assets/linkedin.png" onClick={singleData.linkedIn}/> */}
-                <div className="absolute top-55 left-10">
+                <div className="absolute top-25 left-10">
                     {singleData?.profilePic ? (
                         <img className="border-4 border-white w-50 h-50 rounded-full" src={singleData?.profilePic} />
 
@@ -44,7 +51,7 @@ export default function MentorProfile() {
                         <p className="text-lg ps-10 mt-2">{singleData?.companyName}</p>
                         <p className="text-lg ps-10 mt-2">{singleData?.jobTitle}</p>
                         <p className="text-lg text-green-600 font-medium ps-10 mt-2 mb-4">{singleData?.bio}</p>
-                        <p className="text-lg ps-10 mb-8">{singleData?.location}</p>
+                        <p className="text-lg ps-10 mb-8">📍 {singleData?.location}</p>
 
                         <div className="flex flex-wrap gap-2 mt-2">
                             {singleData?.skills?.map((skill, index) => (
@@ -79,8 +86,8 @@ export default function MentorProfile() {
 
                         {plan === 'basic' ? (
                             <div className="p-4 text-left">
-                                <p className="font-extrabold text-4xl text-blue-600 mb-3">
-                                    ₹ {singleData?.pricing?.basic?.amount} <span className="text-xl font-bold text-gray-700">/ month</span>
+                                <p className="font-bold text-5xl text-blue-600 mb-3">
+                                    ₹ {singleData?.pricing?.basic?.amount} <span className="text-2xl font-bold text-gray-700">/ month</span>
                                 </p>
                                 <ul className="text-md font-semibold text-gray-800 space-y-1">
                                     <li>{singleData?.pricing?.basic?.features}</li>
@@ -95,8 +102,8 @@ export default function MentorProfile() {
                             </div>
                         ) : (
                             <div className="p-4 text-left">
-                                <p className="font-extrabold text-4xl text-blue-600 mb-3">
-                                    ₹ {singleData?.pricing?.pro?.amount} <span className="text-xl font-bold text-gray-700">/ month</span>
+                                <p className="font-bold text-5xl text-blue-600 mb-3">
+                                    ₹ {singleData?.pricing?.pro?.amount} <span className="text-2xl font-bold text-gray-700">/ month</span>
                                 </p>
                                 <ul className="text-md font-semibold text-gray-800 space-y-1">
                                     <li>{singleData?.pricing?.pro?.features}</li>
@@ -115,14 +122,45 @@ export default function MentorProfile() {
                 </div>
 
                 <hr />
-                <hr />
                 <p className="text-3xl font-semibold ps-10 my-8 " >About</p>
-                <p className="text-lg ps-10">{singleData?.about}</p>
+                <p className="text-lg ps-10 mb-10">{singleData?.about}</p>
+
+                <hr />
+
+                <div>
+                    <div className="px-10 py-6">
+                        <h2 className="text-3xl font-semibold mb-6">Experiences</h2>
+                        {singleData?.experiences?.length > 0 ? (
+                            singleData.experiences.map((exp, i) => (
+                                <div key={i} className="p-6 mb-4 border border-gray-200 rounded-lg shadow-sm bg-white">
+                                    <div className="flex flex-col md:flex-row md:justify-between">
+                                        <div>
+                                            <p className="text-xl font-bold text-gray-800">{exp?.companyName}</p>
+                                            <p className="text-md text-gray-600 mt-1">{exp?.position}</p>
+                                        </div>
+                                        <div className="mt-4 md:mt-0 text-right">
+                                            <p className="text-sm text-gray-500">
+                                                {exp?.startingDate ? new Date(exp.startingDate).toLocaleDateString() : "N/A"}{" "}
+                                                -{" "}
+                                                {exp?.endingDate ? new Date(exp.endingDate).toLocaleDateString() : "Present"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-lg text-gray-500">No experiences available.</p>
+                        )}
+                    </div>
+                </div>
+
+                <hr />
 
                 <div>
                     <p className="text-3xl font-semibold ps-10 my-8 " >What mentees say</p>
                 </div>
             </div>
+            
         </div>
     )
 }

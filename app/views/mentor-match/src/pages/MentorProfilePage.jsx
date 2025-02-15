@@ -90,11 +90,12 @@ export default function MentorProfilePage({ data }) {
     return (
         <div>
             <div className="bg-cyan-900 w-full h-60">
+                
                 <img className="w-12 h-12 absolute right-6 top-70 cursor-pointer" src="/src/assets/a.png" onClick={() => { handleClick(data) }} />
                 <div>
                     <div className="pb-20">
-                        <img className=" border-4 border-white absolute top-40 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
-                        <p className="text-3xl font-semibold ps-10 pt-80">{data?.userId?.username}</p>
+                        <img className=" border-4 border-white relative top-25 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
+                        <p className="text-3xl font-semibold ps-10 pt-40">{data?.userId?.username}</p>
                         <p className="text-lg ps-10 mt-2">{data?.companyName}</p>
                         <p className="text-lg font-semibold ps-10 mt-2">{data?.jobTitle}</p>
                         <p className="text-lg text-green-600 font-medium ps-10 mt-2 mb-4">{data?.bio}</p>
@@ -109,7 +110,35 @@ export default function MentorProfilePage({ data }) {
 
                         <hr />
                         <p className="text-3xl font-semibold ps-10 my-8">About</p>
-                        <p className="text-lg ps-10">{data?.about}</p>
+                        <p className="text-lg ps-10 mb-10">{data?.about}</p>
+                        <hr />
+
+                        <div>
+                            <div className="px-10 py-6">
+                                <h2 className="text-3xl font-semibold mb-6">Experiences</h2>
+                                {data?.experiences?.length > 0 ? (
+                                    data.experiences.map((exp, i) => (
+                                        <div key={i} className="p-6 mb-4 border border-gray-200 rounded-lg shadow-sm bg-white">
+                                            <div className="flex flex-col md:flex-row md:justify-between">
+                                                <div>
+                                                    <p className="text-xl font-bold text-gray-800">{exp?.companyName}</p>
+                                                    <p className="text-md text-gray-600 mt-1">{exp?.position}</p>
+                                                </div>
+                                                <div className="mt-4 md:mt-0 text-right">
+                                                    <p className="text-sm text-gray-500">
+                                                        {exp?.startingDate ? new Date(exp.startingDate).toLocaleDateString() : "N/A"}{" "}
+                                                        -{" "}
+                                                        {exp?.endingDate ? new Date(exp.endingDate).toLocaleDateString() : "Present"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-lg text-gray-500">No experiences available.</p>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -241,7 +270,7 @@ export default function MentorProfilePage({ data }) {
                                                 handleRemove(ele._id)
                                                 const updatedExperiences = form.experiences.filter((_, i) => i !== index);
                                                 setForm({ ...form, experiences: updatedExperiences })
-                                                
+
                                             }}
                                         >
                                             Remove

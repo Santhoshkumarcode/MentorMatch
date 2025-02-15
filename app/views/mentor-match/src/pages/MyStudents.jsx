@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getAcceptedStudent, getAllMyStudent, getMeetings, rejectStatus, statusUpdate, updateMeeting } from "../redux/slices/meetingScheduleSlice"
 import DatePicker from "react-multi-date-picker";
-
+import { Link } from "react-router-dom";
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,6 +28,7 @@ export default function MyStudents() {
     const [dates, setDates] = useState([])
     const [chatBox, setChatBox] = useState(false)
     const [meetingId, setMeetingId] = useState()
+    const [messages, setMessages] = useState('')
 
     // to get all student 
     useEffect(() => {
@@ -49,6 +50,23 @@ export default function MyStudents() {
             dispatch(getMeetings({ mentorId }))
         }
     }, [mentorId, dispatch])
+
+
+    //for message
+    useEffect(() => {
+        if (chatBox) {
+            socket.emit("joinGeneralChat", { userId: user._id });
+
+            socket.on("receiveGeneralMessage", (newMessage) => {
+                setMessages((prev) => [...prev, newMessage]);
+            });
+
+            return () => {
+                socket.off("receiveGeneralMessage");
+            };
+        }
+
+    }, []);
 
     const handleAccept = (meetingId) => {
         const confirm = window.confirm('Are you sure want to accept?')
@@ -90,8 +108,9 @@ export default function MyStudents() {
         navigate(`/meeting-page/${mentorId}/${menteeId}`);
     };
 
-    const handleChat = (mentorId, menteeId) => {
+    const handleChat = (mentorId, meetingId) => {
         setChatBox(true)
+        console.log(mentorId, meetingId)
     }
 
     return (
@@ -117,45 +136,81 @@ export default function MyStudents() {
                     <div className="flex justify-center gap-6 p-6">
                         {data &&
                             data.filter(ele => ele.status === 'pending').map((ele) => (
-                                <div className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-sm bg-white flex flex-col text-left" key={ele._id}>
+                                <div className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-xl bg-white" key={ele._id}>
+                                    <div className="flex flex-col md:flex-row">
+                                        <div className="md:w-1/2 pr-4">
 
-                                    <p className="text-2xl font-bold text-gray-900">{ele?.menteeId?.username}</p>
-                                    <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
-
-                                    <div className="mt-4 space-y-2 text-gray-700 text-md">
-                                        <p><span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}</p>
-                                        <p>
-                                            <span className="font-semibold">LinkedIn:</span>
-                                            <a href={ele?.menteeDetails?.linkedIn} target="_blank" className="text-blue-600 hover:underline ml-1">Profile</a>
-                                        </p>
-                                        <p><span className="font-semibold">Plan:</span> {ele?.plan}</p>
-                                        <p><span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}</p>
-                                        <div className="flex flex-wrap gap-2 mt-2">
-                                            {ele?.menteeDetails?.skills?.map((skill, index) => (
-                                                <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-md">
-                                                    {skill.skill}
-                                                </span>
-                                            ))}
+                                            <Link to={`/profile/mentorViewMenteeProfile/${ele?.menteeId?._id}`} className="text-2xl font-bold text-gray-700">
+                                                {ele?.menteeId?.username}
+                                            </Link>
+                                            <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
+                                            <div className="mt-4 space-y-2 text-gray-700 text-md">
+                                                <p>
+                                                    <span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}
+                                                </p>
+                                                <p>
+                                                    <span className="font-semibold">LinkedIn:</span>
+                                                    <a
+                                                        href={ele?.menteeDetails?.linkedIn}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-600 hover:underline ml-1"
+                                                    >
+                                                        Profile
+                                                    </a>
+                                                </p>
+                                                <p>
+                                                    <span className="font-semibold">Plan:</span> {ele?.plan}
+                                                </p>
+                                                <p>
+                                                    <span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}
+                                                </p>
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {ele?.menteeDetails?.skills?.map((skill, index) => (
+                                                        <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-md">
+                                                            {skill.skill}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        {/* {ele?.education?.map(edu => (
-                                            <div key={edu._id}> 
-                                                <p><strong>Start Year:</strong> {edu?.startYear}</p>
-                                                <p><strong>End Year:</strong> {edu?.endYear}</p>
-                                            </div>
-                                        ))} */}
-
+                                        <div className="pl-4 mt-0">
+                                            <h3 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-3">Education</h3>
+                                            {ele?.menteeDetails?.education?.length > 0 ? (
+                                                ele?.menteeDetails?.education.map((edu, index) => (
+                                                    <div key={index} className="mb-3">
+                                                        <p className="text-md font-semibold">Institute: {edu?.institute}</p>
+                                                        <p className="text-md font-semibold">Degree: {edu?.degree}</p>
+                                                        <p className="text-md text-gray-700">
+                                                            Duration: {edu?.startYear} - {edu?.endYear}
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-gray-600 text-md">No education details provided.</p>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    <div className="mt-5 flex justify-between">
-                                        <button className="bg-green-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-green-600 transition" onClick={() => { handleAccept(ele._id) }}>
-                                            Accept
-                                        </button>
-                                        <button className="bg-red-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-red-600 transition" onClick={() => { handleReject(ele._id) }}>
-                                            Reject
-                                        </button>
+                                    <div className="mt-6 flex justify-center">
+                                        <div className="inline-flex rounded space-x-6">
+                                            <button
+                                                className="px-5 py-2 bg-green-500 text-white font-medium rounded hover:bg-green-600 "
+                                                onClick={() => handleAccept(ele._id)}
+                                            >
+                                                Accept
+                                            </button>
+                                            <button
+                                                className="px-5 py-2 bg-red-500 text-white font-medium rounded hover:bg-red-600"
+                                                onClick={() => handleReject(ele._id)}
+                                            >
+                                                Reject
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+
                             ))}
                     </div>
 
@@ -163,46 +218,103 @@ export default function MyStudents() {
                     <div className="flex flex-wrap justify-center gap-6 p-6">
                         {acceptedData &&
                             acceptedData.map((ele, i) => (
-                                <div key={i} className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-md bg-white flex flex-col text-left">
-                                    <img src={ele.profilePic} />
-                                    <p className="text-2xl font-bold text-gray-900">{ele?.menteeId?.username}</p>
-                                    <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
+                                <div key={i} className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-xl bg-white flex flex-col">
 
-                                    <div className="mt-4 space-y-2 text-gray-700 text-md">
-                                        <p><span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}</p>
-                                        <p>
-                                            <span className="font-semibold">LinkedIn:</span>
-                                            <a href={ele?.menteeDetails?.linkedIn} target="_blank" className="text-blue-600 hover:underline ml-1">Profile</a>
-                                        </p>
-                                        <p><span className="font-semibold">Plan:</span> {ele?.plan}</p>
-                                        <p><span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}</p>
-                                        <p><span className="font-semibold ">Payment Status:</span>
-                                            <span className={`ml-1 px-2 py-1 text-xs rounded-full 
-                            ${ele.paymentStatus === 'pending' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
-                                            {ele.paymentStatus}
-                                        </span></p>
+                                    <div className="flex flex-col md:flex-row flex-grow">
 
-                                        <div className="flex flex-wrap gap-2 mt-2">
-                                            {ele?.menteeDetails?.skills?.map((skill, index) => (
-                                                <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-md">
-                                                    {skill.skill}
-                                                </span>
-                                            ))}
+                                        <div className="md:w-1/2 pr-4">
+                                            {ele.profilePic && (
+                                                <img src={ele.profilePic} alt="Profile" className="w-20 h-20 rounded-full mb-4" />
+                                            )}
+                                            <Link to={`/profile/mentorViewMenteeProfile/${ele?.menteeId?._id}`} className="text-2xl font-bold text-gray-700 cursor-pointer">
+                                                {ele?.menteeId?.username}
+                                            </Link>
+                                            <p className="text-sm text-gray-600">{ele?.menteeId?.email}</p>
+
+                                            <div className="mt-4 space-y-2 text-gray-700 text-md">
+                                                <p>
+                                                    <span className="font-semibold">Phone:</span> {ele?.menteeDetails?.phoneNumber}
+                                                </p>
+                                                <p>
+                                                    <span className="font-semibold">LinkedIn:</span>
+                                                    <a
+                                                        href={ele?.menteeDetails?.linkedIn}
+                                                        target="_blank"
+                                                        // rel="noopener noreferrer"
+                                                        className="text-blue-600 hover:underline ml-1"
+                                                    >
+                                                        Profile
+                                                    </a>
+                                                </p>
+                                                <p>
+                                                    <span className="font-semibold">Plan:</span> {ele?.plan}
+                                                </p>
+                                                <p>
+                                                    <span className="font-semibold">Goal:</span> {ele?.mentorshipGoal}
+                                                </p>
+                                                <p>
+                                                    <span className="font-semibold">Payment Status:</span>
+                                                    <span className={`ml-1 px-2 py-1 text-xs rounded-full 
+            ${ele.paymentStatus === 'pending' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                                                        {ele.paymentStatus}
+                                                    </span>
+                                                </p>
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {ele?.menteeDetails?.skills?.map((skill, index) => (
+                                                        <span key={index} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-md">
+                                                            {skill.skill}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Right Section: Education Details */}
+                                        <div className="md:w-1/2 pl-4 mt-6 md:mt-0 border-l border-gray-300">
+                                            <h3 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-3">Education</h3>
+                                            {ele?.menteeDetails?.education?.length > 0 ? (
+                                                ele?.menteeDetails?.education.map((edu, index) => (
+                                                    <div key={index} className="mb-3">
+                                                        <p className="text-md font-semibold">Institute: {edu?.institute}</p>
+                                                        <p className="text-md text-gray-700">
+                                                            Duration: {edu?.startYear} - {edu?.endYear}
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-gray-600 text-md">No education details provided.</p>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <div className="mt-5 flex justify-center space-x-4">
-                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition" onClick={() => { setScheduleForm(true); setMeetingId(ele._id) }}>
-                                            Schedule
-                                        </button>
-                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition" onClick={() => handleChat(ele?.mentorId?._id, ele?.menteeId?._id)}>
-                                            Chat
-                                        </button>
-                                        <button className="bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition" onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}>
-                                            Meet
-                                        </button>
+                                    {/* Button Group at the Bottom */}
+                                    <div className="mt-5 flex justify-center">
+                                        <div className="inline-flex rounded-md space-x-6">
+                                            <button
+                                                className="px-5 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+                                                onClick={() => {
+                                                    setScheduleForm(true);
+                                                    setMeetingId(ele._id);
+                                                }}
+                                            >
+                                                Schedule
+                                            </button>
+                                            <button
+                                                className="px-5 py-2 bg-blue-500 rounded text-white font-medium hover:bg-blue-600"
+                                                onClick={() => handleChat(ele?.mentorId?._id, ele?._id)}
+                                            >
+                                                Chat
+                                            </button>
+                                            <button
+                                                className="px-5 py-2 bg-green-500 text-white font-medium rounded hover:bg-green-600 transition"
+                                                onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}
+                                            >
+                                                Meet
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+
                             ))}
                         {scheduleForm && (
                             <div className="fixed inset-0 flex justify-center items-center z-50">

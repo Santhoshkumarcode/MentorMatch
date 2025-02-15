@@ -17,6 +17,7 @@ import { useSelector } from "react-redux"
 import MeetingPage from "./pages/MeetingPage"
 import Footer from "./components/footer"
 import Chat from "./pages/Chat"
+import MentorViewMenteeProfile from "./pages/MentorViewMenteeProfile"
 
 export default function App() {
 
@@ -33,7 +34,8 @@ export default function App() {
         <Route path="/allMentor" element={<AllMentor />} />
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/mentee-detail" element={<MenteeDetail />} />
-
+        <Route path="/profile/mentorViewMenteeProfile/:id" element={<MentorViewMenteeProfile />} />
+        
         <Route path="/chat/:mentorId/:menteeId" element={<Chat />} />
         <Route path="/profile/:id/:role" element={<Profile />} />
         <Route path="/my-bookings/:menteeId" element={<MyBookings />} />

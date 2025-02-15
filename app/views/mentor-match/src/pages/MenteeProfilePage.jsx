@@ -32,6 +32,8 @@ export default function MenteeProfilePage({ data }) {
 
     const dispatch = useDispatch()
 
+    console.log(data)
+
     if (!data) {
         return <p>loading</p>
     }
@@ -63,18 +65,19 @@ export default function MenteeProfilePage({ data }) {
         }
     }
 
-    const addEducation = () => {
+    /* const addEducation = () => {
         setForm({
             ...form,
             education: [...form.education, { startYear: '', endYear: '', institute: '', degree: '', fieldOfStudy: '' }]
         });
-    };
-    const handleRemove = (index) => {
+    }; */
+
+/*     const handleRemove = (index) => {
         setForm({
             ...form,
             education: form.education.filter((_, i) => i !== index),
         });
-    }
+    } */
 
     const handleEducationChange = (index, field, value) => {
         const updatedEducation = [...form.education];
@@ -86,16 +89,60 @@ export default function MenteeProfilePage({ data }) {
     return (
         <div>
             <div className="bg-cyan-900 w-full h-60">
-                <img className="w-10 h-10 absolute right-6 top-71 cursor-pointer" src="/src/assets/a.png" onClick={() => { setShowForm(true) }} />
+
+                {data?.userId?.role == 'mentee' && (
+                    <img className="w-12 h-12 absolute right-6 top-86 cursor-pointer" src="/src/assets/a.png" onClick={() => { setShowForm(true) }} />
+                )}
+
                 <div className="">
                     <div>
-                        <img className="border-4 border-white absolute top-60 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
+                        <img className="border-4 border-white absolute top-55 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
                         <p className="text-3xl font-semibold ps-10 pt-80">{data?.userId?.username}</p>
-                        <p className="text-xl ps-10 text-blue-500"><a src={data?.linkedIn}>LinkedIn</a></p>
-                        <p className="text-xl ps-10">{data?.phoneNumber}</p>
-                        <p className="text-xl ps-10">{data?.skills?.skill}</p>
-                        <p className="text-xl ps-10">{data?.education}</p>
-                        <p className="text-xl ps-10">{data?.location}</p>
+                        <p className="text-lg ps-10 mt-2">{data?.bio}</p>
+                        <p className="text-lg ps-10 mt-2 font-semibold text-blue-600 hover:underline cursor-pointer" target="_blank"><a src={data?.linkedIn}>LinkedIn</a></p>
+                        <p className="text-md ps-10 mt-2">{data?.phoneNumber}</p>
+                        <p className="text-md ps-10 mt-2">{data?.location}</p>
+
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {data?.skills?.map((skill, index) => (
+                            <span key={index} className=" bg-gray-200 mb-6 ml-10 text-gray-700 px-3 py-1 rounded-full text-lg">
+                                {skill.skill}
+                            </span>
+                        ))}
+                    </div>
+
+                    <hr />
+                    <div>
+                        <div className="px-10 py-6">
+                            <h2 className="text-3xl font-semibold mb-6">Education</h2>
+                            {data?.education?.length > 0 ? (
+                                data.education.map((exp, i) => (
+                                    <div key={i} className="p-6 mb-4 border border-gray-200 rounded-lg shadow-sm bg-white">
+                                        <div className="flex flex-col md:flex-row md:justify-between">
+                                            <div>
+                                                <p className="text-xl font-bold text-gray-800">Institute - {exp?.institute}</p>
+                                                <p className="text-lg font-semibold text-gray-600 mt-1">Degree - {exp?.degree}</p>
+                                                <p className="text-lg font-semibold text-gray-600 mt-1">Field of Study - {exp?.fieldOfStudy}</p>
+                                            </div>
+                                            <div className="mt-4 md:mt-0 text-right">
+                                                <p className="text-sm text-gray-500">
+                                                    {exp?.startYear ? exp?.startYear : "N/A"}{" "}
+                                                    -{" "}
+                                                    {exp?.endYear ? exp?.endYear : "Present"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-lg text-gray-500">No Education available.</p>
+                            )}
+                        </div>
+                        <hr />
+                        <div>
+                            <p className="text-3xl font-semibold ps-10 my-8" >What Mentor say</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -144,11 +191,10 @@ export default function MenteeProfilePage({ data }) {
                                         onChange={(e) => handleEducationChange(index, 'degree', e.target.value)} />
                                     <input type="text" placeholder="Field of Study" value={education.fieldOfStudy}
                                         onChange={(e) => handleEducationChange(index, 'fieldOfStudy', e.target.value)} />
-                                    <btton className="bg-red-600 text-white py-1 px-4 rounded-md shadow hover:bg-red-700" onClick={() => { handleRemove(index) }}>delete</btton>
                                 </div>
                             ))}
 
-                            <button type="button" onClick={addEducation} className="bg-blue-600 text-white py-1 px-4 rounded-lg shadow hover:bg-blue-700">
+                            <button type="button" className="bg-blue-600 text-white py-1 px-4 rounded-lg shadow hover:bg-blue-700">
                                 Add Education
                             </button>
 

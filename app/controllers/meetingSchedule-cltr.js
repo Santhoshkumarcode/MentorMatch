@@ -10,9 +10,20 @@ const meeting = {}
 
 meeting.requestMeeting = async (req, res) => {
     const body = req.body
+    const menteeId = req.currentUser.userId
+
     try {
+        const existingMeeting = await Meeting.findOne({
+            mentorId: body.mentorId,
+            menteeId: menteeId,
+        });
+
+        if (existingMeeting) {
+            return res.status(400).json({ message: "You have already booked this mentor." });
+        }
+
         const meeting = new Meeting(body)
-        meeting.menteeId = req.currentUser.userId
+        meeting.menteeId = menteeId
         await meeting.save()
         return res.status(201).json(meeting)
     } catch (err) {
@@ -106,7 +117,7 @@ meeting.meetingTranscript = async (req, res) => {
     const meetingId = req.params.meetingId
     const body = req.body;
     const audioFile = req.file;
-    
+
     console.log(audioFile)
 
     if (!audioFile) {

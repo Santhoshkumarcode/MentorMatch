@@ -15,7 +15,6 @@ export default function Profile() {
     const { singleData } = useSelector((state) => state.mentors)
     const { data: menteeData } = useSelector((state) => state.mentees)
 
-    
 
     useEffect(() => {
         console.log(role, id)
