@@ -12,6 +12,7 @@ import menteeRoutes from "./app/routes/mentee-routes.js"
 import reviewRoutes from "./app/routes/review-routes.js"
 import meetingRoutes from "./app/routes/meetingSchedule-routes.js"
 import summaryRoutes from "./app/routes/summary-route.js"
+import chatRoutes from "./app/routes/chat-routes.js"
 import chatHandler from "./app/controllers/chat-handler.js"
 
 dotenv.config()
@@ -31,8 +32,7 @@ const io = new Server(server, {
 })
 io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
-
-    chatHandler(io,socket)
+    chatHandler(io, socket)
 });
 
 
@@ -59,7 +59,10 @@ app.use('/api', reviewRoutes)
 // meeting schedule route
 app.use('/api', meetingRoutes)
 
+// chat route
+app.use('/api', chatRoutes)
+
 // summary route
-app.use('/api',summaryRoutes)
+app.use('/api', summaryRoutes)
 
 server.listen(process.env.PORT, () => console.log(`server running in port: ${process.env.PORT}`))
