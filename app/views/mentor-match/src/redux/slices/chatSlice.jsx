@@ -3,7 +3,8 @@ import axios from "../../config/axios";
 
 export const getchats = createAsyncThunk('/chats/getChats', async ({ meetingId}, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`/chats/${meetingId}`)
+        const response = await axios.get(`/api/chats/${meetingId}`)
+        console.log(meetingId)
         console.log(response.data)
         return response.data
     } catch (err) {
