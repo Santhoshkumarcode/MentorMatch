@@ -4,7 +4,14 @@ import _ from "lodash"
 import cloudinary from '../utils/cloudinary.js';
 import upload from '../middlewares/multer.js';
 import fs from 'fs';
-import { mailToAdmin } from "../utils/nodemailer.js";
+import { mailToAdmin, sendMail } from "../utils/nodemailer.js";
+
+import Stripe from "stripe"
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const mentorCltr = {}
 
@@ -85,7 +92,6 @@ mentorCltr.updateMentor = async (req, res) => {
         return res.status(500).json(err);
     }
 };
-
 //get all mentor details to verify by admin
 mentorCltr.getAll = async (req, res) => {
     try {
@@ -99,7 +105,6 @@ mentorCltr.getAll = async (req, res) => {
     }
 
 }
-
 // show only who's profile is verified by admin
 mentorCltr.getVerified = async (req, res) => {
     try {
@@ -120,7 +125,7 @@ mentorCltr.getVerified = async (req, res) => {
 
         if (skillFilter) {
             const skills = await Skills.find({ skill: { $regex: skillFilter, $options: 'i' } });
-            const skillIds = skills.map(skill => skill._id); 
+            const skillIds = skills.map(skill => skill._id);
 
             searchQuery['skills'] = { $in: skillIds };
         }
@@ -147,8 +152,6 @@ mentorCltr.getVerified = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
-
-
 // get individual mentor profile
 mentorCltr.getProfile = async (req, res) => {
     const id = req.params.id
@@ -163,8 +166,6 @@ mentorCltr.getProfile = async (req, res) => {
         return res.status(500).json(err)
     }
 }
-
-
 // to delete profile
 mentorCltr.deleteProfile = async (req, res) => {
     const id = req.params.id
@@ -179,21 +180,50 @@ mentorCltr.deleteProfile = async (req, res) => {
         return res.status(500).json(err)
     }
 }
-
 // is verified 
-mentorCltr.isVerified = async (req, res) => {
-    const id = req.params.id
-    const body = req.body
-    try {
-        const mentor = await Mentor.findOneAndUpdate({ userId: id }, body, { new: true, runValidators: true })
-        if (!mentor) {
-            return res.status(404).json('Mentor not available')
+    mentorCltr.isVerified = async (req, res) => {
+        const id = req.params.id
+        const body = req.body
+        try {
+            const mentor = await Mentor.findOneAndUpdate({ userId: id }, body, { new: true, runValidators: true }).populate('userId')
+            if (!mentor) {
+                return res.status(404).json('Mentor not available')
+            }
+
+            if (!mentor.stripeAccountId) {
+                const account = await stripe.account.create({
+                    type: "express",
+                    email: mentor.userId.email,
+                    country: "US",
+                    capabilities: {
+                        transfers: { requested: true },
+                    },
+                })
+                mentor.stripeAccountId = account.id;
+                await mentor.save();
+            }
+
+
+            const accountLink = await stripe.accountLinks.create({
+                account: mentor.stripeAccountId,
+                refresh_url: "http://localhost:5173/stripe-onboarding",
+                return_url: "http://localhost:5173/",
+                type: "account_onboarding",
+            }); 
+            
+            await sendMail(
+                mentor.userId.email,
+                "Complete Your Stripe Registration",
+                `Hi ${mentor.userId.username},
+                    Your mentor profile has been verified! To receive payments from mentees, please complete your Stripe registration by clicking the link below:
+                    ➡️ Complete Stripe Setup(${accountLink.url})
+                    Thank You.`);
+
+            return res.status(200).json(mentor)
+        } catch (err) {
+            console.log(err)
+            return res.status(500).json({'error': err})
         }
-        return res.status(200).json(mentor)
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json(err)
-    }
 }
 
 

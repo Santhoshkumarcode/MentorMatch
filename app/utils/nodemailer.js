@@ -10,6 +10,20 @@ const transporter = nodemailer.createTransport({
     }
 })
 
+export const sendMail = async (to, subject, text) => {
+    try {
+        await transporter.sendMail({
+            from: process.env.ADMIN_EMAIL,
+            to,
+            subject,
+            text,
+        })
+        console.log('email sent', to)
+    } catch (err) {
+        console.log('error in sending mail', err)
+    }
+}
+
 export const mailToAdmin = async (subject, text) => {
     const mailOptions = {
         from: process.env.ADMIN_EMAIL,

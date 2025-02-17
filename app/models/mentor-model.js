@@ -39,6 +39,7 @@ const mentorSchema = new Schema({
         type: Boolean,
         default: false
     },
+    stripeAccountId:String,
     pricing: {
         basic: {
             amount: Number,
