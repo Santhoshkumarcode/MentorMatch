@@ -4,28 +4,28 @@ import _ from "lodash"
 
 const reviewCltr = {}
 
-// reviewCltr.createReview = async (req, res) => {
+reviewCltr.createReview = async (req, res) => {
 
-//     const { reviewerId, revieweeId, rating, reviewText } = _.pick(req.body, ["revieweeId", "rating", "reviewText"]);
+    const { reviewerId, revieweeId, rating, reviewText } = _.pick(req.body, ["revieweeId", "rating", "reviewText"]);
 
-//     if (reviewerId === revieweeId) {
-//         return res.status(400).json("You cannot review yourself.");
-//     }
-//     try {
-//         const existingReview = await Review.findOne({ reviewerId, revieweeId });
-//         if (existingReview) {
-//             return res.status(400).json("You have already reviewed this user.");
-//         }
+    if (reviewerId === revieweeId) {
+        return res.status(400).json("You cannot review yourself.");
+    }
+    try {
+        const existingReview = await Review.findOne({ reviewerId, revieweeId });
+        if (existingReview) {
+            return res.status(400).json("You have already reviewed this user.");
+        }
 
-//         const review = await Review.create({ reviewerId:req.currentUser.userId, revieweeId, rating, reviewText })
-//         return res.status(201).json(review)
-//     } catch (err) {
-//         console.log(err)
-//         return res.status(500).json(err)
-//     }
-// }
+        const review = await Review.create({ reviewerId:req.currentUser.userId, revieweeId, rating, reviewText })
+        return res.status(201).json(review)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
 
-//
+
 
 
 reviewCltr.getMentorReviews = async (req, res) => {

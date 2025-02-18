@@ -16,6 +16,7 @@ const meetingScheduleSchema = new Schema({
     registeredDate: Date,
     time: String,
     plan: String,
+    paidDate: Date,
     amount: Number,
     audioFile: String,
     transcript: String,

@@ -100,7 +100,7 @@ export const getMenteeBookings = createAsyncThunk('/meetingSchedules/getMenteeBo
 
 export const paymentStatusUpdate = createAsyncThunk('/paymentStatusUpdate/meetingSchedules', async ({ mentorId, menteeId }, { rejectWithValue }) => {
     try {
-        const response = await axios.put(`/api/meetings/paymentStatusUpdate/${mentorId}/${menteeId}`, { paymentStatus: 'paid' })
+        const response = await axios.put(`/api/meetings/paymentStatusUpdate/${mentorId}/${menteeId}`, { paymentStatus: 'paid', paidDate: new Date() })
         return response.data
     } catch (err) {
         console.log(err)

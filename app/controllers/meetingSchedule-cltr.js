@@ -244,9 +244,9 @@ meeting.getMenteeMeetingDates = async (req, res) => {
 
 meeting.paymentStatusUpdate = async (req, res) => {
     const { mentorId, menteeId } = req.params
-    const { paymentStatus } = req.body
+    const body = req.body
     try {
-        const meeting = await Meeting.findOneAndUpdate({ mentorId, menteeId }, { paymentStatus }, { new: true })
+        const meeting = await Meeting.findOneAndUpdate({ mentorId, menteeId }, body, { new: true })
         if (!meeting) {
             return res.status(404).json('Meeting not found')
         }

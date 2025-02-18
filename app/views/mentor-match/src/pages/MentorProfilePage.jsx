@@ -47,6 +47,17 @@ export default function MentorProfilePage({ data }) {
     const dispatch = useDispatch()
     const { id } = useParams()
 
+    useEffect(() => {
+        if (data && data.skills) {
+            const prefilledSkills = data.skills.map(skill => ({
+                value: skill._id,
+                label: skill.skill,
+            }));
+            setSelectedSkills(prefilledSkills);
+            setForm(prev => ({ ...prev, skills: prefilledSkills.map(s => s.value) }));
+        }
+    }, [data]);
+
 
     useEffect(() => {
         dispatch(getAllSkills())
@@ -61,14 +72,23 @@ export default function MentorProfilePage({ data }) {
         setForm({ ...form, skills: selectedOption.map(ele => ele.value) });
     }
 
-    const handleCreateSkill = (inputValue) => {
-
-        const newSkill = { value: inputValue, label: inputValue }
-        setSelectedSkills([...selectedSkills, newSkill]);
-        setForm({ ...form, skills: [...form.skills, inputValue] });
-
-        dispatch(addNewSkill({ skill: inputValue }));
+    const handleCreateSkill = async (inputValue) => {
+        const result = await dispatch(addNewSkill({ skill: inputValue }));
+        if (result && result.payload) {
+            const createdSkillOption = {
+                value: result.payload._id,
+                label: result.payload.skill,
+            };
+            setSelectedSkills([...selectedSkills, createdSkillOption]);
+            setForm({
+                ...form,
+                skills: [...(form.skills || []), result.payload._id]
+            });
+        } else {
+            console.error("Failed to add new skill");
+        }
     };
+
 
     const handleClick = (data) => {
         setShowForm(true)
@@ -90,7 +110,7 @@ export default function MentorProfilePage({ data }) {
     return (
         <div>
             <div className="bg-cyan-900 w-full h-60">
-                
+
                 <img className="w-12 h-12 absolute right-6 top-70 cursor-pointer" src="/src/assets/a.png" onClick={() => { handleClick(data) }} />
                 <div>
                     <div className="pb-20">
