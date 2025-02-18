@@ -13,6 +13,7 @@ router.get('/meetings/mentor/:mentorId', authentication, meeting.getMeetingDates
 router.get('/meetings/mentee/dates/:menteeId', authentication, meeting.getMenteeMeetingDates)
 router.put('/meetings/:meetingId', authentication, meeting.statusUpdate)
 router.put('/meetings/transcript/:meetingId', authentication, meeting.meetingTranscript)
+router.put('/meetings/paymentStatusUpdate/:mentorId/:menteeId', meeting.paymentStatusUpdate)
 router.get('/meetings/:meetingId', authentication, meeting.getMeetingDetails)
 router.get('/meetings/mentee/:menteeId', authentication, authorizeUser(['mentee']), meeting.getBookingsOfMentee)
 router.delete('/meetings/:meetingId', authentication, authorizeUser(['admin', 'mentor']), meeting.deleteMeeting)

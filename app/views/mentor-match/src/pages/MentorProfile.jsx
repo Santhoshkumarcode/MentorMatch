@@ -24,8 +24,8 @@ export default function MentorProfile() {
         return <h1>loading....</h1>
     }
 
-    const handleApply = async (plan) => {
-        await navigate(`/apply-form/${singleData.userId._id}/${plan}`)
+    const handleApply = async (plan, amount) => {
+        await navigate(`/apply-form/${singleData.userId._id}/${plan}/${amount}`)
     }
 
     const formatDate = (date) => {
@@ -96,7 +96,7 @@ export default function MentorProfile() {
                                     <li>⏳ Session Duration: {singleData?.pricing?.basic?.sessionDuration}</li>
                                     <li>💬 Unlimited Q&A via chat</li>
                                 </ul>
-                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan) }}>
+                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan, singleData?.pricing?.basic?.amount) }}>
                                     Apply Now
                                 </button>
                             </div>
@@ -112,7 +112,7 @@ export default function MentorProfile() {
                                     <li>⏳ Session Duration: {singleData?.pricing?.pro?.sessionDuration}</li>
                                     <li>💬 Unlimited Q&A via chat</li>
                                 </ul>
-                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan) }}>
+                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan, singleData?.pricing?.pro?.amount) }}>
                                     Apply Now
                                 </button>
                             </div>
@@ -160,7 +160,7 @@ export default function MentorProfile() {
                     <p className="text-3xl font-semibold ps-10 my-8 " >What mentees say</p>
                 </div>
             </div>
-            
+
         </div>
     )
 }

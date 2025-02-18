@@ -6,6 +6,7 @@ import { getMeetingsOfMentee } from "../redux/slices/meetingScheduleSlice"
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import Chat from "./Chat"
+import { createPayment } from "../redux/slices/paymentSlice"
 
 const renderEventContent = (eventInfo) => {
     return (
@@ -20,16 +21,16 @@ export default function MyBookings() {
 
     const { menteeBookings } = useSelector((state) => state?.meetingSchedules)
     const { menteeMeetingDates } = useSelector((state) => state.meetingSchedules)
+    const { data } = useSelector((state) => state.payments)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
     const [chatBox, setChatBox] = useState(false)
     const [currentPage, setCurrentPage] = useState('myBookings')
-    const[roomId,setRoomId] = useState('')
+    const [roomId, setRoomId] = useState('')
 
     const { menteeId } = useParams()
-
-
 
     const events = menteeMeetingDates.map(ele => ({
         title: ele?.title?.username,
@@ -61,10 +62,16 @@ export default function MyBookings() {
         return <p>loading</p>
     }
 
-    const makePayment = () => {
-
+    const makePayment = async (form) => {
+        try {
+            const response = await dispatch(createPayment(form)).unwrap();
+            localStorage.setItem('stripeId', response.sessionId);
+            window.location = response.url;
+        } catch (err) {
+            console.log(err)
+        }
     }
-    
+
     return (
         <div>
             <div>
@@ -103,11 +110,15 @@ export default function MyBookings() {
                                         </div>
 
                                         <div className="mt-5 flex justify-between">
-                                            <button 
-                                                onClick={makePayment}
+                                            <button
+                                                onClick={() => {
+                                                    makePayment(ele);
+                                                }}
+
                                                 className={`px-4 py-2 text-white rounded-md shadow-md transition 
                             ${ele.paymentStatus === 'pending' ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`}
-                                                disabled={ele.paymentStatus === 'paid'}>
+                                                disabled={ele.paymentStatus === 'paid'}
+                                            >
                                                 {ele.paymentStatus === 'pending' ? 'Pay Now' : 'Paid'}
                                             </button>
 
@@ -149,7 +160,7 @@ export default function MyBookings() {
 
                 </div>
                 {chatBox && (
-                    <Chat isOpen={handleChat} userId={menteeId} meetingId={roomId}/>
+                    <Chat isOpen={handleChat} userId={menteeId} meetingId={roomId} />
                 )}
             </div>
         </div>

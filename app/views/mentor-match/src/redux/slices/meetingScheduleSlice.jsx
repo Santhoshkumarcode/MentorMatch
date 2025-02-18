@@ -13,7 +13,6 @@ export const requestBooking = createAsyncThunk('/meetingSchedules/requestBooking
 
 })
 
-
 export const getAllMyStudent = createAsyncThunk('/meetingSchedules/getAllMyStudent', async ({ mentorId }, { rejectWithValue }) => {
     try {
         const response = await axios.get(`/api/meetings/request/${mentorId}`, { headers: { Authorization: localStorage.getItem('token') } })
@@ -99,14 +98,24 @@ export const getMenteeBookings = createAsyncThunk('/meetingSchedules/getMenteeBo
     }
 })
 
+export const paymentStatusUpdate = createAsyncThunk('/paymentStatusUpdate/meetingSchedules', async ({ mentorId, menteeId }, { rejectWithValue }) => {
+    try {
+        const response = await axios.put(`/api/meetings/paymentStatusUpdate/${mentorId}/${menteeId}`, { paymentStatus: 'paid' })
+        return response.data
+    } catch (err) {
+        console.log(err)
+        return rejectWithValue(err.response.data.errors)
+    }
+})
+
 const meetingScheduleSlice = createSlice({
     name: 'meetingSchedules',
     initialState: {
         data: [],
         acceptedData: [],
         meetingDates: [],
-        menteeMeetingDates:[],
-        menteeBookings:[],
+        menteeMeetingDates: [],
+        menteeBookings: [],
         serverError: null
     },
 

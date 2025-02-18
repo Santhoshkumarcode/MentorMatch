@@ -18,6 +18,8 @@ import MeetingPage from "./pages/MeetingPage"
 import Footer from "./components/footer"
 import Chat from "./pages/Chat"
 import MentorViewMenteeProfile from "./pages/MentorViewMenteeProfile"
+import PaymentRejectedPage from "./pages/PaymentRejectedPage"
+import PaymentSuccess from "./pages/PaymentSuccessPage"
 
 export default function App() {
 
@@ -31,18 +33,20 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
+        <Route path="/payment-rejected" element={<PaymentRejectedPage />} />
+        <Route path="/payment-success/mentor/:mentorId/mentee/:menteeId" element={<PaymentSuccess />} />
         <Route path="/allMentor" element={<AllMentor />} />
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/mentee-detail" element={<MenteeDetail />} />
         <Route path="/profile/mentorViewMenteeProfile/:id" element={<MentorViewMenteeProfile />} />
-        
+
         <Route path="/chat/:mentorId/:menteeId" element={<Chat />} />
         <Route path="/profile/:id/:role" element={<Profile />} />
         <Route path="/my-bookings/:menteeId" element={<MyBookings />} />
         <Route path="/meeting-page/:mentorId/:menteeId" element={<MeetingPage />} />
         <Route path="/my-student/:mentorId" element={<MyStudents />} />
         <Route path="/mentor-profile/:id" element={<MentorProfile />} />
-        <Route path="/apply-form/:mentorId/:plan" element={<ApplyForm />} />
+        <Route path="/apply-form/:mentorId/:plan/:amount" element={<ApplyForm />} />
       </Routes>
 
 

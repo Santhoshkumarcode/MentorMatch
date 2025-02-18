@@ -8,14 +8,15 @@ export default function ApplyForm() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const { mentorId, plan } = useParams()
+    const { mentorId, plan, amount } = useParams()
     const { singleData } = useSelector((state) => state.mentors)
-    
+
 
     const [form, setForm] = useState({
         mentorshipGoal: '',
-        plan: plan,
-        mentorId: mentorId,
+        plan    ,
+        mentorId,
+        amount,
     })
     const [clientErrors, setClientErrors] = useState(null)
     const errors = {}
@@ -45,7 +46,7 @@ export default function ApplyForm() {
                 dispatch(requestBooking({ form, resetForm })).unwrap()
                 alert('Your application successfully submitted...')
                 navigate('/')
-                
+
             } catch (err) {
                 console.log(err)
             }

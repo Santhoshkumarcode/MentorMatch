@@ -61,6 +61,7 @@ meeting.respondToRequest = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
 meeting.getacceptedStudents = async (req, res) => {
 
     const mentorId = req.params.mentorId
@@ -238,6 +239,21 @@ meeting.getMenteeMeetingDates = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).json(error);
+    }
+}
+
+meeting.paymentStatusUpdate = async (req, res) => {
+    const { mentorId, menteeId } = req.params
+    const { paymentStatus } = req.body
+    try {
+        const meeting = await Meeting.findOneAndUpdate({ mentorId, menteeId }, { paymentStatus }, { new: true })
+        if (!meeting) {
+            return res.status(404).json('Meeting not found')
+        }
+        return res.json(meeting)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err);
     }
 }
 

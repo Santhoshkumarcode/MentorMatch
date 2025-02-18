@@ -14,6 +14,7 @@ import meetingRoutes from "./app/routes/meetingSchedule-routes.js"
 import summaryRoutes from "./app/routes/summary-route.js"
 import chatRoutes from "./app/routes/chat-routes.js"
 import chatHandler from "./app/controllers/chat-handler.js"
+import paymentRoutes from "./app/routes/payment-routes.js"
 
 dotenv.config()
 configDb()
@@ -64,5 +65,8 @@ app.use('/api', chatRoutes)
 
 // summary route
 app.use('/api', summaryRoutes)
+
+// payment route
+app.use('/api', paymentRoutes)
 
 server.listen(process.env.PORT, () => console.log(`server running in port: ${process.env.PORT}`))
