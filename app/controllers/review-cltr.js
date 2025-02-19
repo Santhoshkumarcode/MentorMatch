@@ -4,7 +4,7 @@ import _ from "lodash"
 
 const reviewCltr = {}
 
-reviewCltr.createReview = async (req, res) => {
+/* reviewCltr.createReview = async (req, res) => {
 
     const { reviewerId, revieweeId, rating, reviewText } = _.pick(req.body, ["revieweeId", "rating", "reviewText"]);
 
@@ -24,9 +24,6 @@ reviewCltr.createReview = async (req, res) => {
         return res.status(500).json(err)
     }
 }
-
-
-
 
 reviewCltr.getMentorReviews = async (req, res) => {
     const { mentorId } = req.query
@@ -62,7 +59,7 @@ reviewCltr.getMenteeReviews = async (req, res) => {
         console.log(err)
         return res.status(500).json(err)
     }
-}
+} */
 
 reviewCltr.createReview = async (req, res) => {
     const { meetingId, rating, reviewText } = req.body
@@ -98,11 +95,15 @@ reviewCltr.createReview = async (req, res) => {
 reviewCltr.getReviews = async (req, res) => {
     const id = req.params.id
     try {
-        const review = await Review.find({})
-        console.log(review)
+        const review = await Review.find({ revieweeId: id }).populate('reviewerId').populate('revieweeId')
+        if (!review) {
+            return res.status(404).json('No review for you')
+        }
+        return res.status(200).json(review)
     } catch (err) {
         console.log(err)
         return res.status(500).json(err)
     }
 }
+
 export default reviewCltr

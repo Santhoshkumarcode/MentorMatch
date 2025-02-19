@@ -52,6 +52,8 @@ mentorCltr.additionalInfo = async (req, res) => {
 mentorCltr.updateMentor = async (req, res) => {
     const id = req.params.id;
     const body = req.body;
+    const file = req.file
+    console.log(file)
 
     const multerUpload = () =>
         new Promise((resolve, reject) => {
@@ -78,7 +80,7 @@ mentorCltr.updateMentor = async (req, res) => {
         }
         const updatedBody = {
             ...body,
-            ...(imageUrl && { profilePic: imageUrl }),
+            ...(imageUrl ? { profilePic: imageUrl } : {})
         };
         const mentor = await Mentor.findOneAndUpdate({ userId: id }, updatedBody, { new: true, runValidators: true, });
 
@@ -181,49 +183,49 @@ mentorCltr.deleteProfile = async (req, res) => {
     }
 }
 // is verified 
-    mentorCltr.isVerified = async (req, res) => {
-        const id = req.params.id
-        const body = req.body
-        try {
-            const mentor = await Mentor.findOneAndUpdate({ userId: id }, body, { new: true, runValidators: true }).populate('userId')
-            if (!mentor) {
-                return res.status(404).json('Mentor not available')
-            }
+mentorCltr.isVerified = async (req, res) => {
+    const id = req.params.id
+    const body = req.body
+    try {
+        const mentor = await Mentor.findOneAndUpdate({ userId: id }, body, { new: true, runValidators: true }).populate('userId')
+        if (!mentor) {
+            return res.status(404).json('Mentor not available')
+        }
 
-            if (!mentor.stripeAccountId) {
-                const account = await stripe.account.create({
-                    type: "express",
-                    email: mentor.userId.email,
-                    country: "US",
-                    capabilities: {
-                        transfers: { requested: true },
-                    },
-                })
-                mentor.stripeAccountId = account.id;
-                await mentor.save();
-            }
+        if (!mentor.stripeAccountId) {
+            const account = await stripe.account.create({
+                type: "express",
+                email: mentor.userId.email,
+                country: "US",
+                capabilities: {
+                    transfers: { requested: true },
+                },
+            })
+            mentor.stripeAccountId = account.id;
+            await mentor.save();
+        }
 
 
-            const accountLink = await stripe.accountLinks.create({
-                account: mentor.stripeAccountId,
-                refresh_url: "http://localhost:5173/stripe-onboarding",
-                return_url: "http://localhost:5173/",
-                type: "account_onboarding",
-            }); 
-            
-            await sendMail(
-                mentor.userId.email,
-                "Complete Your Stripe Registration",
-                `Hi ${mentor.userId.username},
+        const accountLink = await stripe.accountLinks.create({
+            account: mentor.stripeAccountId,
+            refresh_url: "http://localhost:5173/stripe-onboarding",
+            return_url: "http://localhost:5173/",
+            type: "account_onboarding",
+        });
+
+        await sendMail(
+            mentor.userId.email,
+            "Complete Your Stripe Registration",
+            `Hi ${mentor.userId.username},
                     Your mentor profile has been verified! To receive payments from mentees, please complete your Stripe registration by clicking the link below:
                     ➡️ Complete Stripe Setup(${accountLink.url})
                     Thank You.`);
 
-            return res.status(200).json(mentor)
-        } catch (err) {
-            console.log(err)
-            return res.status(500).json({'error': err})
-        }
+        return res.status(200).json(mentor)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ 'error': err })
+    }
 }
 
 

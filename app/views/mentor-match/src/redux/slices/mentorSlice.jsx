@@ -12,6 +12,7 @@ export const fetchAllMentors = createAsyncThunk('/mentors/fetchAllMentors', asyn
 })
 
 export const updateMentor = createAsyncThunk('/mentors/updateMentor', async ({ userId, form }, { rejectWithValue }) => {
+    console.log(form)
     try {
         const response = await axios.put(`/api/mentors/additionalInfo/${userId}`, form, { headers: { Authorization: localStorage.getItem('token') } })
         return response.data

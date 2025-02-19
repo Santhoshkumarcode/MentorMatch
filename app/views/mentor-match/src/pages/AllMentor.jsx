@@ -89,7 +89,7 @@ export default function AllMentor() {
                                     <p className="text-gray-600 mt-1 font-semibold">{ele.jobTitle}</p>
                                     <p className="text-gray-700 mt-3">{ele.bio}</p>
                                     <p className="text-gray-500 mt-2">{ele.about}</p>
-
+                                    
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
                                         {ele.skills.map((e, index) => (
                                             <p key={index} className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-sm text-center">

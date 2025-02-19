@@ -1,5 +1,5 @@
 import express from "express"
-import menteeCltr from "../controllers/Mentee-cltr.js"
+import menteeCltr from "../controllers/mentee-cltr.js"
 
 import { authentication } from "../middlewares/authentication.js"
 import authorizeUser from "../middlewares/authorizeUser.js"

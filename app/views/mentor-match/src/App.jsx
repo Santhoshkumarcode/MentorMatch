@@ -20,6 +20,8 @@ import Chat from "./pages/Chat"
 import MentorViewMenteeProfile from "./pages/MentorViewMenteeProfile"
 import PaymentRejectedPage from "./pages/PaymentRejectedPage"
 import PaymentSuccess from "./pages/PaymentSuccessPage"
+import ReviewForm from "./pages/ReviewForm"
+import AdminAnalytics from "./pages/AdminAnalytics"
 
 export default function App() {
 
@@ -32,12 +34,14 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/admin-analytics" element={<AdminAnalytics />} />
 
         <Route path="/payment-rejected" element={<PaymentRejectedPage />} />
         <Route path="/payment-success/mentor/:mentorId/mentee/:menteeId" element={<PaymentSuccess />} />
         <Route path="/allMentor" element={<AllMentor />} />
         <Route path="/mentor-detail" element={<MentorDetail />} />
         <Route path="/mentee-detail" element={<MenteeDetail />} />
+        <Route path="/review-form" element={<ReviewForm />} />
         <Route path="/profile/mentorViewMenteeProfile/:id" element={<MentorViewMenteeProfile />} />
 
         <Route path="/chat/:mentorId/:menteeId" element={<Chat />} />

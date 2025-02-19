@@ -109,34 +109,55 @@ export default function MyBookings() {
                                             </p>
                                         </div>
 
+
                                         <div className="mt-5 flex justify-between">
                                             <button
                                                 onClick={() => {
                                                     makePayment(ele);
                                                 }}
-
                                                 className={`px-4 py-2 text-white rounded-md shadow-md transition 
                             ${ele.paymentStatus === 'pending' ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`}
                                                 disabled={ele.paymentStatus === 'paid'}
                                             >
                                                 {ele.paymentStatus === 'pending' ? 'Pay Now' : 'Paid'}
                                             </button>
+                                            {(() => {
+                                                const paymentDate = new Date(ele?.paidDate);
+                                                const currentDate = new Date();
+                                                const diffInDays = Math.floor((currentDate - paymentDate) / (1000 * 60 * 60 * 24));
 
-                                            {ele.paymentStatus === 'paid' && (
-                                                <div className="flex space-x-3">
-                                                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
-                                                        onClick={() => {
-                                                            handleChat(ele?.mentorId?._id, ele?.menteeId?._id)
-                                                            setRoomId(ele._id)
-                                                        }}>
-                                                        Chat
-                                                    </button>
-                                                    <button className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
-                                                        onClick={() => handleJoin(ele?.mentorId?._id, menteeId)}>
-                                                        Meet
-                                                    </button>
-                                                </div>
-                                            )}
+                                                if (ele.paymentStatus === 'paid') {
+                                                    if (diffInDays < 30) {
+                                                        return (
+                                                            <div className="flex space-x-3">
+                                                                <button
+                                                                    className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
+                                                                    onClick={() => {
+                                                                        handleChat(ele?.mentorId?._id, ele?.menteeId?._id);
+                                                                        setRoomId(ele._id);
+                                                                    }}>
+                                                                    Chat
+                                                                </button>
+                                                                <button
+                                                                    className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
+                                                                    onClick={() => handleJoin(ele?.mentorId?._id, menteeId)}>
+                                                                    Meet
+                                                                </button>
+                                                            </div>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <button
+                                                                className="px-4 py-2 bg-yellow-500 text-white rounded-md shadow-md hover:bg-yellow-600 transition"
+                                                                onClick={() => handleReview(ele?._id)}>
+                                                                Review
+                                                            </button>
+                                                        );
+                                                    }
+                                                }
+                                                return null;
+                                            })()}
+
                                         </div>
                                     </div>
                                 ))}

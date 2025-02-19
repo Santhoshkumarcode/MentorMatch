@@ -23,20 +23,27 @@ const initialState = {
 
 export default function MenteeProfilePage({ data }) {
 
-    const [showForm, setShowForm] = useState(false)
-    const { data: skills } = useSelector((state) => state.skills)
-    const [selectedSkills, setSelectedSkills] = useState([])
-    const [form, setForm] = useState(initialState)
-
-    const { id } = useParams()
-
-    const dispatch = useDispatch()
-
     console.log(data)
 
-    if (!data) {
-        return <p>loading</p>
-    }
+    const [showForm, setShowForm] = useState(false)
+    const [form, setForm] = useState({})
+    const [selectedSkills, setSelectedSkills] = useState([])
+    const { data: skills } = useSelector((state) => state.skills)
+
+    const dispatch = useDispatch()
+    const { id } = useParams()
+
+
+    useEffect(() => {
+        if (data && data.skills) {
+            const prefilledSkills = data.skills.map(skill => ({
+                value: skill._id,
+                label: skill.skill,
+            }));
+            setSelectedSkills(prefilledSkills);
+            setForm(prev => ({ ...prev, skills: prefilledSkills.map(s => s.value) }));
+        }
+    }, [data]);
 
     useEffect(() => {
         dispatch(getAllSkills())
@@ -47,22 +54,33 @@ export default function MenteeProfilePage({ data }) {
         setForm({ ...form, skills: selectedOption.map(ele => ele.value) });
     }
 
-    const handleCreateSkill = (inputValue) => {
-
-        const newSkill = { value: inputValue, label: inputValue }
-        setSelectedSkills([...selectedSkills, newSkill]);
-        setForm({ ...form, skills: [...form.skills, inputValue] });
-
-        dispatch(addNewSkill({ skill: inputValue }));
+    const handleCreateSkill = async (inputValue) => {
+        const result = await dispatch(addNewSkill({ skill: inputValue }));
+        if (result && result.payload) {
+            const createdSkillOption = {
+                value: result.payload._id,
+                label: result.payload.skill,
+            };
+            setSelectedSkills([...selectedSkills, createdSkillOption]);
+            setForm({
+                ...form,
+                skills: [...(form.skills || []), result.payload._id]
+            });
+        } else {
+            console.error("Failed to add new skill");
+        }
     };
 
-    const handleSubmit = (e) => {
-        console.log(form)
+    const handleClick = (data) => {
+        setShowForm(true)
+        setForm(data)
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        if (id) {
-            dispatch(menteeUpdate({ id, form })).unwrap()
-            setShowForm(false)
-        }
+
+        dispatch(menteeUpdate({ id, form }))
+        setShowForm(false)
     }
 
     /* const addEducation = () => {
@@ -72,12 +90,12 @@ export default function MenteeProfilePage({ data }) {
         });
     }; */
 
-/*     const handleRemove = (index) => {
-        setForm({
-            ...form,
-            education: form.education.filter((_, i) => i !== index),
-        });
-    } */
+    /*     const handleRemove = (index) => {
+            setForm({
+                ...form,
+                education: form.education.filter((_, i) => i !== index),
+            });
+        } */
 
     const handleEducationChange = (index, field, value) => {
         const updatedEducation = [...form.education];
@@ -85,14 +103,15 @@ export default function MenteeProfilePage({ data }) {
         setForm({ ...form, education: updatedEducation });
     };
 
+    if (!data) {
+        return <p>loading</p>
+    }
 
     return (
         <div>
             <div className="bg-cyan-900 w-full h-60">
 
-                {data?.userId?.role == 'mentee' && (
-                    <img className="w-12 h-12 absolute right-6 top-86 cursor-pointer" src="/src/assets/a.png" onClick={() => { setShowForm(true) }} />
-                )}
+                <img className="w-12 h-12 absolute right-6 top-86 cursor-pointer" src="/src/assets/a.png" onClick={() => { handleClick(data) }} />
 
                 <div className="">
                     <div>
@@ -139,17 +158,13 @@ export default function MenteeProfilePage({ data }) {
                                 <p className="text-lg text-gray-500">No Education available.</p>
                             )}
                         </div>
-                        <hr />
-                        <div>
-                            <p className="text-3xl font-semibold ps-10 my-8" >What Mentor say</p>
-                        </div>
                     </div>
                 </div>
             </div>
 
             {showForm && (
                 <div className="fixed inset-0 flex justify-center items-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg relative">
+                    <div className="bg-white p-6 rounded-lg shadow-2xl relative w-full max-w-4xl max-h-[90vh] overflow-y-auto scale-105">
                         <button
                             onClick={() => setShowForm(false)}
                             className="absolute top-2 right-3 text-gray-600 hover:text-gray-800">✖</button>
@@ -158,7 +173,7 @@ export default function MenteeProfilePage({ data }) {
 
 
                         <form className="space-y-4" onSubmit={handleSubmit}>
-                            <input className="border rounded-full w-20 h-20 bg-gray-300" type="file" accept="image/*"
+                            <input className="border rounded-full w-20 h-20 bg-gray-300" src={data?.profilePic} type="file" accept="image/*"
                                 onChange={(e) => { setForm({ ...form, profilePic: e.target.files[0] }) }} />
                             <span className="absolute top-30 left-28">Upload image</span>
 
@@ -166,6 +181,7 @@ export default function MenteeProfilePage({ data }) {
                                 <input
                                     className="w-full border border-gray-300 p-2 rounded"
                                     type="text"
+                                    value={form?.bio}
                                     placeholder="Enter Bio"
                                     onChange={(e) => { setForm({ ...form, bio: e.target.value }) }}
                                 />
@@ -173,15 +189,16 @@ export default function MenteeProfilePage({ data }) {
                                 <input
                                     className="w-full border border-gray-300 p-2 rounded"
                                     type="text"
+                                    value={form?.location}
                                     placeholder="Enter Location"
                                     onChange={(e) => { setForm({ ...form, location: e.target.value }) }}
                                 />
                             </div>
 
                             <p>Education</p>
-                            {form.education.map((education, index) => (
+                            {form?.education?.map((education, index) => (
                                 <div key={index} className="flex border border-gray-300 mb-2">
-                                    <input type="text" placeholder="Start Year" value={education.startYear}
+                                    <input type="text" placeholder="Start Year" value={education?.startYear}
                                         onChange={(e) => handleEducationChange(index, 'startYear', e.target.value)} />
                                     <input type="text" placeholder="End Year" value={education.endYear}
                                         onChange={(e) => handleEducationChange(index, 'endYear', e.target.value)} />
@@ -209,9 +226,10 @@ export default function MenteeProfilePage({ data }) {
                             />
 
                             <div className="flex w-full my-8">
-                                <input className="flex border rounded p-2 w-full border-gray-300" type="text" placeholder="LinkedIn"
+                                <input className="flex border rounded p-2 w-full border-gray-300" type="text" value={form?.linkedIn} placeholder="LinkedIn"
                                     onChange={(e) => { setForm({ ...form, linkedIn: e.target.value }) }} />
-                                <input className="flex border rounded p-2 w-full border-gray-300" type="number" placeholder="Phone Number"
+
+                                <input className="flex border rounded p-2 w-full border-gray-300" type="number" value={form?.phoneNumber} placeholder="Phone Number"
                                     onChange={(e) => { setForm({ ...form, phoneNumber: e.target.value }) }} />
                             </div>
                             <input

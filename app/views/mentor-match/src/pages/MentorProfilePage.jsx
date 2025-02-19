@@ -47,6 +47,7 @@ export default function MentorProfilePage({ data }) {
     const dispatch = useDispatch()
     const { id } = useParams()
 
+
     useEffect(() => {
         if (data && data.skills) {
             const prefilledSkills = data.skills.map(skill => ({
@@ -97,14 +98,20 @@ export default function MentorProfilePage({ data }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
         dispatch(updateMentor({ userId: id, form }))
         setShowForm(false)
     }
+
     const formatDate = (date) => {
         return format(date, "yyyy-MM-dd")
     }
-    const handleRemove = (id) => {
-        console.log(id)
+
+    const handleRemove = (delId) => {
+        const updatedExperiences = form.experiences.filter(exp => exp._id !== delId);
+        const updatedForm = { ...form, experiences: updatedExperiences };
+        setForm(updatedForm);
+        dispatch(updateMentor({ userId: id, form: updatedForm }))
     }
 
     return (
@@ -175,12 +182,14 @@ export default function MentorProfilePage({ data }) {
 
                         <h2 className="text-2xl font-semibold mb-4 text-center">Update Profile</h2>
 
-                        <form className="space-y-4" onSubmit={handleSubmit}>
+                        <form className="space-y-5" onSubmit={handleSubmit}>
                             <input
                                 className="border rounded-full w-20 h-20 bg-gray-300"
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => { setForm({ ...form, profilePic: e.target.files[0] }) }}
+                                onChange={(e) => {
+                                    setForm({ ...form, profilePic: e.target.files[0] })
+                                }}
                             />
                             <span className="block text-gray-500">Upload Image</span>
 
@@ -200,6 +209,7 @@ export default function MentorProfilePage({ data }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Location"
                                     value={form?.location} onChange={(e) => { setForm({ ...form, location: e.target.value }) }} />
+                                
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Spoken Languages" value={form?.spokenLanguages} onChange={(e) => { setForm({ ...form, spokenLanguages: e.target.value }) }} />
                             </div>
 
@@ -299,18 +309,28 @@ export default function MentorProfilePage({ data }) {
                                 ))}
 
                                 <button
-                                    className="mt-2 px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-700"
-                                    onClick={() => {
+                                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-700 transition"
+                                    onClick={(e) => {
+                                        e.preventDefault();
                                         const newExperience = { startingDate: "", endingDate: "", companyName: "", position: "" };
-                                        setForm((prevState) => ({
-                                            ...prevState,
-                                            experiences: [...(prevState.experiences || []), newExperience],
-                                        }));
+                                        setForm({ ...form, experiences: [...(form.experiences || []), newExperience] });
                                     }}
                                 >
                                     Add Experience
                                 </button>
                             </div>
+
+                            {/* <div className="p-6 bg-gray-200 rounded-2xl shadow-md max-w-md mx-auto">
+                                <p className="text-center text-xl font-semibold text-gray-800 mb-4">Choose a subscription plan</p>
+                                <div className="flex justify-center gap-4">
+                                    <button className="px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition">
+                                        Basic
+                                    </button>
+                                    <button className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+                                        Premium
+                                    </button>
+                                </div>
+                            </div> */}
 
 
                             {/* pricing form  */}

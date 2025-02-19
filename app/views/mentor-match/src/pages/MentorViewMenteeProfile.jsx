@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom";
 import { menteeProfile } from "../redux/slices/menteeSlice";
+import { getReviews } from "../redux/slices/reviewSlice";
 
 export default function MentorViewMenteeProfile() {
 
     const { data } = useSelector((state) => state.mentees)
-    console.log(data)
+    const { data: reviews } = useSelector((state) => state.reviews)
 
     const { id } = useParams()
     console.log(id)
@@ -14,8 +15,12 @@ export default function MentorViewMenteeProfile() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-       dispatch(menteeProfile({id})) 
-    },[])
+            dispatch(getReviews({ id }))
+    }, [dispatch, id])
+    
+    useEffect(() => {
+        dispatch(menteeProfile({ id }))
+    }, [])
     if (!data) {
         return <p>loading</p>
     }
@@ -69,6 +74,35 @@ export default function MentorViewMenteeProfile() {
                                 <p className="text-lg text-gray-500">No experiences available.</p>
                             )}
                         </div>
+                    </div>
+                    <hr />
+
+                    <div className="px-10 py-6">
+                        <h2 className="text-3xl font-semibold mb-6">What mentees say</h2>
+                        {reviews && reviews.length > 0 ? reviews.map((ele, i) => (
+                            <div key={i} className="p-6 mb-4 border border-gray-200 rounded-lg shadow-sm bg-white">
+                                <div className="flex flex-col md:flex-row md:justify-between">
+                                    <div>
+                                        <p className="text-2xl font-bold text-gray-800">{ele.reviewerId.username}</p>
+                                        <p className="text-lg text-gray-700 mt-1">{ele.reviewText}</p>
+
+                                        <div className="flex items-center mt-2">
+                                            {Array.from({ length: 5 }, (_, index) => (
+                                                <svg
+                                                    key={index}
+                                                    className={`w-6 h-6 ${ele.rating > index ? "text-yellow-400" : "text-gray-300"}`}
+                                                    fill="currentColor"
+                                                    viewBox="0 0 30 30"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.522 4.695a1 1 0 00.95.69h4.942c.969 0 1.371 1.24.588 1.81l-4 2.9a1 1 0 00-.364 1.118l1.522 4.695c.3.921-.755 1.688-1.54 1.118l-4-2.9a1 1 0 00-1.176 0l-4 2.9c-.784.57-1.838-.197-1.539-1.118l1.522-4.695a1 1 0 00-.364-1.118l-4-2.9c-.783-.57-.38-1.81.588-1.81h4.942a1 1 0 00.95-.69l1.522-4.695z" />
+                                                </svg>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )) : <p className="text-lg text-gray-500">No reviews available.</p>}
                     </div>
                 </div>
             </div>
