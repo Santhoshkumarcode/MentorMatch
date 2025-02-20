@@ -7,6 +7,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import Chat from "./Chat"
 import { createPayment } from "../redux/slices/paymentSlice"
+import ReviewForm from "./ReviewForm"
 
 const renderEventContent = (eventInfo) => {
     return (
@@ -29,6 +30,7 @@ export default function MyBookings() {
     const [chatBox, setChatBox] = useState(false)
     const [currentPage, setCurrentPage] = useState('myBookings')
     const [roomId, setRoomId] = useState('')
+    const [showReview, setShowReview] = useState(false)
 
     const { menteeId } = useParams()
 
@@ -70,6 +72,11 @@ export default function MyBookings() {
         } catch (err) {
             console.log(err)
         }
+    }
+
+    const handleReview = (id) => {
+        console.log(id, menteeId)
+        setShowReview((pre) => !pre)
     }
 
     return (
@@ -182,6 +189,9 @@ export default function MyBookings() {
                 </div>
                 {chatBox && (
                     <Chat isOpen={handleChat} userId={menteeId} meetingId={roomId} />
+                )}
+                {showReview && (
+                    <ReviewForm isOpen={handleReview} userId={menteeId} />
                 )}
             </div>
         </div>

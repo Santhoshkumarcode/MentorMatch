@@ -7,6 +7,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useNavigate, useParams } from "react-router-dom";
 import Chat from "./Chat";
+import ReviewForm from "./ReviewForm";
 
 const renderEventContent = (eventInfo) => {
     return (
@@ -30,6 +31,8 @@ export default function MyStudents() {
     const [chatBox, setChatBox] = useState(false)
     const [meetingId, setMeetingId] = useState()
     const [roomId, setRoomId] = useState('')
+    const [showReview, setShowReview] = useState(false)
+
 
     // to get all student 
     useEffect(() => {
@@ -94,6 +97,11 @@ export default function MyStudents() {
 
     const handleChat = () => {
         setChatBox((pre) => !pre)
+    }
+
+    const handleReview = (id) => {
+        console.log(id, mentorId)
+        setShowReview((pre) => !pre)
     }
 
     return (
@@ -166,7 +174,7 @@ export default function MyStudents() {
                                                         <p className="text-md font-semibold">Institute: {edu?.institute}</p>
                                                         <p className="text-md font-semibold">Degree: {edu?.degree}</p>
                                                         <p className="text-md text-gray-700">
-                                                            Duration: {edu?.startYear} - {edu?.endYear}
+                                                            Duration: {edu?.startYear ? new Date(edu.startYear).getFullYear() : "N/A"} - {edu?.endYear ? new Date(edu.endYear).getFullYear() : 'N/A'}
                                                         </p>
                                                     </div>
                                                 ))
@@ -223,7 +231,6 @@ export default function MyStudents() {
                                                     <a
                                                         href={ele?.menteeDetails?.linkedIn}
                                                         target="_blank"
-                                                        // rel="noopener noreferrer"
                                                         className="text-blue-600 hover:underline ml-1"
                                                     >
                                                         Profile
@@ -252,7 +259,7 @@ export default function MyStudents() {
                                             </div>
                                         </div>
 
-                                        {/* Right Section: Education Details */}
+                                        {/* education */}
                                         <div className="md:w-1/2 pl-4 mt-6 md:mt-0 border-l border-gray-300">
                                             <h3 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-3">Education</h3>
                                             {ele?.menteeDetails?.education?.length > 0 ? (
@@ -260,7 +267,7 @@ export default function MyStudents() {
                                                     <div key={index} className="mb-3">
                                                         <p className="text-md font-semibold">Institute: {edu?.institute}</p>
                                                         <p className="text-md text-gray-700">
-                                                            Duration: {edu?.startYear} - {edu?.endYear}
+                                                            Duration: {edu?.startYear ? new Date(edu.startYear).getFullYear() : "N/A"} - {edu?.endYear ? new Date(edu.endYear).getFullYear() : 'N/A'}
                                                         </p>
                                                     </div>
                                                 ))
@@ -270,35 +277,56 @@ export default function MyStudents() {
                                         </div>
                                     </div>
 
-                                    {/* Button Group at the Bottom */}
-                                    <div className="mt-5 flex justify-center">
-                                        <div className="inline-flex rounded-md space-x-6">
-                                            <button
-                                                className="px-5 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
-                                                onClick={() => {
-                                                    setScheduleForm(true);
-                                                    setMeetingId(ele._id);
-                                                }}
-                                            >
-                                                Schedule
-                                            </button>
-                                            <button
-                                                className="px-5 py-2 bg-blue-500 rounded text-white font-medium hover:bg-blue-600"
-                                                onClick={() => {
-                                                    handleChat(ele?.mentorId?._id, ele?._id)
-                                                    setRoomId(ele._id)
-                                                }}
-                                            >
-                                                Chat
-                                            </button>
-                                            <button
-                                                className="px-5 py-2 bg-green-500 text-white font-medium rounded hover:bg-green-600 transition"
-                                                onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}
-                                            >
-                                                Meet
-                                            </button>
-                                        </div>
-                                    </div>
+                                    {(() => {
+                                        const paymentDate = new Date(ele?.paidDate);
+                                        const currentDate = new Date();
+                                        const diffInDays = Math.floor((currentDate - paymentDate) / (1000 * 60 * 60 * 24));
+
+                                        if (ele.paymentStatus == 'paid') {
+                                            if (diffInDays < 30) {
+                                                return (
+                                                    <div className="mt-5 flex justify-center">
+                                                        <div className="inline-flex rounded-md space-x-6">
+                                                            <button
+                                                                className="px-5 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+                                                                onClick={() => {
+                                                                    setScheduleForm(true);
+                                                                    setMeetingId(ele._id);
+                                                                }}
+                                                            >
+                                                                Schedule
+                                                            </button>
+                                                            <button
+                                                                className="px-5 py-2 bg-blue-500 rounded text-white font-medium hover:bg-blue-600"
+                                                                onClick={() => {
+                                                                    handleChat(ele?.mentorId?._id, ele?._id)
+                                                                    setRoomId(ele._id)
+                                                                }}
+                                                            >
+                                                                Chat
+                                                            </button>
+                                                            <button
+                                                                className="px-5 py-2 bg-green-500 text-white font-medium rounded hover:bg-green-600 transition"
+                                                                onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}
+                                                            >
+                                                                Meet
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            } else {
+                                                return (
+                                                    <button
+                                                        className="px-4 py-2 bg-yellow-500 text-white rounded-md shadow-md hover:bg-yellow-600 mt-2"
+                                                        onClick={() => handleReview(ele?._id)}>
+                                                        Review
+                                                    </button>
+                                                );
+                                            }
+                                        }
+                                        return null
+                                    })()}
+
                                 </div>
 
                             ))}
@@ -330,7 +358,10 @@ export default function MyStudents() {
 
                         {chatBox && (
                             <Chat isOpen={handleChat} userId={mentorId} meetingId={roomId} />
-                        )}
+                            )}
+                            {showReview && (
+                                <ReviewForm isOpen={handleReview} userId={mentorId} />
+                            )}
 
                     </div>
                 ) : currentPage === "mySchedules" ? (

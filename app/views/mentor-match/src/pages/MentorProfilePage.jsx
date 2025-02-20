@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import CreatableSelect from "react-select/creatable";
 import { useSelector, useDispatch } from "react-redux";
 import { addNewSkill, getAllSkills } from "../redux/slices/skillsSlice";
-import { updateMentor } from "../redux/slices/mentorSlice";
+import { mentorProfile, updateMentor, updateMentorProfilePic } from "../redux/slices/mentorSlice";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns"
 
@@ -47,6 +47,9 @@ export default function MentorProfilePage({ data }) {
     const dispatch = useDispatch()
     const { id } = useParams()
 
+    useEffect(() => {
+        dispatch(mentorProfile({ id }))
+    }, [dispatch, id])
 
     useEffect(() => {
         if (data && data.skills) {
@@ -90,7 +93,6 @@ export default function MentorProfilePage({ data }) {
         }
     };
 
-
     const handleClick = (data) => {
         setShowForm(true)
         setForm(data)
@@ -112,6 +114,15 @@ export default function MentorProfilePage({ data }) {
         const updatedForm = { ...form, experiences: updatedExperiences };
         setForm(updatedForm);
         dispatch(updateMentor({ userId: id, form: updatedForm }))
+    }
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const formData = new FormData();
+        formData.append("profilePic", file);
+
+        dispatch(updateMentorProfilePic({ id: id, image: formData }));
     }
 
     return (
@@ -183,15 +194,29 @@ export default function MentorProfilePage({ data }) {
                         <h2 className="text-2xl font-semibold mb-4 text-center">Update Profile</h2>
 
                         <form className="space-y-5" onSubmit={handleSubmit}>
-                            <input
-                                className="border rounded-full w-20 h-20 bg-gray-300"
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    setForm({ ...form, profilePic: e.target.files[0] })
-                                }}
-                            />
-                            <span className="block text-gray-500">Upload Image</span>
+                            <div className="relative">
+                                {form?.profilePic ? (
+                                    <img
+                                        className="w-20 h-20 rounded-full object-cover border"
+                                        src={typeof form.profilePic === "string" ? form.profilePic : URL.createObjectURL(form.profilePic)}
+                                        alt="Profile"
+                                    />
+                                ) : (
+                                    <div className="w-20 h-20 rounded-full border bg-gray-300 flex items-center justify-center">+
+                                    </div>
+                                )}
+
+                                <input
+                                    id="fileInput"
+                                    className="absolute top-0 left-0 w-20 h-20 opacity-0 cursor-pointer"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+
+                            {/* <img className="w-10 h-10 absolute top-30 left-20"
+                                src="\src\assets\upload.png" /> */}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Company Name"
@@ -209,7 +234,7 @@ export default function MentorProfilePage({ data }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Location"
                                     value={form?.location} onChange={(e) => { setForm({ ...form, location: e.target.value }) }} />
-                                
+
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Spoken Languages" value={form?.spokenLanguages} onChange={(e) => { setForm({ ...form, spokenLanguages: e.target.value }) }} />
                             </div>
 
@@ -319,18 +344,6 @@ export default function MentorProfilePage({ data }) {
                                     Add Experience
                                 </button>
                             </div>
-
-                            {/* <div className="p-6 bg-gray-200 rounded-2xl shadow-md max-w-md mx-auto">
-                                <p className="text-center text-xl font-semibold text-gray-800 mb-4">Choose a subscription plan</p>
-                                <div className="flex justify-center gap-4">
-                                    <button className="px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition">
-                                        Basic
-                                    </button>
-                                    <button className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
-                                        Premium
-                                    </button>
-                                </div>
-                            </div> */}
 
 
                             {/* pricing form  */}

@@ -12,14 +12,14 @@ const menteeSchema = new Schema({
     location: String,
     education: [
         {
-            startYear: Number,
-            endYear: Number,
+            startYear: Date,
+            endYear: Date,  
             institute: String,
             degree: String,
             fieldOfStudy: String
         }
-    ] ,
-    linkedIn:String,
+    ],
+    linkedIn: String,
     skills: [{
         type: mongoose.Types.ObjectId,
         ref: "Skills"

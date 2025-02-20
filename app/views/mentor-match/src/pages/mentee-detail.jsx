@@ -9,7 +9,6 @@ const initialState = {
     linkedIn: '',
     skills: [],
     phoneNumber: '',
-    education: ''
 }
 
 export default function MenteeDetail() {
@@ -36,9 +35,6 @@ export default function MenteeDetail() {
         }
         if (form.phoneNumber.trim().length === 0) {
             errors.phoneNumber = "Phone number required"
-        }
-        if (form.education.trim().length === 0) {
-            errors.education = "education should not be empty."
         }
     }
 
@@ -129,15 +125,6 @@ export default function MenteeDetail() {
                         placeholder="Select or add skills"
                     />
                     <div>
-                        <input
-                            type="text"
-                            placeholder="Education"
-                            className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                            onChange={(e) => {
-                                setForm({ ...form, education: e.target.value });
-                                setClientErrors((pre) => ({ ...pre, education: '' }))
-                            }}
-                        />
                         {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.phoneNumber}</p>}
 
                     </div>

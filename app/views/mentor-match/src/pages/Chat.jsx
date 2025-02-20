@@ -54,7 +54,7 @@ export default function Chat({ isOpen, meetingId, userId }) {
                     <div className="absolute inset-0 bg-black opacity-50"></div>
                     <div className="bg-white p-6 rounded-lg relative z-10 shadow-xl w-full max-w-2xl h-80">
                         <button
-                            onClick={isOpen}  // This should toggle isOpen in your parent
+                            onClick={isOpen} 
                             className="absolute top-2 right-3 text-gray-600 hover:text-gray-800"
                         >
                             ✖

@@ -2,10 +2,12 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import CreatableSelect from "react-select/creatable";
 import { getAllSkills, addNewSkill } from "../redux/slices/skillsSlice"
-import { menteeUpdate } from "../redux/slices/menteeSlice"
+import { menteeProfile, menteeUpdate, updateMenteeProfilePic } from "../redux/slices/menteeSlice"
 import { useParams } from "react-router-dom";
+import { format } from "date-fns";
 
-const initialState = {
+
+/* const initialState = {
     profilePic: '',
     bio: '',
     location: '',
@@ -19,19 +21,23 @@ const initialState = {
     skills: [],
     linkedIn: '',
     phoneNumber: ''
-}
+} */
 
 export default function MenteeProfilePage({ data }) {
 
-    console.log(data)
-
     const [showForm, setShowForm] = useState(false)
-    const [form, setForm] = useState({})
+    const [form, setForm] = useState({
+        education: []
+    })
     const [selectedSkills, setSelectedSkills] = useState([])
     const { data: skills } = useSelector((state) => state.skills)
 
     const dispatch = useDispatch()
     const { id } = useParams()
+
+    useEffect(() => {
+        dispatch(menteeProfile({ id }))
+    }, [dispatch, id])
 
 
     useEffect(() => {
@@ -43,7 +49,7 @@ export default function MenteeProfilePage({ data }) {
             setSelectedSkills(prefilledSkills);
             setForm(prev => ({ ...prev, skills: prefilledSkills.map(s => s.value) }));
         }
-    }, [data]);
+    }, [data, id]);
 
     useEffect(() => {
         dispatch(getAllSkills())
@@ -83,29 +89,33 @@ export default function MenteeProfilePage({ data }) {
         setShowForm(false)
     }
 
-    /* const addEducation = () => {
-        setForm({
-            ...form,
-            education: [...form.education, { startYear: '', endYear: '', institute: '', degree: '', fieldOfStudy: '' }]
-        });
-    }; */
-
-    /*     const handleRemove = (index) => {
-            setForm({
-                ...form,
-                education: form.education.filter((_, i) => i !== index),
-            });
-        } */
-
     const handleEducationChange = (index, field, value) => {
-        const updatedEducation = [...form.education];
-        updatedEducation[index][field] = value;
-        setForm({ ...form, education: updatedEducation });
+        setForm(prevForm => {
+            const updatedEducation = [...(prevForm.education || [])];
+            updatedEducation[index] = { ...updatedEducation[index], [field]: value };
+            return { ...prevForm, education: updatedEducation };
+        });
     };
 
     if (!data) {
         return <p>loading</p>
     }
+    const formatDate = (date) => {
+        return format(date, "yyyy-MM-dd")
+    }
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const formData = new FormData();
+        formData.append("profilePic", file);
+
+        dispatch(updateMenteeProfilePic({ id: id, image: formData }));
+    }
+    const educationFields = 2;
+    const educationArray = form?.education?.length >= educationFields
+        ? form.education
+        : [...form?.education || [], ...Array(educationFields - (form?.education?.length || 0)).fill({ startYear: '', endYear: '', institute: '', degree: '', fieldOfStudy: '' })];
 
     return (
         <div>
@@ -146,9 +156,9 @@ export default function MenteeProfilePage({ data }) {
                                             </div>
                                             <div className="mt-4 md:mt-0 text-right">
                                                 <p className="text-sm text-gray-500">
-                                                    {exp?.startYear ? exp?.startYear : "N/A"}{" "}
+                                                    {exp?.startYear ? new Date(exp.startYear).getFullYear() : "N/A"}{" "}
                                                     -{" "}
-                                                    {exp?.endYear ? exp?.endYear : "Present"}
+                                                    {exp?.endYear ? new Date(exp?.endYear).getFullYear() : "Present"}
                                                 </p>
                                             </div>
                                         </div>
@@ -173,9 +183,27 @@ export default function MenteeProfilePage({ data }) {
 
 
                         <form className="space-y-4" onSubmit={handleSubmit}>
-                            <input className="border rounded-full w-20 h-20 bg-gray-300" src={data?.profilePic} type="file" accept="image/*"
-                                onChange={(e) => { setForm({ ...form, profilePic: e.target.files[0] }) }} />
-                            <span className="absolute top-30 left-28">Upload image</span>
+                            <div className="relative">
+                                {form?.profilePic ? (
+                                    <img
+                                        className="w-20 h-20 rounded-full object-cover border"
+                                        src={typeof form.profilePic === "string" ? form.profilePic : URL.createObjectURL(form.profilePic)}
+                                        alt="Profile"
+                                    />
+                                ) : (
+                                    <div className="w-20 h-20 rounded-full border bg-gray-300 flex items-center justify-center">+
+                                    </div>
+                                )}
+
+                                <input
+                                    id="fileInput"
+                                    className="absolute top-0 left-0 w-20 h-20 opacity-0 cursor-pointer"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+                            <p>upload image</p>
 
                             <div className="flex w-full">
                                 <input
@@ -195,25 +223,43 @@ export default function MenteeProfilePage({ data }) {
                                 />
                             </div>
 
-                            <p>Education</p>
-                            {form?.education?.map((education, index) => (
-                                <div key={index} className="flex border border-gray-300 mb-2">
-                                    <input type="text" placeholder="Start Year" value={education?.startYear}
-                                        onChange={(e) => handleEducationChange(index, 'startYear', e.target.value)} />
-                                    <input type="text" placeholder="End Year" value={education.endYear}
-                                        onChange={(e) => handleEducationChange(index, 'endYear', e.target.value)} />
-                                    <input type="text" placeholder="Institute" value={education.institute}
-                                        onChange={(e) => handleEducationChange(index, 'institute', e.target.value)} />
-                                    <input type="text" placeholder="Degree" value={education.degree}
-                                        onChange={(e) => handleEducationChange(index, 'degree', e.target.value)} />
-                                    <input type="text" placeholder="Field of Study" value={education.fieldOfStudy}
-                                        onChange={(e) => handleEducationChange(index, 'fieldOfStudy', e.target.value)} />
-                                </div>
-                            ))}
-
-                            <button type="button" className="bg-blue-600 text-white py-1 px-4 rounded-lg shadow hover:bg-blue-700">
-                                Add Education
-                            </button>
+                            <p className="text-xl">Education</p>
+                            <div className="pb-4">
+                                {educationArray.map((education, index) => (
+                                    <div key={index} className="flex border border-gray-300 mb-2">
+                                        <input
+                                            type="date"
+                                            placeholder="Start Year"
+                                            value={education?.startYear ? formatDate(education.startYear) : ""}
+                                            onChange={(e) => handleEducationChange(index, 'startYear', e.target.value)}
+                                        />
+                                        <input
+                                            type="date"
+                                            placeholder="End Year"
+                                            value={education?.endYear ? formatDate(education.endYear) : ""}
+                                            onChange={(e) => handleEducationChange(index, 'endYear', e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Institute"
+                                            value={education.institute}
+                                            onChange={(e) => handleEducationChange(index, 'institute', e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Degree"
+                                            value={education.degree}
+                                            onChange={(e) => handleEducationChange(index, 'degree', e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Field of Study"
+                                            value={education.fieldOfStudy}
+                                            onChange={(e) => handleEducationChange(index, 'fieldOfStudy', e.target.value)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
 
                             <CreatableSelect
                                 isMulti

@@ -78,7 +78,7 @@ export default function MentorViewMenteeProfile() {
                     <hr />
 
                     <div className="px-10 py-6">
-                        <h2 className="text-3xl font-semibold mb-6">What mentees say</h2>
+                        <h2 className="text-3xl font-semibold mb-6">What mentor say</h2>
                         {reviews && reviews.length > 0 ? reviews.map((ele, i) => (
                             <div key={i} className="p-6 mb-4 border border-gray-200 rounded-lg shadow-sm bg-white">
                                 <div className="flex flex-col md:flex-row md:justify-between">
