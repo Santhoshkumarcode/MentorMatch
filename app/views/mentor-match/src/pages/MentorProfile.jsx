@@ -58,7 +58,7 @@ export default function MentorProfile() {
                         <p className="text-lg ps-10 mt-2">{singleData?.companyName}</p>
                         <p className="text-lg ps-10 mt-2">{singleData?.jobTitle}</p>
                         <p className="text-lg text-green-600 font-medium ps-10 mt-2 mb-4">{singleData?.bio}</p>
-                        <p className="text-lg ps-10 mb-8">📍 {singleData?.location}</p>
+                        <p className="text-lg ps-10 mb-8">{singleData?.location}</p>
 
                         <div className="flex flex-wrap gap-2 mt-2">
                             {singleData?.skills?.map((skill, index) => (

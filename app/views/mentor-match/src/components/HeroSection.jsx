@@ -28,7 +28,7 @@ export default function HeroSection() {
                         />
                         <img
                             src="/src/assets/help2.jpg"
-                            className={`${data.role === 'mentee' && 'top-55'} w-5/12 absolute top-40 right-15 z-[-1]`}
+                            className={'w-5/12 absolute top-50 right-15 z-[-1]'}
                         />
                     </form>
                 </div>
@@ -40,7 +40,7 @@ export default function HeroSection() {
                 <img className="w-36" src="\src\assets\spotify-color.svg" />
                 <img className="w-24" src="\src\assets\uber.svg" />
                 <img className="w-36" src="\src\assets\airbnb-color.svg" />
-                </div>
+            </div>
 
             <div className=" mt-20 flex bg-gray-100 p-8 py-14 space-x-10 justify-between items-left">
                 {/* <img className="w-6/12 pt-10" src="\src\assets\help.jpg" /> */}

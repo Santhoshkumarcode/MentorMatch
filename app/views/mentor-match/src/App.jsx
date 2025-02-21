@@ -13,7 +13,6 @@ import MentorProfile from "./pages/MentorProfile"
 import ApplyForm from "./pages/ApplyForm"
 import MyBookings from "./pages/MyBookings"
 import MenteeDetail from "./pages/mentee-detail"
-import { useSelector } from "react-redux"
 import MeetingPage from "./pages/MeetingPage"
 import Footer from "./components/footer"
 import Chat from "./pages/Chat"
@@ -22,6 +21,9 @@ import PaymentRejectedPage from "./pages/PaymentRejectedPage"
 import PaymentSuccess from "./pages/PaymentSuccessPage"
 import ReviewForm from "./pages/ReviewForm"
 import AdminAnalytics from "./pages/AdminAnalytics"
+import PrivateRoute from "./components/PrivateRoute"
+import Unauthorized from "./pages/Unauthorized"
+import NotFound from "./pages/NotFound"
 
 export default function App() {
 
@@ -30,27 +32,43 @@ export default function App() {
       <Navbar />
 
       <Routes>
+        {/* All */}
         <Route path="/" element={<HeroSection />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/admin-analytics" element={<AdminAnalytics />} />
 
+        {/* Admin */}
+        <Route path="/admin-dashboard" element={<PrivateRoute permittedRoles={['admin']}><AdminDashboard /></PrivateRoute>} />
+        <Route path="/admin-analytics" element={<PrivateRoute permittedRoles={['admin']}><AdminAnalytics /></PrivateRoute>} />
+
+        {/* Mentor */}
+        <Route path="/mentor-detail" element={<PrivateRoute permittedRoles={['mentor']}><MentorDetail /></PrivateRoute>} />
+        <Route path="/profile/mentorViewMenteeProfile/:id" element={<PrivateRoute permittedRoles={['mentor']}><MentorViewMenteeProfile /></PrivateRoute>} />
+        <Route path="/my-student/:mentorId" element={<PrivateRoute permittedRoles={['mentor']}><MyStudents /></PrivateRoute>} />
+
+
+        {/* Mentee */}
+        <Route path="/allMentor" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><AllMentor /></PrivateRoute>} />
+        <Route path="/mentee-detail" element={<PrivateRoute permittedRoles={['mentee']}><MenteeDetail /></PrivateRoute>} />
+        <Route path="/my-bookings/:menteeId" element={<PrivateRoute permittedRoles={['mentee']}><MyBookings /></PrivateRoute>} />
+
+
+        {/* Both */}
+
+        <Route path="/review-form" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><ReviewForm /></PrivateRoute>} />
+        <Route path="/chat/:mentorId/:menteeId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><Chat /></PrivateRoute>} />
+        <Route path="/profile/:id/:role" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><Profile /></PrivateRoute>} />
+        <Route path="/meeting-page/:mentorId/:menteeId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><MeetingPage /></PrivateRoute>} />
+        <Route path="/mentor-profile/:id" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><MentorProfile /></PrivateRoute>} />
+        <Route path="/apply-form/:mentorId/:plan/:amount" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><ApplyForm /></PrivateRoute>} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        {/* payment */}
         <Route path="/payment-rejected" element={<PaymentRejectedPage />} />
         <Route path="/payment-success/mentor/:mentorId/mentee/:menteeId" element={<PaymentSuccess />} />
-        <Route path="/allMentor" element={<AllMentor />} />
-        <Route path="/mentor-detail" element={<MentorDetail />} />
-        <Route path="/mentee-detail" element={<MenteeDetail />} />
-        <Route path="/review-form" element={<ReviewForm />} />
-        <Route path="/profile/mentorViewMenteeProfile/:id" element={<MentorViewMenteeProfile />} />
 
-        <Route path="/chat/:mentorId/:menteeId" element={<Chat />} />
-        <Route path="/profile/:id/:role" element={<Profile />} />
-        <Route path="/my-bookings/:menteeId" element={<MyBookings />} />
-        <Route path="/meeting-page/:mentorId/:menteeId" element={<MeetingPage />} />
-        <Route path="/my-student/:mentorId" element={<MyStudents />} />
-        <Route path="/mentor-profile/:id" element={<MentorProfile />} />
-        <Route path="/apply-form/:mentorId/:plan/:amount" element={<ApplyForm />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
 

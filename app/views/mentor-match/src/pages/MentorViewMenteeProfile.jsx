@@ -62,9 +62,9 @@ export default function MentorViewMenteeProfile() {
                                             </div>
                                             <div className="mt-4 md:mt-0 text-right">
                                                 <p className="text-sm text-gray-500">
-                                                    {exp?.startYear ? exp?.startYear : "N/A"}{" "}
+                                                    {exp?.startYear ? new Date(exp?.startYear).getFullYear() : "N/A"}{" "}
                                                     -{" "}
-                                                    {exp?.endYear ? exp?.endYear : "Present"}
+                                                    {exp?.endYear ? new Date(exp?.endYear).getFullYear() : "Present"}
                                                 </p>
                                             </div>
                                         </div>

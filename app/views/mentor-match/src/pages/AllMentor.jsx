@@ -75,7 +75,7 @@ export default function AllMentor() {
                 <div className="w-3/4 space-y-6 p-6">
                     {verifiedData &&
 
-                        verifiedData?.data?.filter(ele => ele.pricing).map(ele => (
+                        verifiedData?.data?.filter(ele => ele?.pricing?.basic?.amount && ele?.bio).map(ele => (
                             <div key={ele._id} className="flex border border-gray-200 rounded-lg bg-white p-6 space-x-6 shadow-lg">
                                 {ele?.profilePic ? (
                                     <img className="w-32 h-32 border-2 border-gray-300 rounded-full" src={ele.profilePic} />

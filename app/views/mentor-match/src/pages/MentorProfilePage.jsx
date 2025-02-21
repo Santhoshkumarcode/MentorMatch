@@ -129,7 +129,7 @@ export default function MentorProfilePage({ data }) {
         <div>
             <div className="bg-cyan-900 w-full h-60">
 
-                <img className="w-12 h-12 absolute right-6 top-70 cursor-pointer" src="/src/assets/a.png" onClick={() => { handleClick(data) }} />
+                <img className="w-12 h-12 absolute right-6 top-87 cursor-pointer" src="/src/assets/a.png" onClick={() => { handleClick(data) }} />
                 <div>
                     <div className="pb-20">
                         <img className=" border-4 border-white relative top-25 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />

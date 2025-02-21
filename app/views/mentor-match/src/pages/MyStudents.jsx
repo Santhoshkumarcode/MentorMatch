@@ -100,7 +100,7 @@ export default function MyStudents() {
     }
 
     const handleReview = (id) => {
-        console.log(id, mentorId)
+        setMeetingId(id)
         setShowReview((pre) => !pre)
     }
 
@@ -360,7 +360,7 @@ export default function MyStudents() {
                             <Chat isOpen={handleChat} userId={mentorId} meetingId={roomId} />
                             )}
                             {showReview && (
-                                <ReviewForm isOpen={handleReview} userId={mentorId} />
+                                <ReviewForm isOpen={handleReview} userId={mentorId} meetingId={meetingId}/>
                             )}
 
                     </div>

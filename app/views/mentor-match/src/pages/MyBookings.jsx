@@ -31,6 +31,7 @@ export default function MyBookings() {
     const [currentPage, setCurrentPage] = useState('myBookings')
     const [roomId, setRoomId] = useState('')
     const [showReview, setShowReview] = useState(false)
+    const [meetingId, setMeetingId] = useState('')
 
     const { menteeId } = useParams()
 
@@ -75,8 +76,8 @@ export default function MyBookings() {
     }
 
     const handleReview = (id) => {
-        console.log(id, menteeId)
         setShowReview((pre) => !pre)
+        setMeetingId(id)
     }
 
     return (
@@ -191,7 +192,7 @@ export default function MyBookings() {
                     <Chat isOpen={handleChat} userId={menteeId} meetingId={roomId} />
                 )}
                 {showReview && (
-                    <ReviewForm isOpen={handleReview} userId={menteeId} />
+                    <ReviewForm isOpen={handleReview} userId={menteeId} meetingId={meetingId} />
                 )}
             </div>
         </div>
