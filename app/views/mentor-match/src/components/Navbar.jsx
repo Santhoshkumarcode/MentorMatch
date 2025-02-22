@@ -92,7 +92,7 @@ export default function Navbar() {
                                 ) : data?.role == 'admin' && (
                                     <div>
                                         <Link to="/admin-dashboard"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>Admin-Dashboard</li></Link>
-                                        <Link to="/admin-analytics"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>Admin-Analytics</li></Link>
+                                        <Link to="/admin-analytics"><li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleToogle}>Admin-Dashboard</li></Link>
                                         <Link><li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:rounded-sm text-red-600 cursor-pointer" onClick={handleLogout}>Logout</li></Link>
                                     </div>
                                 )}

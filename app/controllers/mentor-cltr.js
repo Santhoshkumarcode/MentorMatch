@@ -95,7 +95,6 @@ mentorCltr.updateProfilePic = async (req, res) => {
     }
 }
 
-
 // to update mentor in profile
 mentorCltr.updateMentor = async (req, res) => {
     const id = req.params.id;
@@ -161,7 +160,7 @@ mentorCltr.getVerified = async (req, res) => {
         const sortBy = req.query.sortBy || 'pricing.basic.amount';
         const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
         let page = parseInt(req.query.page) || 1;
-        let limit = parseInt(req.query.limit) || 2;
+        let limit = parseInt(req.query.limit) || 3;
 
         let searchQuery = {
             isVerified: true,

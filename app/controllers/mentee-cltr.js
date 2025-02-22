@@ -104,4 +104,15 @@ menteeCltr.getProfile = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
+menteeCltr.getAll = async (req, res) => {
+    try {
+        const mentee = await Mentee.find()
+        return res.status(200).json(mentee)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
 export default menteeCltr

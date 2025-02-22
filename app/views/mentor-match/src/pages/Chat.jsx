@@ -11,7 +11,6 @@ export default function Chat({ isOpen, meetingId, userId }) {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([])
 
-    //for message
     useEffect(() => {
         if (meetingId && isOpen) {
             dispatch(getchats({ meetingId }))

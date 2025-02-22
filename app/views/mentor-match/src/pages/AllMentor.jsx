@@ -28,7 +28,7 @@ export default function AllMentor() {
 
     useEffect(() => {
         dispatch(verifiedMentors({ search, page, limit, skill, sortOrder }))
-    }, [search, page, skill, limit, sortOrder])
+    }, [dispatch, search, page, skill, limit, sortOrder])
 
 
     const handleClick = async (id) => {
@@ -75,7 +75,8 @@ export default function AllMentor() {
                 <div className="w-3/4 space-y-6 p-6">
                     {verifiedData &&
 
-                        verifiedData?.data?.filter(ele => ele?.pricing?.basic?.amount && ele?.bio).map(ele => (
+                        verifiedData?.data?.filter(ele => ele?.pricing?.basic?.amount && ele?.availability == "available"
+                        ).map(ele => (
                             <div key={ele._id} className="flex border border-gray-200 rounded-lg bg-white p-6 space-x-6 shadow-lg">
                                 {ele?.profilePic ? (
                                     <img className="w-32 h-32 border-2 border-gray-300 rounded-full" src={ele.profilePic} />
@@ -89,7 +90,7 @@ export default function AllMentor() {
                                     <p className="text-gray-600 mt-1 font-semibold">{ele.jobTitle}</p>
                                     <p className="text-gray-700 mt-3">{ele.bio}</p>
                                     <p className="text-gray-500 mt-2">{ele.about}</p>
-                                    
+
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
                                         {ele.skills.map((e, index) => (
                                             <p key={index} className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-sm text-center">

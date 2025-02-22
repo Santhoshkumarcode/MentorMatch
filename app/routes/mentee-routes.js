@@ -10,6 +10,7 @@ router.put('/mentees/:id', authentication, authorizeUser(['mentee']), menteeCltr
 router.put('/mentees/update/profilePic/:id', authentication, authorizeUser(['mentee']), menteeCltr.updateProfilePic)
 
 router.get('/mentees/profile/:id', authentication, menteeCltr.getProfile)
+router.get('/mentees',authentication,menteeCltr.getAll)
 
 
 export default router

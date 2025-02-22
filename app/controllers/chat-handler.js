@@ -7,11 +7,9 @@ export const chatCltr = {}
 const chatHandler = (io, socket) => {
     socket.on("joinGeneralChat", async ({ meetingId, userId }) => {
         try {
-            // Convert IDs if needed
             const userObjectId = new ObjectId(userId);
             const meetingObjectId = meetingId ? new ObjectId(meetingId) : null;
 
-            // You might consider storing meetingObjectId in socket for later use if needed:
             socket.meetingObjectId = meetingObjectId;
 
             socket.join("general-chat");
@@ -24,19 +22,13 @@ const chatHandler = (io, socket) => {
 
 
     socket.on("sendGeneralMessage", async ({ message }) => {
-        // Destructure message fields
-
         const { text, userId, meetingId } = message;
 
         if (!text.trim()) {
             console.log("Empty message. Skipping save.");
             return;
         }
-
-        // Convert meetingId to an ObjectId here
         const meetingObjectId = meetingId ? new ObjectId(meetingId) : null;
-
-        // Broadcast the message to everyone in the general chat
         io.to("general-chat").emit("receiveGeneralMessage", {
             text,
             userId,
@@ -45,7 +37,7 @@ const chatHandler = (io, socket) => {
         });
 
         try {
-            // Save the chat message in the database
+            // Save chat in database
             if (!mongoose.connection.readyState) {
                 console.error("MongoDB is not connected!");
                 return;
