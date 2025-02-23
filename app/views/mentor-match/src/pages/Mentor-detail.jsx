@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateMentor } from "../redux/slices/mentorSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import isURL from "validator/lib/isURL";
 
 const initialState = {
     companyName: '',
@@ -30,9 +32,13 @@ export default function MentorDetail() {
         }
         if (form.linkedIn.trim().length === 0) {
             errors.linkedIn = "Linkedin url required"
+        } else if (!isURL(form.linkedIn)) {
+            errors.linkedIn = 'Enter a proper URL'
         }
         if (form.personalWebsite.trim().length === 0) {
             errors.personalWebsite = "Personal website url required"
+        }else if (!isURL(form.linkedIn)) {
+            errors.personalWebsite = 'Enter a proper URL'
         }
         if (form.phoneNumber.trim().length === 0) {
             errors.phoneNumber = "Phone number required"
@@ -57,8 +63,11 @@ export default function MentorDetail() {
                     setForm(initialState);
                 };
                 await dispatch(updateMentor({ userId: data._id, form, resetForm })).unwrap()
+                toast.success('your application submitted to admin')
                 navigate('/')
             } catch (err) {
+                toast.error('you have registered successfully')
+
                 console.log(err)
             }
 

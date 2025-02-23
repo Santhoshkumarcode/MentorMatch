@@ -5,6 +5,7 @@ import { addNewSkill, getAllSkills } from "../redux/slices/skillsSlice";
 import { mentorProfile, updateMentor, updateMentorProfilePic } from "../redux/slices/mentorSlice";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns"
+import { toast } from "react-toastify";
 
 /* const initialState = {
     profilePic: '',
@@ -102,6 +103,7 @@ export default function MentorProfilePage({ data }) {
         e.preventDefault()
 
         dispatch(updateMentor({ userId: id, form }))
+        toast.success('you have updated your profile.')
         setShowForm(false)
     }
 

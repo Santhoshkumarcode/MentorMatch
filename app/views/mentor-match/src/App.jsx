@@ -1,4 +1,6 @@
 import { Route, Routes } from "react-router-dom"
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Navbar from "./components/Navbar"
 import HeroSection from "./components/HeroSection"
@@ -20,7 +22,6 @@ import MentorViewMenteeProfile from "./pages/MentorViewMenteeProfile"
 import PaymentRejectedPage from "./pages/PaymentRejectedPage"
 import PaymentSuccess from "./pages/PaymentSuccessPage"
 import ReviewForm from "./pages/ReviewForm"
-import AdminAnalytics from "./pages/AdminAnalytics"
 import PrivateRoute from "./components/PrivateRoute"
 import Unauthorized from "./pages/Unauthorized"
 import NotFound from "./pages/NotFound"
@@ -30,6 +31,7 @@ export default function App() {
   return (
     <div>
       <Navbar />
+      <ToastContainer />
 
       <Routes>
         {/* All */}
@@ -39,7 +41,6 @@ export default function App() {
 
         {/* Admin */}
         <Route path="/admin-dashboard" element={<PrivateRoute permittedRoles={['admin']}><AdminDashboard /></PrivateRoute>} />
-        <Route path="/admin-analytics" element={<PrivateRoute permittedRoles={['admin']}><AdminAnalytics /></PrivateRoute>} />
 
         {/* Mentor */}
         <Route path="/mentor-detail" element={<PrivateRoute permittedRoles={['mentor']}><MentorDetail /></PrivateRoute>} />

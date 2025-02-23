@@ -5,6 +5,7 @@ import { getAllSkills, addNewSkill } from "../redux/slices/skillsSlice"
 import { menteeProfile, menteeUpdate, updateMenteeProfilePic } from "../redux/slices/menteeSlice"
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 
 /* const initialState = {
@@ -84,9 +85,16 @@ export default function MenteeProfilePage({ data }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        try {
+            dispatch(menteeUpdate({ id, form }))
+            toast.success('you have updated your profile...')
+            setShowForm(false)
+        } catch (err) {
+            toast.error('error in updating profile')
 
-        dispatch(menteeUpdate({ id, form }))
-        setShowForm(false)
+            console.log(err)
+        }
+
     }
 
     const handleEducationChange = (index, field, value) => {

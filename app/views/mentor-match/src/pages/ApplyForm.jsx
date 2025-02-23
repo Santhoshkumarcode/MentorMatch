@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { requestBooking } from "../redux/slices/meetingScheduleSlice"
+import { toast } from "react-toastify"
 
 export default function ApplyForm() {
 
@@ -14,7 +15,7 @@ export default function ApplyForm() {
 
     const [form, setForm] = useState({
         mentorshipGoal: '',
-        plan    ,
+        plan,
         mentorId,
         amount,
     })
@@ -44,10 +45,11 @@ export default function ApplyForm() {
             try {
 
                 dispatch(requestBooking({ form, resetForm })).unwrap()
-                alert('Your application successfully submitted...')
+                toast.success('Your application successfully submitted...')
                 navigate('/')
 
             } catch (err) {
+                toast.success('Your application rejected...')
                 console.log(err)
             }
         }

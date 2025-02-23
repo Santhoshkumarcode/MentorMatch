@@ -4,6 +4,7 @@ import CreatableSelect from "react-select/creatable";
 import { addNewSkill, getAllSkills } from "../redux/slices/skillsSlice";
 import { useNavigate } from "react-router-dom";
 import { menteeUpdate } from "../redux/slices/menteeSlice";
+import { toast } from "react-toastify";
 
 const initialState = {
     linkedIn: '',
@@ -75,8 +76,10 @@ export default function MenteeDetail() {
                     setForm(initialState);
                 };
                 await dispatch(menteeUpdate({ id: data?._id, form, resetForm })).unwrap()
+                toast.success('successfully you have registered')
                 navigate('/')
             } catch (err) {
+                toast.error('fail to register.')
                 console.log(err)
             }
 

@@ -3,13 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser, userProfile } from "../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/lib/isEmail";
+import { toast } from "react-toastify";
 
 
 export default function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { serverError } = useSelector((state) => state.users)
+    const  serverError  = useSelector((state) => state?.users?.serverError)
+    console.log(serverError)
+
     const [form, setForm] = useState({
         email: "",
         password: "",
@@ -45,10 +48,12 @@ export default function Login() {
                     });
                 };
                 await dispatch(loginUser({ form, resetForm })).unwrap()
+                toast.success("You have logged in successfully!");
                 await dispatch(userProfile()).unwrap()
                 navigate("/");
             } catch (err) {
                 console.log(err);
+                toast.error("Login failed. Please check your credentials.");
             }
         }
     };

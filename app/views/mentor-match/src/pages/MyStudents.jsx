@@ -8,6 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import { useNavigate, useParams } from "react-router-dom";
 import Chat from "./Chat";
 import ReviewForm from "./ReviewForm";
+import { toast } from "react-toastify";
 
 const renderEventContent = (eventInfo) => {
     return (
@@ -59,6 +60,7 @@ export default function MyStudents() {
         const confirm = window.confirm('Are you sure want to accept?')
         if (confirm) {
             dispatch(statusUpdate({ meetingId }))
+            toast.success('student accepted')
         }
     }
 
@@ -66,12 +68,14 @@ export default function MyStudents() {
         const confirm = window.confirm('Are you sure want to reject this student?')
         if (confirm) {
             dispatch(rejectStatus({ meetingId }))
+            toast.error('student rejected')
+
         }
     }
 
     const handleScheduleSubmit = () => {
         if (!meetingId || dates.length === 0) {
-            alert("Please select dates before submitting.");
+            toast.error("Please select dates before submitting.");
             return;
         }
         const formattedDates = dates.map(date => new Date(date).toISOString());

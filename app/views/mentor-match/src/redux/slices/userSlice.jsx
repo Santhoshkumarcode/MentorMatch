@@ -36,10 +36,21 @@ export const userProfile = createAsyncThunk('/users/userProfile', async (_, { re
     }
 })
 
+export const allUsers = createAsyncThunk('users/allUsers', async (_, { rejectWithValue }) => {
+    try {
+        const response = await axios.get('/api/users/getAll')
+        return response.data
+    } catch (err) {
+        console.log(err)
+        return rejectWithValue(err.response.data.errors)
+    }
+})
+
 const userSlice = createSlice({
     name: 'users',
     initialState: {
         data: null,
+        allUsers: [],
         isLoggedIn: false,
         loading: false,
         serverError: null
@@ -80,11 +91,11 @@ const userSlice = createSlice({
             state.serverError = action.payload
         })
 
-        // profile
-        .addCase(userProfile.pending, (state) => {
-            state.loading = true;
-            state.serverError = null;
-          })
+            // profile
+            .addCase(userProfile.pending, (state) => {
+                state.loading = true;
+                state.serverError = null;
+            })
         builder.addCase(userProfile.fulfilled, (state, action) => {
             state.loading = false;
             state.data = action.payload
@@ -92,6 +103,20 @@ const userSlice = createSlice({
             state.serverError = null
         })
         builder.addCase(userProfile.rejected, (state, action) => {
+            state.loading = false;
+            state.serverError = action.payload
+        })
+
+        //get all
+        builder.addCase(allUsers.pending, (state) => {
+            // state.loading = true;
+            state.serverError = null;
+        })
+        builder.addCase(allUsers.fulfilled, (state, action) => {
+            state.loading = false
+            state.allUsers = action.payload
+        })
+        builder.addCase(allUsers.rejected, (state, action) => {
             state.loading = false;
             state.serverError = action.payload
         })

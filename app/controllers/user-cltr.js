@@ -75,4 +75,15 @@ userCltr.profile = async (req, res) => {
         return res.status(500).json(err)
     }
 }
+
+userCltr.getAll = async (req, res) => {
+    try {
+        const user = await User.find()
+        return res.status(200).json(user)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
 export default userCltr
