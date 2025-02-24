@@ -210,7 +210,7 @@ export default function MyStudents() {
                     </div>
 
                 ) : currentPage === "students" ? (
-                    <div className="flex flex-wrap justify-center gap-6 p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
                         {acceptedData &&
                             acceptedData.map((ele, i) => (
                                 <div key={i} className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-xl bg-white flex flex-col">

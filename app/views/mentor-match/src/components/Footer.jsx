@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
     return (
         <footer class="bg-blue-950 text-white py-8 mt-10">
@@ -7,10 +9,10 @@ export default function Footer() {
                         <span>MentorMatch</span>
                     </div>
                     <div class="flex space-x-6">
-                        <a href="#" class="hover:text-gray-400">Home</a>
-                        <a href="#" class="hover:text-gray-400">About</a>
-                        <a href="#" class="hover:text-gray-400">Services</a>
-                        <a href="#" class="hover:text-gray-400">Contact</a>
+                        <Link to="/" class="hover:text-gray-400">Home</Link>
+                        <Link to="/" class="hover:text-gray-400">About</Link>
+                        <Link to="/" class="hover:text-gray-400">Services</Link>
+                        <Link to="/" class="hover:text-gray-400">Contact</Link>
                     </div>
                 </div>
                 <div class="mt-6 text-center">

@@ -1,7 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import Navbar from "./components/Navbar"
 import HeroSection from "./components/HeroSection"
 import Register from "./pages/Register"
@@ -30,16 +29,20 @@ export default function App() {
 
   const location = useLocation()
 
-  const showFooterRoutes = [
-    "/",
-    "/register",
-    "/login",
-    "/allMentor",
+  const hideFooterRoutes = [
+    "/meeting-page",
+    "/profile/mentorViewMenteeProfile",
     "/mentor-profile",
-    "/admin-dashboard"
+    "/profile",
+    "/meeting-page/",
+    "/mentor-profile/",
+    "/unauthorized",
+    "/payment-rejected",
+    "/payment-success"
   ];
 
-  const showFooter = showFooterRoutes.some((path) => location.pathname.startsWith(path));
+  // Check if current path includes any of these paths
+  const showFooter = !hideFooterRoutes.some(path => location.pathname.startsWith(path));
 
   return (
     <div>
@@ -68,7 +71,6 @@ export default function App() {
 
 
         {/* Both */}
-
         <Route path="/review-form" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><ReviewForm /></PrivateRoute>} />
         <Route path="/chat/:mentorId/:menteeId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><Chat /></PrivateRoute>} />
         <Route path="/profile/:id/:role" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><Profile /></PrivateRoute>} />
@@ -81,13 +83,9 @@ export default function App() {
         <Route path="/payment-rejected" element={<PaymentRejectedPage />} />
         <Route path="/payment-success/mentor/:mentorId/mentee/:menteeId" element={<PaymentSuccess />} />
 
-
         <Route path="*" element={<NotFound />} />
       </Routes>
-
-
       {showFooter && <Footer />}
-
     </div>
   )
 }
