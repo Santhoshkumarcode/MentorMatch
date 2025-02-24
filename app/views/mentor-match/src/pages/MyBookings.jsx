@@ -11,9 +11,9 @@ import ReviewForm from "./ReviewForm"
 
 const renderEventContent = (eventInfo) => {
     return (
-        <div>
-            <b className="font-medium">meeting with - {eventInfo.event.title}</b>
-            <p>{new Date(eventInfo.event.start).toLocaleString()}</p>
+        <div className="text-xs px-1 py-0.5 bg-blue-500 text-white rounded break-words whitespace-normal">
+            <b className="font-medium block">📅 Meeting with - {eventInfo.event.title}</b>
+            <p className="block">{new Date(eventInfo.event.start).toLocaleString()}</p>
         </div>
     );
 };
@@ -132,7 +132,9 @@ export default function MyBookings() {
                                             {(() => {
                                                 const paymentDate = new Date(ele?.paidDate);
                                                 const currentDate = new Date();
-                                                const diffInDays = Math.floor((currentDate - paymentDate) / (1000 * 60 * 60 * 24));
+                                                const paymentDateUTC = new Date(paymentDate.getUTCFullYear(), paymentDate.getUTCMonth(), paymentDate.getUTCDate());
+                                                const currentDateUTC = new Date(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate());
+                                                const diffInDays = Math.floor((currentDateUTC - paymentDateUTC) / (1000 * 60 * 60 * 24));
 
                                                 if (ele.paymentStatus === 'paid') {
                                                     if (diffInDays < 30) {

@@ -6,6 +6,7 @@ import { mentorProfile, updateMentor, updateMentorProfilePic } from "../redux/sl
 import { useParams } from "react-router-dom";
 import { format } from "date-fns"
 import { toast } from "react-toastify";
+import isURL from "validator/lib/isURL";
 
 /* const initialState = {
     profilePic: '',
@@ -44,9 +45,58 @@ export default function MentorProfilePage({ data }) {
     const [form, setForm] = useState({})
     const [selectedSkills, setSelectedSkills] = useState([])
     const { data: skills } = useSelector((state) => state.skills)
+    const [clientErrors, setClientErrors] = useState(null)
+    const errors = {}
 
     const dispatch = useDispatch()
     const { id } = useParams()
+
+    const runClientValidation = () => {
+        if (form.companyName.trim().length === 0) {
+            errors.companyName = 'Company name required'
+        }
+        if (form.jobTitle.trim().length === 0) {
+            errors.jobTitle = 'Job title'
+        }
+        if (form.bio.trim().length === 0) {
+            errors.bio = 'Bio required'
+        }
+        if (form.about.trim().length == 0) {
+            errors.about = 'About Reqired'
+        }
+        if (form.location.trim().length === 0) {
+            errors.location = 'Location required'
+        }
+        if (form.spokenLanguages.length === 0) {
+            errors.spokenLanguages = 'Languages required'
+        }
+        if (form.skills.length === 0) {
+            errors.skills = "skills required"
+        }
+        if (form.phoneNumber.length === 0) {
+            errors.phoneNumber = "Phone number required"
+        }
+        if (form.linkedIn.trim().length === 0) {
+            errors.linkedIn = 'LinkedIn required'
+        } else if (!isURL(form.linkedIn)) {
+            errors.linkedIn = 'URL should be in proper format'
+        }
+        if (form.personalWebsite.trim().length === 0) {
+            errors.personalWebsite = "Personal website required"
+        } else if (!isURL(form.personalWebsite)) {
+            errors.personalWebsite = "URL should be in proper format"
+        }
+       if (!form.pricing || Object.keys(form.pricing).length === 0) {
+        errors.pricing = 'Pricing required';
+    } else {
+        if (!form.pricing.basic?.amount) {
+            errors.pricing = 'Basic plan amount required';
+        }
+        if (!form.pricing.pro?.amount) {
+            errors.pricing = 'Pro plan amount required';
+        }
+    }
+    }
 
     useEffect(() => {
         dispatch(mentorProfile({ id }))
@@ -62,7 +112,6 @@ export default function MentorProfilePage({ data }) {
             setForm(prev => ({ ...prev, skills: prefilledSkills.map(s => s.value) }));
         }
     }, [data]);
-
 
     useEffect(() => {
         dispatch(getAllSkills())
@@ -99,12 +148,22 @@ export default function MentorProfilePage({ data }) {
         setForm(data)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
+        runClientValidation()
 
-        dispatch(updateMentor({ userId: id, form }))
-        toast.success('you have updated your profile.')
-        setShowForm(false)
+        if (Object.keys(errors).length !== 0) {
+            setClientErrors(errors)
+        } else {
+            try {
+                dispatch(updateMentor({ userId: id, form }))
+                toast.success('you have updated your profile.')
+                setShowForm(false)
+            } catch (err) {
+                toast.error('error in updating profile')
+                console.log(err)
+            }
+        }
     }
 
     const formatDate = (date) => {
@@ -224,20 +283,32 @@ export default function MentorProfilePage({ data }) {
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Company Name"
                                     value={form?.companyName}
                                     onChange={(e) => { setForm({ ...form, companyName: e.target.value }) }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.companyName}</p>}
+
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Job Title"
                                     value={form?.jobTitle} onChange={(e) => { setForm({ ...form, jobTitle: e.target.value }) }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.jobTitle}</p>}
+
                             </div>
 
                             <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Bio"
                                 value={form?.bio} onChange={(e) => { setForm({ ...form, bio: e.target.value }) }} />
+                            {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.bio}</p>}
+
                             <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="About"
                                 value={form?.about} onChange={(e) => { setForm({ ...form, about: e.target.value }) }} />
+                            {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.about}</p>}
+
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Location"
                                     value={form?.location} onChange={(e) => { setForm({ ...form, location: e.target.value }) }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.location}</p>}
+
 
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Spoken Languages" value={form?.spokenLanguages} onChange={(e) => { setForm({ ...form, spokenLanguages: e.target.value }) }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.spokenLanguages}</p>}
+
                             </div>
 
                             <CreatableSelect
@@ -249,6 +320,8 @@ export default function MentorProfilePage({ data }) {
                                 isClearable={true}
                                 placeholder="Select or add skills"
                             />
+                            {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.skills}</p>}
+
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Phone Number" value={form?.phoneNumber} onChange={(e) => { setForm({ ...form, phoneNumber: e.target.value }) }} />
@@ -261,7 +334,11 @@ export default function MentorProfilePage({ data }) {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="LinkedIn" value={form?.linkedIn} onChange={(e) => { setForm({ ...form, linkedIn: e.target.value }) }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.linkedIn}</p>}
+
                                 <input className="w-full border border-gray-300 p-2 rounded" type="text" placeholder="Personal Website" value={form?.personalWebsite} onChange={(e) => { setForm({ ...form, personalWebsite: e.target.value }) }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.personalWebsite}</p>}
+
                             </div>
 
 
@@ -483,6 +560,8 @@ export default function MentorProfilePage({ data }) {
                                         });
                                     }} />
                                 </div>
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.pricing}</p>}
+
                             </div>
 
                             <input

@@ -10,7 +10,7 @@ export default function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const  serverError  = useSelector((state) => state?.users?.serverError)
+    const serverError = useSelector((state) => state?.users?.serverError)
     console.log(serverError)
 
     const [form, setForm] = useState({
@@ -75,9 +75,15 @@ export default function Login() {
                             }}
                         />
                         {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.email}</p>}
-                        {serverError && serverError
-                            .filter(ele => ele.path == 'email')
-                            .map(e => <p className="text-sm text-red-500">{ele.msg}</p>)}
+                        {serverError && (
+                            Array.isArray(serverError) ? (
+                                serverError
+                                    .filter(ele => ele.path === 'email')
+                                    .map((e, index) => <p key={index} className="text-sm text-red-500">{e.msg}</p>)
+                            ) : (
+                                typeof serverError === 'string' && <p className="text-sm text-red-500">{serverError}</p>
+                            )
+                        )}
 
                     </div>
 
@@ -92,9 +98,15 @@ export default function Login() {
                             }}
                         />
                         {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.password}</p>}
-                        {serverError && serverError
-                            .filter(ele => ele.path == 'password')
-                            .map(ele => <p className="text-sm text-red-500">{ele.msg}</p>)}
+                        {serverError && (
+                            Array.isArray(serverError) ? (
+                                serverError
+                                    .filter(ele => ele.path === 'password')
+                                    .map((e, index) => <p key={index} className="text-sm text-red-500">{e.msg}</p>)
+                            ) : (
+                                typeof serverError === 'string' && <p className="text-sm text-red-500">{serverError}</p>
+                            )
+                        )}
                     </div>
 
                     <div>

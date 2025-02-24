@@ -31,7 +31,7 @@ export default function App() {
   return (
     <div>
       <Navbar />
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
 
       <Routes>
         {/* All */}
@@ -49,7 +49,7 @@ export default function App() {
 
 
         {/* Mentee */}
-        <Route path="/allMentor" element={<PrivateRoute permittedRoles={['mentee', 'mentor','admin']}><AllMentor /></PrivateRoute>} />
+        <Route path="/allMentor" element={<PrivateRoute permittedRoles={['mentee', 'mentor', 'admin']}><AllMentor /></PrivateRoute>} />
         <Route path="/mentee-detail" element={<PrivateRoute permittedRoles={['mentee']}><MenteeDetail /></PrivateRoute>} />
         <Route path="/my-bookings/:menteeId" element={<PrivateRoute permittedRoles={['mentee']}><MyBookings /></PrivateRoute>} />
 

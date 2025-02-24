@@ -6,6 +6,7 @@ import { menteeProfile, menteeUpdate, updateMenteeProfilePic } from "../redux/sl
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import isURL from "validator/lib/isURL";
 
 
 /* const initialState = {
@@ -32,6 +33,32 @@ export default function MenteeProfilePage({ data }) {
     })
     const [selectedSkills, setSelectedSkills] = useState([])
     const { data: skills } = useSelector((state) => state.skills)
+
+    const [clientErrors, setClientErrors] = useState(null)
+    const errors = {}
+
+    const runClientValidation = () => {
+        if (form.bio.trim().length === 0) {
+            errors.bio = 'Bio should not to be empty'
+        }
+        if (form.location.trim().length === 0) {
+            errors.location = 'Location field required'
+        }
+        if (form.education.length === 0) {
+            errors.education = "Update your education field"
+        }
+        if (form.linkedIn.trim().length === 0) {
+            errors.linkedIn = "This field is required"
+        } else if (!isURL(form.linkedIn)) {
+            errors.linkedIn = 'URL be in proper format'
+        }
+        if (form.phoneNumber.trim().length === 0) {
+            errors.phoneNumber = "Phone number required"
+        }
+        if (form.skills.length === 0) {
+            errors.skills = "skills required"
+        }
+    }
 
     const dispatch = useDispatch()
     const { id } = useParams()
@@ -85,16 +112,20 @@ export default function MenteeProfilePage({ data }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            dispatch(menteeUpdate({ id, form }))
-            toast.success('you have updated your profile...')
-            setShowForm(false)
-        } catch (err) {
-            toast.error('error in updating profile')
+        runClientValidation()
 
-            console.log(err)
+        if (Object.keys(errors).length !== 0) {
+            setClientErrors(errors)
+        } else {
+            try {
+                dispatch(menteeUpdate({ id, form }))
+                toast.success('you have updated your profile...')
+                setShowForm(false)
+            } catch (err) {
+                toast.error('error in updating profile')
+                console.log(err)
+            }
         }
-
     }
 
     const handleEducationChange = (index, field, value) => {
@@ -219,16 +250,24 @@ export default function MenteeProfilePage({ data }) {
                                     type="text"
                                     value={form?.bio}
                                     placeholder="Enter Bio"
-                                    onChange={(e) => { setForm({ ...form, bio: e.target.value }) }}
-                                />
+                                    onChange={(e) => {
+                                        setForm({ ...form, bio: e.target.value }),
+                                            setClientErrors((prev) => ({ ...prev, bio: "" }))
+                                    }}
+                                /><br /> <br />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.bio}</p>}
 
                                 <input
                                     className="w-full border border-gray-300 p-2 rounded"
                                     type="text"
                                     value={form?.location}
                                     placeholder="Enter Location"
-                                    onChange={(e) => { setForm({ ...form, location: e.target.value }) }}
+                                    onChange={(e) => {
+                                        setForm({ ...form, location: e.target.value })
+                                        setClientErrors((prev) => ({ ...prev, location: "" }))
+                                    }}
                                 />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.location}</p>}
                             </div>
 
                             <p className="text-xl">Education</p>
@@ -265,6 +304,7 @@ export default function MenteeProfilePage({ data }) {
                                             value={education.fieldOfStudy}
                                             onChange={(e) => handleEducationChange(index, 'fieldOfStudy', e.target.value)}
                                         />
+                                        {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.education}</p>}
                                     </div>
                                 ))}
                             </div>
@@ -278,13 +318,23 @@ export default function MenteeProfilePage({ data }) {
                                 isClearable={true}
                                 placeholder="Select or add skills"
                             />
+                            {clientErrors.skills && <p className="text-sm text-red-500 mt-1">{clientErrors.skills}</p>}
+
 
                             <div className="flex w-full my-8">
                                 <input className="flex border rounded p-2 w-full border-gray-300" type="text" value={form?.linkedIn} placeholder="LinkedIn"
-                                    onChange={(e) => { setForm({ ...form, linkedIn: e.target.value }) }} />
+                                    onChange={(e) => {
+                                        setForm({ ...form, linkedIn: e.target.value }),
+                                            setClientErrors((prev) => ({ ...prev, linkedIn: "" }))
+                                    }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.linkedIn}</p>}
 
                                 <input className="flex border rounded p-2 w-full border-gray-300" type="number" value={form?.phoneNumber} placeholder="Phone Number"
-                                    onChange={(e) => { setForm({ ...form, phoneNumber: e.target.value }) }} />
+                                    onChange={(e) => {
+                                        setForm({ ...form, phoneNumber: e.target.value }),
+                                            setClientErrors((prev) => ({ ...prev, phoneNumber: "" }))
+                                    }} />
+                                {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.phoneNumber}</p>}
                             </div>
                             <input
                                 type="submit"

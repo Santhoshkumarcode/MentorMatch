@@ -22,7 +22,7 @@ export const loginUser = createAsyncThunk('/users/loginUser', async ({ form, res
         return response.data
     } catch (err) {
         console.log(err)
-        return rejectWithValue(err.response.data.errors)
+        return rejectWithValue(err.response.data)
     }
 })
 

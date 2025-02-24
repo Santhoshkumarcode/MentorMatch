@@ -12,9 +12,9 @@ import { toast } from "react-toastify";
 
 const renderEventContent = (eventInfo) => {
     return (
-        <div>
-            <b className="font-medium">meeting with - {eventInfo.event.title}</b>
-            <p>{new Date(eventInfo.event.start).toLocaleString()}</p>
+        <div className="text-xs px-1 py-0.5 bg-blue-500 text-white rounded break-words whitespace-normal">
+            <b className="font-medium block">📅 Meeting with - {eventInfo.event.title}</b>
+            <p className="block">{new Date(eventInfo.event.start).toLocaleString()}</p>
         </div>
     );
 };
@@ -362,10 +362,10 @@ export default function MyStudents() {
 
                         {chatBox && (
                             <Chat isOpen={handleChat} userId={mentorId} meetingId={roomId} />
-                            )}
-                            {showReview && (
-                                <ReviewForm isOpen={handleReview} userId={mentorId} meetingId={meetingId}/>
-                            )}
+                        )}
+                        {showReview && (
+                            <ReviewForm isOpen={handleReview} userId={mentorId} meetingId={meetingId} />
+                        )}
 
                     </div>
                 ) : currentPage === "mySchedules" ? (
