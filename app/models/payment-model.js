@@ -3,14 +3,16 @@ import { Schema, model } from "mongoose"
 const paymentSchema = new Schema({
     menteeId: {
         type: Schema.Types.ObjectId,
-        ref:"User"
+        ref: "User"
     },
     mentorId: {
         type: Schema.Types.ObjectId,
-        ref:"User"
+        ref: "User"
     },
     transactionId: String,
     amount: Number,
+    adminFee: Number,
+    mentorFee: Number,
     paymentStatus: {
         type: String,
         enum: ["pending", "succeeded", "failed"],
@@ -18,7 +20,7 @@ const paymentSchema = new Schema({
     },
     paymentType: {
         type: String,
-        default:'card'
+        default: 'card'
     }
 }, { timestamps: true })
 

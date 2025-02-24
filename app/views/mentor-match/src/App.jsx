@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -27,6 +27,19 @@ import Unauthorized from "./pages/Unauthorized"
 import NotFound from "./pages/NotFound"
 
 export default function App() {
+
+  const location = useLocation()
+
+  const showFooterRoutes = [
+    "/",
+    "/register",
+    "/login",
+    "/allMentor",
+    "/mentor-profile",
+    "/admin-dashboard"
+  ];
+
+  const showFooter = showFooterRoutes.some((path) => location.pathname.startsWith(path));
 
   return (
     <div>
@@ -73,7 +86,7 @@ export default function App() {
       </Routes>
 
 
-      {/* <Footer /> */}
+      {showFooter && <Footer />}
 
     </div>
   )

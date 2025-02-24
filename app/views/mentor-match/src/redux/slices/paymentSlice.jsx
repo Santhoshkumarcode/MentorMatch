@@ -23,15 +23,29 @@ export const updatePaymentStatus = createAsyncThunk('/payments/updatePaymentStat
     }
 })
 
+export const getAllPayments = createAsyncThunk('/payments/getAllPayments', async (_, { rejectWithValues }) => {
+    try {
+        const response = await axios.get('/api/getAllPayments')
+        return response.data
+    } catch (err) {
+        console.log(err)
+        return rejectWithValues(err.response.data.errors)
+    }
+})
+
 const paymentSlice = createSlice({
     name: "payments",
     initialState: {
         data: null,
+        allPayments: [],
         serverError: null
     },
     extraReducers: (builder) => {
         builder.addCase(createPayment.fulfilled, (state, action) => {
             state.data = action.payload
+        })
+        builder.addCase(getAllPayments.fulfilled, (state, action) => {
+            state.allPayments = action.payload
         })
     }
 })

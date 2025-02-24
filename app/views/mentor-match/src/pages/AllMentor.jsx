@@ -75,7 +75,7 @@ export default function AllMentor() {
                 <div className="w-3/4 space-y-6 p-6">
                     {verifiedData &&
 
-                        verifiedData?.data?.filter(ele => ele?.pricing?.basic?.amount && ele?.availability == "available"
+                        verifiedData?.data?.filter(ele => ele?.pricing?.basic?.amount && ele?.availability == "available" /* && ele.stripeAccountId */
                         ).map(ele => (
                             <div key={ele._id} className="flex border border-gray-200 rounded-lg bg-white p-6 space-x-6 shadow-lg">
                                 {ele?.profilePic ? (

@@ -7,6 +7,8 @@ import { deleteMentor, isVerified, fetchAllMentors } from "../redux/slices/mento
 import { getAllMentee } from "../redux/slices/menteeSlice";
 import { allUsers } from "../redux/slices/userSlice";
 import moment from "moment";
+import { getAllPayments } from "../redux/slices/paymentSlice";
+import { parseISO, format } from "date-fns";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
@@ -17,6 +19,19 @@ export default function AdminDashboard() {
     const mentors = useSelector((state) => state?.mentors?.data);
     const allMentees = useSelector((state) => state?.mentees?.allMentees);
     const users = useSelector((state) => state?.users?.allUsers);
+    const allPayments = useSelector((state) => state?.payments)
+    const adminFeesByMonth = Array(12).fill(0);
+
+    allPayments.allPayments.forEach((payment) => {
+        if (payment.createdAt && payment.adminFee !== undefined) {
+            const monthIndex = new Date(payment.createdAt).getMonth();
+            adminFeesByMonth[monthIndex] += payment.adminFee;
+        }
+    });
+
+    const totalRevenue = allPayments.allPayments.reduce((total, payment) => {
+        return total + (payment.adminFee || 0)
+    }, 0)
 
     const [currentPage, setCurrentPage] = useState("application");
 
@@ -36,6 +51,7 @@ export default function AdminDashboard() {
         dispatch(allUsers());
         dispatch(getAllMentee());
         dispatch(fetchAllMentors());
+        dispatch(getAllPayments())
     }, [dispatch]);
 
     const menteeCount = allMentees?.length || 0;
@@ -79,14 +95,16 @@ export default function AdminDashboard() {
             ],
         };
     };
+    
     const revenueData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         datasets: [
             {
-                label: "Revenue ($)",
-                data: [500, 700, 900, 1200, 1500, 1700, 2000, 2200, 2500, 2800, 3000, 3500],
+                label: "Revenue (₹)",
+                data: adminFeesByMonth,
                 fill: false,
                 borderColor: "#4F46E5",
+                backgroundColor: "#4F46E5", 
                 tension: 0.1,
             },
         ],
@@ -172,7 +190,10 @@ export default function AdminDashboard() {
                 </div>
             ) : currentPage === "revenue" ? (
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-700 my-4 text-center">Revenue Growth</h2>
+                    <div className="bg-white border border-gray-300 shadow-lg rounded-lg p-6 flex flex-col items-center">
+                        <p className="text-lg font-semibold text-gray-600">Total Revenue</p>
+                        <p className="text-3xl font-bold text-blue-600 mt-2">₹ {totalRevenue}</p>
+                    </div>
                     <div className="flex justify-center items-center w-full">
                         <div className="w-[800px] h-[400px] flex justify-center items-center">
                             <Line data={revenueData} />
