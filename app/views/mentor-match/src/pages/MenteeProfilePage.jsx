@@ -164,7 +164,11 @@ export default function MenteeProfilePage({ data }) {
 
                 <div className="">
                     <div>
-                        <img className="border-4 border-white absolute top-55 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
+                        {data?.profilePic ? (
+                            <img className="border-4 border-white absolute top-55 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
+                        ) : (
+                            <img className="border-4 border-white absolute top-55 left-10 w-50 h-50 rounded-full" src="\src\assets\user.png"/>
+                        )}
                         <p className="text-3xl font-semibold ps-10 pt-80">{data?.userId?.username}</p>
                         <p className="text-lg ps-10 mt-2">{data?.bio}</p>
                         <p className="text-lg ps-10 mt-2 font-semibold text-blue-600 hover:underline cursor-pointer" target="_blank"><a src={data?.linkedIn}>LinkedIn</a></p>
@@ -318,7 +322,7 @@ export default function MenteeProfilePage({ data }) {
                                 isClearable={true}
                                 placeholder="Select or add skills"
                             />
-                            {clientErrors.skills && <p className="text-sm text-red-500 mt-1">{clientErrors.skills}</p>}
+                            {clientErrors?.skills && <p className="text-sm text-red-500 mt-1">{clientErrors?.skills}</p>}
 
 
                             <div className="flex w-full my-8">

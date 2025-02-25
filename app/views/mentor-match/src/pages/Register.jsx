@@ -3,6 +3,7 @@ import { createUser, userProfile } from "../redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/lib/isEmail";
+import { Link } from "react-router-dom";
 
 const initialState = {
     username: "",
@@ -37,13 +38,13 @@ export default function Register() {
         }
     };
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         runClientValidation();
 
         if (Object.keys(errors).length !== 0) {
             setClientErrors(errors);
-            return 
+            return
         } else {
             try {
                 const resetForm = () => {
@@ -53,7 +54,7 @@ export default function Register() {
                 await dispatch(userProfile()).unwrap()
                 if (form.role == 'mentor') {
                     navigate('/mentor-detail')
-                } else if(form.role == 'mentee') {
+                } else if (form.role == 'mentee') {
                     navigate('/mentee-detail');
                 }
             } catch (err) {
@@ -76,7 +77,8 @@ export default function Register() {
                             className="w-full border border-gray-300 rounded-lg px-4 py-2"
                             onChange={(e) => {
                                 setForm({ ...form, username: e.target.value });
-                                setClientErrors((prev) => ({ ...prev, username: "" }))}}
+                                setClientErrors((prev) => ({ ...prev, username: "" }))
+                            }}
                         />
                         {clientErrors && <p className="text-sm text-red-500 mt-1">{clientErrors.username}</p>}
                         {serverError && serverError
@@ -139,8 +141,14 @@ export default function Register() {
                         <input
                             type="submit"
                             className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600" value="Register" />
-                        
                     </div>
+                    <p className="text-sm text-gray-600">
+                        Already have an account?{" "}
+                        <Link to="/login" className="text-blue-600 font-medium hover:underline">
+                            LOGIN
+                        </Link>
+                    </p>
+
                 </form>
             </div>
         </div>

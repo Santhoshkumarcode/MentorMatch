@@ -86,16 +86,16 @@ export default function MentorProfilePage({ data }) {
         } else if (!isURL(form.personalWebsite)) {
             errors.personalWebsite = "URL should be in proper format"
         }
-       if (!form.pricing || Object.keys(form.pricing).length === 0) {
-        errors.pricing = 'Pricing required';
-    } else {
-        if (!form.pricing.basic?.amount) {
-            errors.pricing = 'Basic plan amount required';
+        if (!form.pricing || Object.keys(form.pricing).length === 0) {
+            errors.pricing = 'Pricing required';
+        } else {
+            if (!form.pricing.basic?.amount) {
+                errors.pricing = 'Basic plan amount required';
+            }
+            if (!form.pricing.pro?.amount) {
+                errors.pricing = 'Pro plan amount required';
+            }
         }
-        if (!form.pricing.pro?.amount) {
-            errors.pricing = 'Pro plan amount required';
-        }
-    }
     }
 
     useEffect(() => {
@@ -193,7 +193,11 @@ export default function MentorProfilePage({ data }) {
                 <img className="w-12 h-12 absolute right-6 top-87 cursor-pointer" src="/src/assets/a.png" onClick={() => { handleClick(data) }} />
                 <div>
                     <div className="pb-20">
-                        <img className=" border-4 border-white relative top-25 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
+                        {data?.profilePic ? (
+                            <img className=" border-4 border-white relative top-25 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
+                        ) : (
+                            <img className=" border-4 border-white relative top-25 left-10 w-50 h-50 rounded-full" src="\src\assets\user.png" />
+                        )}
                         <p className="text-3xl font-semibold ps-10 pt-40">{data?.userId?.username}</p>
                         <p className="text-lg ps-10 mt-2">{data?.companyName}</p>
                         <p className="text-lg font-semibold ps-10 mt-2">{data?.jobTitle}</p>

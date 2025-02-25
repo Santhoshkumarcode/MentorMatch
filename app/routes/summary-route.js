@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename);
 const router = express.Router()
 
 const uploadPath = path.join(__dirname, "../uploads");
+console.log("Uploading to:", uploadPath);
 if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath, { recursive: true });
 }

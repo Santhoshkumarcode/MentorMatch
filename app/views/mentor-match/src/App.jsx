@@ -24,6 +24,7 @@ import ReviewForm from "./pages/ReviewForm"
 import PrivateRoute from "./components/PrivateRoute"
 import Unauthorized from "./pages/Unauthorized"
 import NotFound from "./pages/NotFound"
+import VideoChat from "./components/Peer";
 
 export default function App() {
 
@@ -74,7 +75,13 @@ export default function App() {
         <Route path="/review-form" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><ReviewForm /></PrivateRoute>} />
         <Route path="/chat/:mentorId/:menteeId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><Chat /></PrivateRoute>} />
         <Route path="/profile/:id/:role" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><Profile /></PrivateRoute>} />
-        <Route path="/meeting-page/:mentorId/:menteeId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><MeetingPage /></PrivateRoute>} />
+
+        
+
+        <Route path="/meeting-page/:mentorId/:menteeId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><VideoChat /></PrivateRoute>} />
+
+
+
         <Route path="/mentor-profile/:id" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><MentorProfile /></PrivateRoute>} />
         <Route path="/apply-form/:mentorId/:plan/:amount" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><ApplyForm /></PrivateRoute>} />
         <Route path="/unauthorized" element={<Unauthorized />} />

@@ -15,9 +15,9 @@ export default function MentorViewMenteeProfile() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-            dispatch(getReviews({ id }))
+        dispatch(getReviews({ id }))
     }, [dispatch, id])
-    
+
     useEffect(() => {
         dispatch(menteeProfile({ id }))
     }, [])
@@ -31,13 +31,19 @@ export default function MentorViewMenteeProfile() {
 
                 <div className="">
                     <div>
-                        <img className="border-4 border-white absolute top-40 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
-                        <p className="text-3xl font-semibold ps-10 pt-80">{data?.userId?.username}</p>
-                        <p className="text-lg ps-10 mt-2">{data?.bio}</p>
-                        <p className="text-lg ps-10 mt-2 font-semibold text-blue-600"><a src={data?.linkedIn}>LinkedIn</a></p>
-                        <p className="text-lg ps-10 mt-2">{data?.phoneNumber}</p>
-                        <p className="text-lg ps-10 mt-2">{data?.location}</p>
+                        <div>
+                            {data?.profilePic ? (
+                                <img className="border-4 border-white absolute top-60 left-10 w-50 h-50 rounded-full" src={data?.profilePic} />
+                            ) : (
+                                <img className="border-4 border-white absolute top-60 left-10 w-50 h-50 rounded-full" src="\src\assets\user.png" />
+                            )}
 
+                            <p className="text-3xl font-semibold ps-10 pt-90">{data?.userId?.username}</p>
+                            <p className="text-lg ps-10 mt-2">{data?.bio}</p>
+                            <p className="text-lg ps-10 mt-2 font-semibold text-blue-600"><a src={data?.linkedIn}>LinkedIn</a></p>
+                            <p className="text-lg ps-10 mt-2">{data?.phoneNumber}</p>
+                            <p className="text-lg ps-10 mt-2">{data?.location}</p>
+                        </div>
                     </div>
                     <div className="flex flex-wrap gap-2 mt-2">
                         {data?.skills?.map((skill, index) => (

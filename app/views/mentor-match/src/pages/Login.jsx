@@ -4,7 +4,7 @@ import { loginUser, userProfile } from "../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/lib/isEmail";
 import { toast } from "react-toastify";
-
+import { Link } from "react-router-dom";
 
 export default function Login() {
     const dispatch = useDispatch();
@@ -115,6 +115,12 @@ export default function Login() {
                             value="Login"
                             className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600" />
                     </div>
+                    <p className="text-sm text-gray-600">
+                        Create new account?{" "}
+                        <Link to="/register" className="text-blue-600 font-medium hover:underline">
+                            REGISTER
+                        </Link>
+                    </p>
                 </form>
             </div>
         </div>
