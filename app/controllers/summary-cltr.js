@@ -1,216 +1,105 @@
-// whisper
-
-/* import Summary from "../models/summary-model.js";
-import axios from "axios";
-import fs from "fs";
-import FormData from "form-data";
-
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-const summaryCltr = {};
-
- summaryCltr.createAudio = async (req, res) => {
-    const audioFile = req.file;
-    if (!audioFile) {
-        return res.status(400).json({ message: "No audio file uploaded." });
-    }
-
-    try {
-        console.log("Uploading audio file to Whisper API...");
-
-        // Step 1: Upload audio file to OpenAI Whisper for transcription
-        const formData = new FormData();
-        formData.append("file", fs.createReadStream(audioFile.path));
-        formData.append("model", "whisper-1");
-
-        const transcriptResponse = await axios.post("https://api.openai.com/v1/audio/transcriptions", formData, {
-            headers: {
-                ...formData.getHeaders(),
-                Authorization: `Bearer ${OPENAI_API_KEY}`,
-            },
-        });
-
-        const transcriptText = transcriptResponse.data.text;
-        console.log("Transcription done:", transcriptText);
-
-        // Step 2: Get Summary using OpenAI GPT
-        const summaryResponse = await axios.post("https://api.openai.com/v1/chat/completions", {
-            model: "gpt-3.5-turbo",
-            messages: [
-                { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: `Summarize this text: ${transcriptText}` },
-            ],
-        }, {
-            headers: {
-                Authorization: `Bearer ${OPENAI_API_KEY}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        const summary = summaryResponse.data.choices[0].message.content;
-
-        // Step 3: Save to Database
-        const summaryData = new Summary({
-            meetingId: req.body.meetingId,
-            transcript: transcriptText,
-            summary: summary,
-        });
-
-        await summaryData.save();
-        return res.json(summaryData);
-
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: err.message });
-    }
-};
-export default summaryCltr;
-
- */
-
-
-
-
-//assambly AI
-
 import Summary from "../models/summary-model.js";
 import axios from "axios";
 import fs from "fs";
-import FormData from "form-data";
 import dotenv from "dotenv";
+import cloudinary from "../utils/cloudinary.js"; // Import your Cloudinary config
 
-dotenv.config(); // Load API keys
-
+dotenv.config();
 const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
-const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
+const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY; // Add this in .env
 
 const summaryCltr = {};
 
 summaryCltr.createAudio = async (req, res) => {
     const audioFile = req.file;
-    console.log("Received audio file:", audioFile); 
+
     if (!audioFile) {
         return res.status(400).json({ message: "No audio file uploaded." });
     }
 
     try {
-        console.log("🎤 Uploading audio file to AssemblyAI...");
+        console.log("📤 Uploading audio file to Cloudinary...");
 
-        // Step 1: Upload audio to AssemblyAI
-        const formData = new FormData();
-        formData.append("file", fs.createReadStream(audioFile.path));
+        // ✅ Step 1: Upload to Cloudinary
+        const cloudinaryResult = await cloudinary.uploader.upload(audioFile.path, {
+            folder: "meeting-audio/",
+            resource_type: "video", // Cloudinary treats audio as video
+            use_filename: true,
+            unique_filename: false,
+        });
 
-        const uploadResponse = await axios.post(
-            "https://api.assemblyai.com/v2/upload",
-            formData,
-            {
-                headers: {
-                    Authorization: ASSEMBLYAI_API_KEY,
-                    ...formData.getHeaders(),
-                },
-            }
-        );
+        const audioUrl = cloudinaryResult.secure_url;
+        console.log("✅ Uploaded to Cloudinary:", audioUrl);
 
-        if (!uploadResponse.data.upload_url) {
-            throw new Error("❌ Upload failed. No URL received.");
-        }
+        // ✅ Step 2: Delete Local File
+        fs.unlinkSync(audioFile.path);
 
-        const audioUrl = uploadResponse.data.upload_url;
-        console.log("✅ Audio uploaded successfully:", audioUrl);
+        console.log("📤 Sending audio file to AssemblyAI for transcription...");
 
-        // Step 2: Request transcription
-        const transcriptResponse = await axios.post(
-            "https://api.assemblyai.com/v2/transcript",
+        // ✅ Step 3: Send file to AssemblyAI for transcription
+        const assemblyResponse = await axios.post("https://api.assemblyai.com/v2/transcript",
             { audio_url: audioUrl },
             {
-                headers: {
-                    Authorization: ASSEMBLYAI_API_KEY,
-                    "Content-Type": "application/json",
-                },
+                headers: { Authorization: ASSEMBLYAI_API_KEY, "Content-Type": "application/json" },
             }
         );
 
-        if (!transcriptResponse.data.id) {
-            throw new Error("❌ Failed to start transcription.");
-        }
+        const transcriptId = assemblyResponse.data.id;
+        console.log("✅ Transcription request submitted. ID:", transcriptId);
 
-        const transcriptId = transcriptResponse.data.id;
-        console.log("📝 Transcription started, ID:", transcriptId);
-
-        // Step 3: Poll for the transcript result
+        // ✅ Step 4: Poll AssemblyAI API to get the transcript
         let transcriptText = "";
-        let retries = 30; // Max 4 minutes (30 x 8s = 240s)
+        while (true) {
+            await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 sec before checking
 
-        while (retries > 0) {
-            try {
-                const transcriptResult = await axios.get(
-                    `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
-                    {
-                        headers: { Authorization: ASSEMBLYAI_API_KEY },
-                    }
-                );
+            const transcriptStatus = await axios.get(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
+                headers: { Authorization: ASSEMBLYAI_API_KEY },
+            });
 
-                console.log(`🔄 Transcription Status: ${transcriptResult.data.status}`);
-
-                if (transcriptResult.data.status === "completed") {
-                    transcriptText = transcriptResult.data.text;
-                    break;
-                } else if (transcriptResult.data.status === "failed") {
-                    console.error("❌ Transcription failed:", transcriptResult.data);
-                    return res.status(500).json({ message: "Transcription failed." });
-                }
-            } catch (error) {
-                console.error("⚠️ Error polling transcript:", error.response?.data || error.message);
-                return res.status(500).json({ message: "Error fetching transcription status." });
+            if (transcriptStatus.data.status === "completed") {
+                transcriptText = transcriptStatus.data.text;
+                console.log("✅ Transcription completed:", transcriptText);
+                break;
+            } else if (transcriptStatus.data.status === "failed") {
+                throw new Error("Transcription failed on AssemblyAI.");
             }
-
-            await new Promise((resolve) => setTimeout(resolve, 8000)); // Wait 8 seconds before retrying
-            retries--;
         }
 
-        if (!transcriptText) {
-            console.error("⏳ Timeout: Transcription took too long.");
-            return res.status(500).json({ message: "Transcription timeout. Try again later." });
-        }
+        // ✅ Step 5: Generate Summary with Hugging Face
+        console.log("📝 Generating summary with Hugging Face...");
 
-        console.log("✅ Transcription completed:", transcriptText);
 
-        // Step 4: Generate summary using Hugging Face
-        console.log("📄 Generating summary...");
-        const summaryResponse = await axios.post(
-            "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
+
+        
+
+        const huggingFaceResponse = await axios.post(
+            "https://api-inference.huggingface.co/models/facebook/bart-large-cnn", 
             { inputs: transcriptText },
             {
-                headers: {
-                    Authorization: `Bearer ${HUGGINGFACE_API_KEY}`,
-                    "Content-Type": "application/json",
-                },
+                headers: { Authorization: `Bearer ${HUGGINGFACE_API_KEY}` },
             }
         );
 
-        if (!summaryResponse.data || !summaryResponse.data[0]?.summary_text) {
-            throw new Error("❌ Summary generation failed.");
+        if (!huggingFaceResponse.data || !huggingFaceResponse.data[0].summary_text) {
+            throw new Error("Failed to get summary from Hugging Face.");
         }
 
-        const summary = summaryResponse.data[0].summary_text;
+        const summary = huggingFaceResponse.data[0].summary_text;
         console.log("✅ Summary generated:", summary);
 
-        // Step 5: Save transcript & summary in MongoDB
+        // ✅ Step 6: Save to Database
         const summaryData = new Summary({
             meetingId: req.body.meetingId,
+            mentorId: req.body.mentorId,
+            menteeId: req.body.menteeId,
+            audioUrl: audioUrl, // Store Cloudinary audio URL
             transcript: transcriptText,
             summary: summary,
         });
 
         await summaryData.save();
-
-        // Step 6: Clean up uploaded file
-        fs.unlink(audioFile.path, (err) => {
-            if (err) console.error("⚠️ Error deleting file:", err);
-            else console.log("🗑 Temporary file deleted.");
-        });
-
         return res.json(summaryData);
+
     } catch (err) {
         console.error("❌ Error:", err);
         return res.status(500).json({ error: err.message });

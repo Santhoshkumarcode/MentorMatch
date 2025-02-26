@@ -16,7 +16,7 @@ export default function HeroSection() {
         <div>
             <div className="flex flex-col md:flex-row items-center justify-between px-10 py-20 max-w-7xl">
                 <div className="md:w-1/2">
-                    <h1 className="text-5xl font-bold text-gray-800 leading-tight mb-6">
+                    <h1 className="text-5xl font-bold text-gray-700 leading-tight mb-6">
                         Unlock Your Potential with <span className="text-blue-700">Expert Mentorship</span>
                     </h1>
                     <p className="text-lg text-gray-600 mb-8">
