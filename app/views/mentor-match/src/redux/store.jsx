@@ -7,7 +7,7 @@ import skillReducer from "./slices/skillsSlice"
 import chatReducer from "./slices/chatSlice"
 import paymentReducer from "./slices/paymentSlice"
 import reviewReducer from "./slices/reviewSlice"
-
+import summaryReducer from "./slices/summarySlice"
 const store = configureStore({
     reducer: {
         users: userReducer,
@@ -17,7 +17,8 @@ const store = configureStore({
         chats: chatReducer,
         payments: paymentReducer,
         meetingSchedules: meetingScheduleReducer,
-        reviews: reviewReducer
+        reviews: reviewReducer,
+        summaries:summaryReducer
     }
 })
 

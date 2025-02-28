@@ -91,12 +91,12 @@ export default function MyStudents() {
         date: ele?.start,
     }))
 
-    const handleJoin = (mentorId, menteeId) => {
-        if (!mentorId || !menteeId) {
+    const handleJoin = (mentorId, menteeId,meetingId) => {
+        if (!mentorId || !menteeId || !meetingId) {
             alert("Meeting details not found!");
             return;
         }
-        navigate(`/meeting-page/${mentorId}/${menteeId}`);
+        navigate(`/meeting-page/${mentorId}/${menteeId}/${meetingId}`);
     };
 
     const handleChat = () => {
@@ -311,7 +311,7 @@ export default function MyStudents() {
                                                             </button>
                                                             <button
                                                                 className="px-5 py-2 bg-green-500 text-white font-medium rounded hover:bg-green-600 transition"
-                                                                onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id)}
+                                                                onClick={() => handleJoin(ele?.mentorId?._id, ele?.menteeId?._id,ele?._id)}
                                                             >
                                                                 Meet
                                                             </button>

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import axios from "../config/axios";
 
 const VideoChat = () => {
-    const { mentorId, menteeId } = useParams();
+    const { mentorId, menteeId, meetingId } = useParams();
     const navigate = useNavigate();
 
     const currentUserId = useSelector((state) => state?.users?.data?._id);
@@ -120,7 +120,9 @@ const VideoChat = () => {
 
                     const formData = new FormData();
                     formData.append("audio", audioFile);
-                    formData.append("meetingId", `${mentorId}-${menteeId}`);
+                    formData.append("meetingId",meetingId);
+                    formData.append("mentorId",mentorId);
+                    formData.append("menteeId",menteeId);
 
                     try {
                         console.log("Uploading audio...");

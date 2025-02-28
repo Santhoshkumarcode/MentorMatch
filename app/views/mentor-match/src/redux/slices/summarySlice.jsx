@@ -4,6 +4,7 @@ import axios from "../../config/axios";
 export const getSummary = createAsyncThunk('/summaries/getSummary', async ({menteeId}, { rejectWithValue }) => {
     try {
         const response = await axios(`/api/summaries/${menteeId}`)
+        console.log(response.data)
         return response.data
     }catch(err){
         console.log(err)

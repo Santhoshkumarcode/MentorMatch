@@ -8,6 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import Chat from "./Chat"
 import { createPayment } from "../redux/slices/paymentSlice"
 import ReviewForm from "./ReviewForm"
+import { getSummary } from "../redux/slices/summarySlice"
 
 const renderEventContent = (eventInfo) => {
     return (
@@ -23,6 +24,10 @@ export default function MyBookings() {
     const { menteeBookings } = useSelector((state) => state?.meetingSchedules)
     const { menteeMeetingDates } = useSelector((state) => state.meetingSchedules)
     const { data } = useSelector((state) => state.payments)
+
+    const { data: summary } = useSelector((state) => state?.summaries)
+    console.log(summary)
+
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -41,6 +46,10 @@ export default function MyBookings() {
     }))
 
     useEffect(() => {
+        dispatch(getSummary({ menteeId }))
+    }, [dispatch])
+
+    useEffect(() => {
         dispatch(getMenteeBookings({ menteeId }))
     }, [menteeId, dispatch])
 
@@ -50,12 +59,12 @@ export default function MyBookings() {
         }
     }, [dispatch, menteeId])
 
-    const handleJoin = (mentorId, menteeId) => {
-        if (!mentorId || !menteeId) {
+    const handleJoin = (mentorId, menteeId,meetingId) => {
+        if (!mentorId || !menteeId || !meetingId) {
             alert("Meeting details not found!");
             return;
         }
-        navigate(`/meeting-page/${mentorId}/${menteeId}`)
+        navigate(`/meeting-page/${mentorId}/${menteeId}/${meetingId}`)
     }
 
     const handleChat = () => {
@@ -150,7 +159,7 @@ export default function MyBookings() {
                                                                 </button>
                                                                 <button
                                                                     className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
-                                                                    onClick={() => handleJoin(ele?.mentorId?._id, menteeId)}>
+                                                                    onClick={() => handleJoin(ele?.mentorId?._id,ele?.menteeId._id,ele._id)}>
                                                                     Meet
                                                                 </button>
                                                             </div>
@@ -173,8 +182,21 @@ export default function MyBookings() {
                                 ))}
                         </div>
                     ) : currentPage == 'meetingSummary' ? (
-                        <div>
-                            meeting summary
+                        <div className="space-y-6">
+                            {summary.map((ele) => (
+                                <div
+                                    key={ele._id}
+                                    className="border border-gray-300 rounded-2xl p-6 shadow-md bg-white transition hover:shadow-lg"
+                                >
+                                    <h2 className="text-2xl font-bold text-gray-900">
+                                        Meeting with <span className="text-blue-600">{ele?.mentorId?.username}</span>
+                                    </h2>
+
+                                    <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-inner border-x-4 border-blue-500">
+                                        <p className="text-gray-700 leading-relaxed">{ele?.summary}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     ) : (
                         <div className=" w-full p-4 border border-gray-300 rounded-lg">

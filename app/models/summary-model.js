@@ -19,6 +19,7 @@ const summarySchema = new Schema({
         format: String,
         duration: Number
     },
+    audioUrl: String,   
     transcript: String,
     summary: String
 }, { timestamps: true })

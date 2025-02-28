@@ -31,5 +31,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/summaries/upload-audio', upload.single('audio'), summaryCltr.createAudio)
+router.get('/summaries/:menteeId',summaryCltr.getSummary)
 
 export default router

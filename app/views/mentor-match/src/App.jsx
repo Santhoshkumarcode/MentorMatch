@@ -78,7 +78,7 @@ export default function App() {
 
         
 
-        <Route path="/meeting-page/:mentorId/:menteeId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><VideoChat /></PrivateRoute>} />
+        <Route path="/meeting-page/:mentorId/:menteeId/:meetingId" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><VideoChat /></PrivateRoute>} />
 
 
 
