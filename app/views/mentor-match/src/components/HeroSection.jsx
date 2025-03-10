@@ -17,7 +17,7 @@ export default function HeroSection() {
             <div className="flex flex-col md:flex-row items-center justify-between px-10 py-20 max-w-7xl">
                 <div className="md:w-1/2">
                     <h1 className="text-5xl font-bold text-gray-700 leading-tight mb-6">
-                        Unlock Your Potential with <span className="text-blue-700">Expert Mentorship</span>
+                        Unlock Your Potential with <span className="text-blue-950">Expert Mentorship</span>
                     </h1>
                     <p className="text-lg text-gray-600 mb-8">
                         Connect with industry leaders to accelerate your learning, career growth, and personal development.

@@ -42,7 +42,7 @@ const VideoChat = () => {
                     setCallConnected(true);
                 });
 
-                startRecording(stream); // Start recording when the call starts
+                startRecording(stream); 
             } catch (error) {
                 console.error("Error accessing media devices:", error);
                 alert("Error: " + error.message);
@@ -71,7 +71,7 @@ const VideoChat = () => {
                 setCallConnected(true);
             });
 
-            startRecording(stream); // Start recording when the call starts
+            startRecording(stream); 
         } catch (error) {
             console.error("Error accessing media devices:", error);
             alert("Error: " + error.message);
@@ -86,10 +86,9 @@ const VideoChat = () => {
         return () => clearTimeout(timeout);
     }, [peer]);
 
-    // 🔴 Start Recording Audio
     const startRecording = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); // Ensure only audio is captured
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
 
             recordedChunksRef.current = [];
@@ -110,7 +109,6 @@ const VideoChat = () => {
     };
 
 
-    // 🛑 Stop Recording and Send Audio to Backend
     const stopRecordingAndSendAudio = async () => {
         return new Promise((resolve) => {
             if (mediaRecorderRef.current) {
@@ -143,9 +141,8 @@ const VideoChat = () => {
         });
     };
 
-    // 🛑 End Call
     const endCall = async () => {
-        await stopRecordingAndSendAudio(); // Stop recording and send audio to backend
+        await stopRecordingAndSendAudio(); 
         if (peer) {
             peer.destroy();
         }

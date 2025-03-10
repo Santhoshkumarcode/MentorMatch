@@ -80,10 +80,10 @@ export default function MentorProfile() {
 
                     <div className="border-2 border-gray-300 mb-40 p-10 pt-10 mt-15 rounded-2xl mr-20 ml-20 bg-white shadow-lg">
                         <div className="flex justify-around text-xl font-bold mb-4">
-                            <p className={`cursor-pointer ${plan === 'basic' ? 'text-blue-600 text-2xl' : 'hover:text-blue-600 hover:text-2xl'}`} onClick={() => setPlan('basic')}>
+                            <p className={`cursor-pointer ${plan === 'basic' ? 'text-green-600 text-2xl' : 'hover:text-green-600 hover:text-2xl'}`} onClick={() => setPlan('basic')}>
                                 Basic
                             </p>
-                            <p className={`cursor-pointer ${plan === 'pro' ? 'text-blue-600 text-2xl' : 'hover:text-blue-600 hover:text-2xl'}`} onClick={() => setPlan('pro')}>
+                            <p className={`cursor-pointer ${plan === 'pro' ? 'text-green-600 text-2xl' : 'hover:text-green-600 hover:text-2xl'}`} onClick={() => setPlan('pro')}>
                                 Pro
                             </p>
                         </div>
@@ -93,7 +93,7 @@ export default function MentorProfile() {
 
                         {plan === 'basic' ? (
                             <div className="p-4 text-left">
-                                <p className="font-bold text-5xl text-blue-600 mb-3">
+                                <p className="font-bold text-5xl text-green-600 mb-3">
                                     ₹ {singleData?.pricing?.basic?.amount} <span className="text-2xl font-bold text-gray-700">/ month</span>
                                 </p>
                                 <ul className="text-md font-semibold text-gray-800 space-y-1">
@@ -103,13 +103,13 @@ export default function MentorProfile() {
                                     <li>⏳ Session Duration: {singleData?.pricing?.basic?.sessionDuration}</li>
                                     <li>💬 Unlimited Q&A via chat</li>
                                 </ul>
-                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan, singleData?.pricing?.basic?.amount) }}>
+                                <button className="mt-8 bg-green-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-green-700" onClick={() => { handleApply(plan, singleData?.pricing?.basic?.amount) }}>
                                     Apply Now
                                 </button>
                             </div>
                         ) : (
                             <div className="p-4 text-left">
-                                <p className="font-bold text-5xl text-blue-600 mb-3">
+                                <p className="font-bold text-5xl text-green-600 mb-3">
                                     ₹ {singleData?.pricing?.pro?.amount} <span className="text-2xl font-bold text-gray-700">/ month</span>
                                 </p>
                                 <ul className="text-md font-semibold text-gray-800 space-y-1">
@@ -119,7 +119,7 @@ export default function MentorProfile() {
                                     <li>⏳ Session Duration: {singleData?.pricing?.pro?.sessionDuration}</li>
                                     <li>💬 Unlimited Q&A via chat</li>
                                 </ul>
-                                <button className="mt-8 bg-blue-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-blue-700" onClick={() => { handleApply(plan, singleData?.pricing?.pro?.amount) }}>
+                                <button className="mt-8 bg-green-600 w-full text-white text-lg px-6 py-2 rounded-lg hover:bg-green-700" onClick={() => { handleApply(plan, singleData?.pricing?.pro?.amount) }}>
                                     Apply Now
                                 </button>
                             </div>

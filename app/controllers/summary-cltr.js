@@ -2,11 +2,11 @@ import Summary from "../models/summary-model.js";
 import axios from "axios";
 import fs from "fs";
 import dotenv from "dotenv";
-import cloudinary from "../utils/cloudinary.js"; // Import your Cloudinary config
+import cloudinary from "../utils/cloudinary.js"; 
 
 dotenv.config();
 const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
-const COHERE_API_KEY = process.env.COHERE_API_KEY; // Add this in .env
+const COHERE_API_KEY = process.env.COHERE_API_KEY; 
 
 const summaryCltr = {};
 
@@ -19,25 +19,24 @@ summaryCltr.createAudio = async (req, res) => {
     }
 
     try {
-        console.log("📤 Uploading audio file to Cloudinary...");
+        console.log("Uploading audio file to Cloudinary...");
 
-        // ✅ Step 1: Upload to Cloudinary
+        // Upload to Cloudinary
         const cloudinaryResult = await cloudinary.uploader.upload(audioFile.path, {
             folder: "meeting-audio/",
-            resource_type: "video", // Cloudinary treats audio as video
+            resource_type: "video", 
             use_filename: true,
             unique_filename: false,
         });
 
         const audioUrl = cloudinaryResult.secure_url;
-        console.log("✅ Uploaded to Cloudinary:", audioUrl);
+        console.log("Uploaded to Cloudinary:", audioUrl);
 
-        // ✅ Step 2: Delete Local File
+        //  Delete Local File
         fs.unlinkSync(audioFile.path);
 
-        console.log("📤 Sending audio file to AssemblyAI for transcription...");
+        console.log("Sending audio file to AssemblyAI for transcription...");
 
-        // ✅ Step 3: Send file to AssemblyAI for transcription
         const assemblyResponse = await axios.post("https://api.assemblyai.com/v2/transcript",
             { audio_url: audioUrl },
             {
@@ -46,12 +45,11 @@ summaryCltr.createAudio = async (req, res) => {
         );
 
         const transcriptId = assemblyResponse.data.id;
-        console.log("✅ Transcription request submitted. ID:", transcriptId);
+        console.log("Transcription request submitted. ID:", transcriptId);
 
-        // ✅ Step 4: Poll AssemblyAI API to get the transcript
         let transcriptText = "";
         while (true) {
-            await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 sec before checking
+            await new Promise((resolve) => setTimeout(resolve, 5000)); 
 
             const transcriptStatus = await axios.get(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
                 headers: { Authorization: ASSEMBLYAI_API_KEY },
@@ -59,20 +57,19 @@ summaryCltr.createAudio = async (req, res) => {
 
             if (transcriptStatus.data.status === "completed") {
                 transcriptText = transcriptStatus.data.text;
-                console.log("✅ Transcription completed:", transcriptText);
+                console.log("Transcription completed:", transcriptText);
                 break;
             } else if (transcriptStatus.data.status === "failed") {
                 throw new Error("Transcription failed on AssemblyAI.");
             }
         }
 
-        // ✅ Step 5: Generate Summary with Cohere API
-        console.log("📝 Generating summary with Cohere API...");
+        console.log("Generating summary with Cohere API...");
         try {
             const cohereResponse = await axios.post("https://api.cohere.ai/v1/summarize", {
                 text: transcriptText,
-                length: "long", // Options: "short", "medium", "long"
-                format: "paragraph", // Options: "bullets", "paragraph"
+                length: "long", 
+                format: "paragraph", 
             }, {
                 headers: {
                     Authorization: `Bearer ${COHERE_API_KEY}`,
@@ -81,15 +78,13 @@ summaryCltr.createAudio = async (req, res) => {
             });
 
             const summary = cohereResponse.data.summary;
-            console.log("✅ Summary generated:", summary);
+            console.log("Summary generated:", summary);
 
-
-            // ✅ Step 6: Save to Database
             const summaryData = new Summary({
                 meetingId: req.body.meetingId,
                 mentorId: req.body.mentorId,
                 menteeId: req.body.menteeId,
-                audioUrl: audioUrl, // Store Cloudinary audio URL
+                audioUrl: audioUrl, 
                 transcript: transcriptText,
                 summary: summary,
             });
@@ -98,12 +93,12 @@ summaryCltr.createAudio = async (req, res) => {
             return res.json(summaryData);
 
         } catch (error) {
-            console.error("❌ Failed to generate summary:", error);
+            console.error(" Failed to generate summary:", error);
             return res.status(500).json({ error: "Failed to generate summary with Cohere: " + error.message });
         }
 
     } catch (err) {
-        console.error("❌ Error:", err);
+        console.error(" Error:", err);
         return res.status(500).json({ error: err.message });
     }
 };

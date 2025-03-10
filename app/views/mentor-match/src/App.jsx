@@ -82,7 +82,7 @@ export default function App() {
 
 
 
-        <Route path="/mentor-profile/:id" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><MentorProfile /></PrivateRoute>} />
+        <Route path="/mentor-profile/:id" element={<PrivateRoute permittedRoles={['mentee', 'mentor','admin']}><MentorProfile /></PrivateRoute>} />
         <Route path="/apply-form/:mentorId/:plan/:amount" element={<PrivateRoute permittedRoles={['mentee', 'mentor']}><ApplyForm /></PrivateRoute>} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 

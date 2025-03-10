@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { socket } from "../../../../utils/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { getchats } from "../redux/slices/chatSlice";
@@ -10,6 +10,7 @@ export default function Chat({ isOpen, meetingId, userId }) {
     const dispatch = useDispatch()
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([])
+    const chatContainerRef = useRef(null);
 
     useEffect(() => {
         if (meetingId && isOpen) {
@@ -29,6 +30,12 @@ export default function Chat({ isOpen, meetingId, userId }) {
             socket.off("receiveGeneralMessage");
         };
     }, [meetingId, userId]);
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages, previousChats]);
 
     const handleClick = () => {
         const newMessage = {
@@ -53,13 +60,14 @@ export default function Chat({ isOpen, meetingId, userId }) {
                     <div className="absolute inset-0 bg-black opacity-50"></div>
                     <div className="bg-white p-6 rounded-lg relative z-10 shadow-xl w-full max-w-2xl h-80">
                         <button
-                            onClick={isOpen} 
+                            onClick={isOpen}
                             className="absolute top-2 right-3 text-gray-600 hover:text-gray-800"
                         >
                             ✖
                         </button>
                         <div className="flex flex-col h-full">
-                            <div className="flex-1 overflow-y-auto mb-4 space-y-3">
+                            <div ref={chatContainerRef}
+                                className="flex-1 overflow-y-auto mb-4 space-y-3">
                                 {combinedMessages.map((ele, index) => {
                                     const isCurrentUser = ele.userId
                                         ? ele.userId === userId
@@ -73,8 +81,8 @@ export default function Chat({ isOpen, meetingId, userId }) {
                                         >
                                             <div
                                                 className={`px-4 py-2 rounded-lg max-w-xs md:max-w-md break-words whitespace-normal ${isCurrentUser
-                                                        ? "bg-green-500 text-white"
-                                                        : "bg-blue-500 text-white"
+                                                    ? "bg-green-500 text-white"
+                                                    : "bg-blue-500 text-white"
                                                     }`}
                                             >
                                                 <p>{messageText}</p>
@@ -95,7 +103,7 @@ export default function Chat({ isOpen, meetingId, userId }) {
                                     value={message}
                                     className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
                                     placeholder="Type a message"
-                                /> 
+                                />
                                 <button
                                     className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
                                     onClick={handleClick}
